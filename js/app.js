@@ -69,7 +69,7 @@
   const solPay = () => (genisEkran() && !appEl.classList.contains("panel-sarili") ? ($("#panel").offsetWidth || 0) : 0);
   const payli = (ek, ust) => ({ paddingTopLeft: [ek + solPay(), ust == null ? ek : ust], paddingBottomRight: [ek, ust == null ? ek : ust] });
   map.fitBounds(TURKIYE, Object.assign(payli(0, 0), { animate: false }));
-  map.setMaxBounds([[33, 20], [45, 50]]);
+  map.setMaxBounds([[33, 12], [45, 50]]);   // batı payı geniş: sol panel haritanın üstünde durduğundan görünüm batıya kayabilmeli
   // Harita Türkiye'nin dışına fazla uzaklaşmasın: en uzak görünüm, Türkiye'nin sığdığı yakınlıktan yarım kademe geride kalır
   function enUzakAyarla() {
     const z = map.getBoundsZoom(L.latLngBounds(TURKIYE).pad(0.04), false, L.point(solPay(), 0));
