@@ -859,7 +859,7 @@
   $("#panel-close").addEventListener("click", () => togglePanel(false));
   map.on("click", () => {
     if (window.matchMedia("(max-width: 860px)").matches) togglePanel(false);
-    if (!picking && !$("#drawer").hidden && !$("#drawer").classList.contains("katli")) closeDrawer();
+    if (!picking && !$("#drawer").hidden && !$("#drawer").classList.contains("katli")) cekmeceSarKapat();
   });
 
   // ---------------- Ayrıntı çekmecesi ----------------
@@ -880,7 +880,9 @@
     if (katla) {
       const r = el.getBoundingClientRect(), fark = Math.max(0, r.height - katliH), sure = Math.round(Math.min(560, 260 + fark * .35));
       cubuk(r, asagi ? r.top : r.bottom - 22, asagi ? r.top + fark : r.top + katliH - 22, sure);
-      el.animate([{ clipPath: kirp(0) }, { clipPath: kirp(fark) }], { duration: sure, easing: egri }).finished.then(yaz);
+      // Kırpma sonuna kadar yerinde kalır; yaz() (bir söz döndürebilir) bitince kaldırılır, araya tam boy kare girmez
+      const an = el.animate([{ clipPath: kirp(0) }, { clipPath: kirp(fark) }], { duration: sure, easing: egri, fill: "forwards" });
+      an.finished.then(() => Promise.resolve(yaz()).then(() => an.cancel()));
     } else {
       yaz();
       const r = el.getBoundingClientRect(), fark = Math.max(0, r.height - katliH), sure = Math.round(Math.min(560, 260 + fark * .35));
@@ -966,8 +968,21 @@
     if (aktifMarker) { const el = aktifMarker.getElement(); if (el) el.classList.remove("is-active"); aktifMarker = null; }
     history.replaceState(null, "", location.pathname + location.search);
   }
-  $("#drawer-close").addEventListener("click", closeDrawer);
-  document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#modal").open) { if (picking) pickBitir(null); else closeDrawer(); } });
+  // Mühüre basınca açık kutu ruloya sarılır; sarılı rulonun mührüne basınca rulo da kıvrılıp kaybolur
+  function cekmeceSarKapat() {
+    const d = $("#drawer"); if (d.hidden) return;
+    if (AZALT || !d.animate) { closeDrawer(); return; }
+    const asagi = !genisEkran();
+    ruloKatla(d, true, 22, asagi, true, () => {
+      const f = d.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 160, easing: "ease-out", fill: "forwards" });
+      return f.finished.then(() => { closeDrawer(); f.cancel(); });
+    });
+  }
+  $("#drawer-close").addEventListener("click", e => {
+    e.stopPropagation();
+    if ($("#drawer").classList.contains("katli")) cekmeceSarKapat(); else cekmeceKatla(true);
+  });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#modal").open) { if (picking) pickBitir(null); else cekmeceSarKapat(); } });
 
   async function fotolariGoster(y) {
     if (!CFG.FEEDBACK_ENDPOINT || !CFG.SHOW_APPROVED_PHOTOS) return;
