@@ -51,8 +51,8 @@
     btn_duzelt: ["Bilgi düzeltmesi gönder", "Send a correction"], btn_foto: ["Fotoğraf gönder", "Send a photo"],
     btn_gmaps: ["Google Haritalar’da ara", "Search on Google Maps"],
     d_kaynak_tez: ["Kaynak: Tez Ek C, Tablo 6", "Source: thesis, Appendix C, Table 6"], d_s: ["s.", "p."], d_kayit_no: ["Kayıt no", "Record no."],
-    d_ozgun: ["Özgün Türkçe kayıt", "Original Turkish record"],
-    d_ceviri_not: ["", "Use and status information is translated from the Turkish inventory; building names are given in their original form."],
+    d_ozgun: ["Özgün Türkçe kayıt", "Show the original Turkish entry"],
+    d_ceviri_not: ["", "The current use and protection details above are English translations of the Turkish inventory entry. Building names are kept in their original Turkish form."],
     unesco_dunya: ["UNESCO Dünya Mirası", "UNESCO World Heritage"], unesco_gecici: ["UNESCO Geçici Liste", "UNESCO Tentative List"],
     foto_kredi: ["Fotoğraf", "Photo"],
 
@@ -190,6 +190,11 @@
     f_tez_temel: ["Bu site, aşağıdaki yüksek lisans tezi temel alınarak geliştirilmektedir:", "This website is developed on the basis of the following master’s thesis:"],
     gelistiren: ["Bu site, Arş. Gör. A. Mecid Vergül’ün yönlendirmesiyle Claude Opus 5.5 (Anthropic) tarafından tasarlanıp kodlanmıştır.", "Designed and coded by Claude Opus 5.5 (Anthropic) under the direction of Res. Asst. A. Mecid Vergül."],
     gelistiren_kisa: ["Claude Opus 5.5 ile tasarlanıp kodlandı", "Designed and coded with Claude Opus 5.5"],
+    filtreler: ["Filtreler", "Filters"], katmanlar: ["Katmanlar", "Layers"], ara_dugme: ["Ara", "Search"],
+    rozet_etkin: ["{n} etkin", "{n} active"], rozet_kapali: ["{n} kapalı", "{n} hidden"],
+    panel_gizle: ["Paneli gizle", "Hide panel"], panel_goster: ["Filtreler ve liste", "Filters and list"],
+    ara_kapsam_ipucu: ["Aradığınızı yazıp Enter’a ya da büyütece basın; harita Türkiye geneline döner.", "Type your search and press Enter or the magnifier; the map returns to all of Türkiye."],
+    arama_tum: ["Arama sonuçları · tüm Türkiye", "Search results · all of Türkiye"],
     ara_kapsam_il: ["{il} içinde", "In {il}"], ara_kapsam_tum: ["Tüm Türkiye’de ara", "Search all of Türkiye"], ara_kapsam_etiket: ["Arama kapsamı", "Search scope"],
     arama_sonuc: ["Arama sonuçları", "Search results"],
     kume_not: ["Sayılı daireler birbirine yakın yapıları bir arada gösterir; tıklayınca açılır.", "Numbered circles group nearby buildings; click to expand."]
@@ -217,9 +222,52 @@
     document.documentElement.lang = dil;
     document.querySelectorAll(".dil-sec button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.dil === dil)));
   }
+  // Dil değişince sayfa yeniden yüklenir; ziyaretçi bıraktığı yerde kalsın diye konum ve sayfa durumu bir kez saklanır
+  const ustBoy = () => { const u = document.querySelector(".ust"); return u ? u.getBoundingClientRect().bottom : 0; };
+  const CAPA = "main h1, main h2, main h3, main h4, main p, main li, main dt, main details, main figure, main blockquote, main .yk";
+  // Türkçe ve İngilizce metinler ayrı bloklarda olabilir: yalnızca görünen öğeler sayılır, iki dilde sıraları aynıdır
+  const gorunen = sel => [...document.querySelectorAll(sel)].filter(e => e.getClientRects().length);
+  function konumAl() {
+    const k = { y: window.scrollY, acik: gorunen("main details").map((d, n) => (d.open ? n : -1)).filter(n => n >= 0) };
+    if (window.scrollY < 8) return k;
+    const ust = ustBoy(), liste = gorunen(CAPA);
+    for (let n = 0; n < liste.length; n++) {
+      const r = liste[n].getBoundingClientRect();
+      if (r.height && r.bottom > ust + 4) { k.capa = n; k.fark = r.top; break; }
+    }
+    return k;
+  }
   function degistir(d) {
     try { localStorage.setItem("dil", d); } catch (e) {}
-    const u = new URL(location.href); u.searchParams.set("lang", d); location.href = u.toString();
+    const k = Object.assign({ yol: location.pathname, zaman: Date.now() }, konumAl());
+    try { window.dispatchEvent(new CustomEvent("dilgecis", { detail: k })); } catch (e) {}
+    const u = new URL(location.href); u.searchParams.set("lang", d);
+    // Adresteki bölüm işareti (#ekip gibi) eski bir tıklamadan kalmış olabilir; kaydırma konumu geri yükleneceği için kaldırılır
+    if (k.hash !== undefined) u.hash = k.hash;
+    else if (k.capa != null && location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)))) u.hash = "";
+    try { sessionStorage.setItem("dil_gecis", JSON.stringify(k)); } catch (e) {}
+    location.href = u.toString();
+  }
+  const gecis = (function () {
+    let k = null;
+    try { k = JSON.parse(sessionStorage.getItem("dil_gecis") || "null"); sessionStorage.removeItem("dil_gecis"); } catch (e) { return null; }
+    if (!k || k.yol !== location.pathname || Date.now() - k.zaman > 20000) return null;
+    return k;
+  })();
+  if (gecis) {
+    try { history.scrollRestoration = "manual"; } catch (e) {}
+    let dokundu = false;
+    ["wheel", "touchstart", "keydown", "mousedown"].forEach(o => window.addEventListener(o, () => { dokundu = true; }, { once: true, passive: true }));
+    const yerles = () => {
+      if (dokundu) return;
+      const acik = gecis.acik || [];
+      gorunen("main details").forEach((d, n) => { d.open = acik.includes(n); });
+      if (gecis.capa == null) { if (gecis.y) window.scrollTo({ top: gecis.y, behavior: "instant" }); return; }
+      const el = gorunen(CAPA)[gecis.capa];
+      if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - gecis.fark, behavior: "instant" });
+      else window.scrollTo({ top: gecis.y, behavior: "instant" });
+    };
+    window.addEventListener("load", () => { requestAnimationFrame(yerles); setTimeout(yerles, 700); });
   }
   document.addEventListener("click", e => { const b = e.target.closest(".dil-sec button[data-dil]"); if (b && b.dataset.dil !== dil) degistir(b.dataset.dil); });
 
@@ -232,5 +280,5 @@
     });
   }
 
-  window.I18N = { dil, en: dil === "en", t, uygula, baglantiDil, S };
+  window.I18N = { dil, en: dil === "en", t, uygula, baglantiDil, S, gecis };
 })();

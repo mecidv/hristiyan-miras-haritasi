@@ -176,6 +176,7 @@ html[data-tema="koyu"] .rulo { filter: drop-shadow(0 0 40px rgba(240, 200, 110, 
 html[data-tema="koyu"] .harita-rulo-cubuk { box-shadow: 0 0 18px rgba(240, 200, 110, .14); }
 html[data-tema="koyu"] .harita-rulo-cubuk::before, html[data-tema="koyu"] .harita-rulo-cubuk::after { background: var(--cubuk-uc), #1D2C5E; box-shadow: inset 0 0 0 1.2px rgba(201, 165, 72, .5); }
 .map-wrap .leaflet-left { left: 20px; } .map-wrap .leaflet-right { right: 20px; }
+@media (min-width: 861px) { .map-wrap .panel-goster:not([hidden]) { left: 78px; } .app .panel .panel-gizle { top: 30px; } }
 /* Haritanın kendisi de eski bir yaprak: pas lekeleri il dolgularının üstünde, yapıların altında */
 html:not([data-tema="koyu"]) .harita-doku { background: url("../img/eskitme.svg") 0 0 / 900px 900px, var(--doku-leke) 0 0 / 600px 600px, var(--doku-ince) 0 0 / 220px 220px; }
 

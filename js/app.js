@@ -157,7 +157,10 @@
   zoomSinif();
 
   // Açılış animasyonu: il sınırları mürekkeple çizilir, yapılar batıdan doğuya belirir
-  const acilis = { aktif: !AZALT, basla: performance.now() };
+  // Dil değiştirilince sayfa yeniden açılır: önceki durum (filtreler, il, ilçe, görünüm, açık yapı) geri kurulur
+  const GECIS = (window.I18N && window.I18N.gecis && window.I18N.gecis.harita) || null;
+  let gecisBekle = !!GECIS;
+  const acilis = { aktif: !AZALT && !GECIS, basla: performance.now() };
   if (acilis.aktif) { mapEl.classList.add("ilk"); setTimeout(() => mapEl.classList.remove("ilk"), 3600); }
 
   function cizAnimasyon(layers, sure, gecikme, dolguda) {
@@ -252,7 +255,9 @@
   markerlariKur();
 
   // ---------------- Filtreler ----------------
-  const state = { turler: new Set(TURLER), islev: "", topluluk: "", bolge: "", il: "", ilce: "", unesco: false, ara: "" };
+  const state = { turler: new Set(TURLER), islev: "", topluluk: "", bolge: "", il: "", ilce: "", unesco: false, ara: "", araKapsam: "il" };
+  // "Tüm Türkiye'de ara" seçiliyken (ve bir şey yazılmışken) arama il sınırına bakmaz
+  const tumAra = () => !!(state.il && state.araKapsam === "tum" && state.ara);
   let ilceAtama = new Map();   // seçili ildeki yapı no → ilçe adı
   function secenekler(sel, items) {
     const secili = sel.value;
@@ -276,14 +281,16 @@
     if (state.islev && y.islevKat !== state.islev) return false;
     if (state.topluluk && !y.topluluk.includes(state.topluluk)) return false;
     if (state.bolge && y.bolge !== state.bolge) return false;
-    if (!ignoreIl && state.il && y.il !== state.il) return false;
-    if (!ignoreIl && !ignoreIlce && state.ilce && ilceAtama.get(y.no) !== state.ilce) return false;
+    const tum = tumAra();
+    if (!ignoreIl && !tum && state.il && y.il !== state.il) return false;
+    if (!ignoreIl && !ignoreIlce && !tum && state.ilce && ilceAtama.get(y.no) !== state.ilce) return false;
     if (state.unesco && !y.unesco) return false;
     if (state.ara && !y._ara.includes(state.ara)) return false;
     return true;
   }
 
   let sonFiltre = [], sonIlSay = {};
+  let araT;
   function uygula() {
     const liste = YAPILAR.filter(y => gecerli(y, false));
     const ilIcin = YAPILAR.filter(y => gecerli(y, true));
@@ -295,6 +302,7 @@
     const grupla = arr => { const m = new Map(); arr.forEach(mk => { const k = mk.options.il; (m.get(k) || m.set(k, []).get(k)).push(mk); }); return m; };
     grupla(cik).forEach((arr, il) => { const g = ilKumesi(il); if (KUME) g.removeLayers(arr); else arr.forEach(m => g.removeLayer(m)); });
     grupla(ekle).forEach((arr, il) => { const g = ilKumesi(il); if (KUME) g.addLayers(arr); else arr.forEach(m => g.addLayer(m)); });
+    rozetler();
     Ortak.sayac($("#t-toplam"), liste.length, { sure: 800 });
     TURLER.forEach(t => Ortak.sayac($("#t-" + Ortak.IKON_SINIF[t]), liste.filter(y => y.tur === t).length, { sure: 800 }));
     const ilSay = {};
@@ -386,7 +394,7 @@
   function cizYapiListesi(ol, baslik) {
     const liste = sonFiltre.slice().sort((a, b) => (a.ilce || "").localeCompare(b.ilce || "", "tr") || a.ad.localeCompare(b.ad, "tr"));
     const yerAdi = state.ilce ? `${state.ilce}, ${state.il}` : state.il;
-    const bas = state.il ? (state.ara ? `${T("arama_sonuc")} · ${yerAdi}` : state.ilce ? T("ilce_yapilari", { ilce: state.ilce }) : T("il_yapilari", { il: state.il })) : T("arama_sonuc");
+    const bas = tumAra() ? T("arama_tum") : state.il ? (state.ara ? `${T("arama_sonuc")} · ${yerAdi}` : state.ilce ? T("ilce_yapilari", { ilce: state.ilce }) : T("il_yapilari", { il: state.il })) : T("arama_sonuc");
     baslik.innerHTML = `${esc(bas)} <small>${liste.length}</small>`;
     ol.classList.add("yapi-list");
     const ok = `<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4 6.5 10l6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -394,7 +402,7 @@
       ? `<li class="liste-geri"><button type="button" data-ilce-geri>${ok}${esc(T("geri_il", { il: state.il }))}</button></li>`
       : `<li class="liste-geri"><button type="button" data-il="">${ok}${esc(T("tum_iller"))}</button></li>`;
     if (!liste.length) { ol.innerHTML = geri + `<li class="empty">${esc(T("liste_bos"))}</li>`; return; }
-    ol.innerHTML = geri + liste.slice(0, 400).map(y => `<li><button type="button" data-no="${y.no}">${Ortak.ikon(y.tur)}<span class="y-ad">${esc(y.ad)}</span><span class="y-yer">${esc([state.il ? "" : y.il, y.ilce, y.yer].filter(Boolean).join(", "))}</span></button></li>`).join("");
+    ol.innerHTML = geri + liste.slice(0, 400).map(y => `<li><button type="button" data-no="${y.no}">${Ortak.ikon(y.tur)}<span class="y-ad">${esc(y.ad)}</span><span class="y-yer">${esc([state.il && !tumAra() ? "" : y.il, y.ilce, y.yer].filter(Boolean).join(", "))}</span></button></li>`).join("");
   }
   // Arama kapsamı: il seçiliyken "bu ilde" ya da "tüm Türkiye'de"
   function aramaKapsamCiz() {
@@ -402,12 +410,23 @@
     if (!state.il) { k.hidden = true; k.innerHTML = ""; return; }
     k.hidden = false;
     k.setAttribute("aria-label", T("ara_kapsam_etiket"));
-    k.innerHTML = `<button type="button" aria-pressed="true">${esc(T("ara_kapsam_il", { il: state.il }))}</button><button type="button" data-kapsam="tum" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m13 13 4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>${esc(T("ara_kapsam_tum"))}</button>`;
+    const tum = state.araKapsam === "tum";
+    const buyutec = `<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m13 13 4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
+    k.innerHTML = `<button type="button" data-kapsam="il" aria-pressed="${!tum}">${esc(T("ara_kapsam_il", { il: state.il }))}</button><button type="button" data-kapsam="tum" aria-pressed="${tum}">${buyutec}${esc(T("ara_kapsam_tum"))}</button>${tum ? `<p class="ara-ipucu">${esc(T("ara_kapsam_ipucu"))}</p>` : ""}`;
   }
+  // Kapsam düğmesi yalnızca aramanın nerede yapılacağını seçer; harita, arama gönderilince Türkiye geneline döner
   $("#ara-kapsam").addEventListener("click", e => {
-    if (!e.target.closest("[data-kapsam=tum]")) return;
-    closeDrawer(); ilSec(""); $("#f-ara").focus();
+    const b = e.target.closest("[data-kapsam]"); if (!b || b.dataset.kapsam === state.araKapsam) return;
+    state.araKapsam = b.dataset.kapsam; aramaKapsamCiz(); uygula();
+    const g = $("#ara-kapsam [data-kapsam=" + state.araKapsam + "]"); if (g) g.focus({ preventScroll: true });
+    if (state.araKapsam === "tum") $("#f-ara").focus();
   });
+  function aramaGonder() {
+    clearTimeout(araT); state.ara = norm($("#f-ara").value);
+    if (state.il && state.araKapsam === "tum") { closeDrawer(); ilSec(""); }
+    else uygula();
+    grupAc("g-liste");
+  }
   let listeVurgu = null;
   function yapiVurgula(no) {
     if (listeVurgu) { listeVurgu.classList.remove("liste-vurgu"); listeVurgu = null; }
@@ -616,7 +635,8 @@
     return [merkez, z];
   }
   function ilSec(il) {
-    state.il = il; state.ilce = ""; ilceAtama = new Map(); $("#f-il").value = il; uygula();
+    state.il = il; state.ilce = ""; state.araKapsam = "il"; ilceAtama = new Map(); $("#f-il").value = il; uygula();
+    if (il) grupAc("g-liste");
     geriDugmeleri();
     aramaKapsamCiz();
     // İl seçilince o ilin yapı listesi panelin üstüne gelir
@@ -711,7 +731,7 @@
           const yollar = Object.values(ilGeoFeatures).sort((a, b) => a.getBounds().getCenter().lng - b.getBounds().getCenter().lng);
           cizAnimasyon(yollar, 1300, 0, true);
         }
-        if (state.il) ilSec(state.il);
+        if (gecisBekle) gecisUygula(); else if (state.il) ilSec(state.il);
         return;
       } catch (e) { /* sıradaki kaynağı dene */ }
     }
@@ -724,14 +744,16 @@
   $("#f-bolge").addEventListener("change", e => { state.bolge = e.target.value; uygula(); });
   $("#f-il").addEventListener("change", e => ilSec(e.target.value));
   $("#f-unesco").addEventListener("change", e => { state.unesco = e.target.checked; uygula(); });
-  let araT; $("#f-ara").addEventListener("input", e => { clearTimeout(araT); araT = setTimeout(() => { state.ara = norm(e.target.value); uygula(); }, 150); });
+  $("#f-ara").addEventListener("input", e => { clearTimeout(araT); araT = setTimeout(() => { state.ara = norm(e.target.value); uygula(); }, 150); });
+  $("#f-ara").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); aramaGonder(); } });
+  $("#f-ara-dugme").addEventListener("click", e => { e.preventDefault(); aramaGonder(); });
   $("#l-noktalar").addEventListener("change", uygula);
   $("#l-iller").addEventListener("change", uygula);
   $("#f-temizle").addEventListener("click", () => {
     $$('input[name="tur"]').forEach(c => c.checked = true);
     ["#f-islev", "#f-topluluk", "#f-bolge", "#f-il"].forEach(s => $(s).value = "");
     $("#f-unesco").checked = false; $("#f-ara").value = "";
-    Object.assign(state, { turler: new Set(TURLER), islev: "", topluluk: "", bolge: "", ilce: "", ara: "", unesco: false });
+    Object.assign(state, { turler: new Set(TURLER), islev: "", topluluk: "", bolge: "", ilce: "", ara: "", unesco: false, araKapsam: "il" });
     ilSec("");
   });
 
@@ -741,6 +763,65 @@
     if (want && window.matchMedia("(max-width: 860px)").matches) closeDrawer();
   }
   $("#panel-toggle").addEventListener("click", () => togglePanel());
+
+  // ---------------- Panel bölümleri: lejant gibi açılır kapanır, tercih hatırlanır ----------------
+  // Kapalı bir bölümde etkin bir seçim varsa başlığındaki rozet bunu gösterir
+  function rozetler() {
+    const yaz = (id, metin) => { const r = $("#" + id); if (r) { r.textContent = metin; r.hidden = !metin; } };
+    yaz("r-tur", state.turler.size < TURLER.length ? `${state.turler.size}/${TURLER.length}` : "");
+    const n = [state.islev, state.topluluk, state.bolge, state.il, state.unesco].filter(Boolean).length;
+    yaz("r-filtre", n ? T("rozet_etkin", { n }) : "");
+    const k = ["#l-noktalar", "#l-iller"].filter(x => !$(x).checked).length;
+    yaz("r-katman", k ? T("rozet_kapali", { n: k }) : "");
+  }
+  const GRUP_DEPO = "panel_gruplar";
+  let grupKayit = {}; try { grupKayit = JSON.parse(localStorage.getItem(GRUP_DEPO) || "{}") || {}; } catch (e) { grupKayit = {}; }
+  $$(".p-grup").forEach(d => {
+    if (grupKayit[d.id] != null) d.open = grupKayit[d.id];
+    d.addEventListener("toggle", () => {
+      if (d.dataset.katlaniyor) return;
+      grupKayit[d.id] = d.open; try { localStorage.setItem(GRUP_DEPO, JSON.stringify(grupKayit)); } catch (e) { /* yoksay */ }
+    });
+    d.querySelector("summary").addEventListener("click", e => {
+      if (AZALT || !d.animate) return;
+      e.preventDefault(); if (d.dataset.katlaniyor) return;
+      const h1 = d.offsetHeight; d.open = !d.open; const h2 = d.offsetHeight, kapaniyor = !d.open;
+      d.dataset.katlaniyor = "1"; if (kapaniyor) d.open = true;
+      d.style.overflow = "hidden";
+      d.animate([{ height: h1 + "px" }, { height: h2 + "px" }], { duration: Math.min(420, 200 + Math.abs(h2 - h1) * .5), easing: "cubic-bezier(.33,.0,.2,1)" })
+        .finished.then(() => {
+          d.style.overflow = ""; if (kapaniyor) d.open = false; delete d.dataset.katlaniyor;
+          grupKayit[d.id] = d.open; try { localStorage.setItem(GRUP_DEPO, JSON.stringify(grupKayit)); } catch (er) { /* yoksay */ }
+        });
+    });
+  });
+  function grupAc(id) { const d = document.getElementById(id); if (d && !d.open) d.open = true; }
+
+  // ---------------- Panelin tamamı gizlenir (geniş ekran): yalnızca haritada gezinmek isteyenler için ----------------
+  const appEl = $(".app");
+  function panelGizli(gizle, animasyon) {
+    if (window.matchMedia("(max-width: 860px)").matches) gizle = false;
+    if (gizle === appEl.classList.contains("panel-kapali")) return;
+    const mw = $(".map-wrap"); let onceki = mw.getBoundingClientRect().left;
+    // Panel kayarken harita sabit dursun: kap genişledikçe görünüm ters yönde kaydırılır
+    const izle = () => {
+      map.invalidateSize({ pan: false, animate: false });
+      const sol = mw.getBoundingClientRect().left, dx = sol - onceki; onceki = sol;
+      if (dx) map.panBy([dx, 0], { animate: false });
+    };
+    appEl.classList.toggle("panel-kapali", gizle);
+    $("#panel-goster").hidden = !gizle; $("#panel-goster").setAttribute("aria-expanded", String(!gizle));
+    $("#panel").toggleAttribute("inert", gizle);
+    try { localStorage.setItem("panel", gizle ? "kapali" : "acik"); } catch (e) { /* yoksay */ }
+    if (!animasyon || AZALT) { izle(); return; }
+    const bitis = performance.now() + 450;
+    (function kare() { izle(); if (performance.now() < bitis) requestAnimationFrame(kare); })();
+    if (gizle) $("#panel-goster").focus({ preventScroll: true }); else $("#panel-gizle").focus({ preventScroll: true });
+  }
+  $("#panel-gizle").addEventListener("click", () => panelGizli(true, true));
+  $("#panel-goster").addEventListener("click", () => panelGizli(false, true));
+  try { if (localStorage.getItem("panel") === "kapali") panelGizli(true, false); } catch (e) { /* yoksay */ }
+  window.addEventListener("resize", () => { if (window.matchMedia("(max-width: 860px)").matches && appEl.classList.contains("panel-kapali")) panelGizli(false, false); });
   $("#panel-close").addEventListener("click", () => togglePanel(false));
   map.on("click", () => {
     if (window.matchMedia("(max-width: 860px)").matches) togglePanel(false);
@@ -1041,6 +1122,50 @@
     ilceTemaYenile();
   });
 
+  // ---------------- Dil geçişi: durumu sakla ve geri kur ----------------
+  window.addEventListener("dilgecis", e => {
+    const k = e.detail, c = map.getCenter(), m = location.hash.match(/^#yapi-(\d+)/);
+    k.capa = null; k.hash = location.hash;
+    k.harita = { turler: [...state.turler], islev: state.islev, topluluk: state.topluluk, bolge: state.bolge, il: state.il, ilce: state.ilce,
+      unesco: state.unesco, ara: $("#f-ara").value, araKapsam: state.araKapsam, merkez: [c.lat, c.lng], zoom: map.getZoom(),
+      acik: m ? +m[1] : null, panelY: $("#panel").scrollTop, panelAcik: $("#panel").classList.contains("open"),
+      noktalar: $("#l-noktalar").checked, iller: $("#l-iller").checked };
+  });
+  function gecisHazirla() {
+    const g = GECIS;
+    state.turler = new Set((g.turler || TURLER).filter(t => TURLER.includes(t)));
+    $$('input[name="tur"]').forEach(c => { c.checked = state.turler.has(c.value); });
+    [["islev", "#f-islev"], ["topluluk", "#f-topluluk"], ["bolge", "#f-bolge"]].forEach(([a, sec]) => {
+      const el = $(sec); if (g[a] && [...el.options].some(o => o.value === g[a])) { el.value = g[a]; state[a] = g[a]; }
+    });
+    state.unesco = !!g.unesco; $("#f-unesco").checked = state.unesco;
+    $("#f-ara").value = g.ara || ""; state.ara = norm(g.ara || ""); state.araKapsam = g.araKapsam || "il";
+    $("#l-noktalar").checked = g.noktalar !== false; $("#l-iller").checked = g.iller !== false;
+    uygula();
+    if (g.merkez) map.setView(g.merkez, g.zoom, { animate: false });
+    setTimeout(gecisUygula, 4000);                 // il sınırları yüklenemezse de devam et
+  }
+  function gecisUygula() {
+    if (!gecisBekle) return; gecisBekle = false;
+    const g = GECIS;
+    const gorunum = () => { if (g.merkez) map.setView(g.merkez, g.zoom, { animate: false }); $("#panel").scrollTop = g.panelY || 0; };
+    const yapi = () => {
+      const y = g.acik != null && YAPILAR.find(x => x.no === g.acik);
+      if (y) { openDrawer(y); setTimeout(gorunum, 120); }
+    };
+    if (g.il && ILLER.some(i => i.ad === g.il)) {
+      ilSec(g.il); state.araKapsam = g.araKapsam || "il"; aramaKapsamCiz(); uygula(); gorunum();
+      if (g.ilce) {
+        const bas = Date.now();
+        (function dene() {
+          if (ilceKatman) { ilceSec(g.ilce); gorunum(); yapi(); }
+          else if (Date.now() - bas < 6000) setTimeout(dene, 120); else yapi();
+        })();
+      } else yapi();
+    } else { gorunum(); yapi(); }
+    if (g.panelAcik && window.matchMedia("(max-width: 860px)").matches) togglePanel(true);
+  }
+
   // ---------------- Başlat ----------------
   Ortak.siteBilgi($("#site-bilgi"));
   uygula();
@@ -1053,7 +1178,8 @@
   const ilParam = new URLSearchParams(location.search).get("il");
   if (ilParam && ILLER.some(i => i.ad === ilParam)) ilSec(ilParam);
   const hm = location.hash.match(/^#yapi-(\d+)/);
-  if (hm) { const y = YAPILAR.find(x => x.no === +hm[1]); if (y) { map.setView(konum(y), 12); yapiAc(y.no); } }
+  if (GECIS) gecisHazirla();
+  else if (hm) { const y = YAPILAR.find(x => x.no === +hm[1]); if (y) { map.setView(konum(y), 12); yapiAc(y.no); } }
 
   Ortak.yukle().then(liste => {
     Ortak.siteBilgi($("#site-bilgi"));
@@ -1067,5 +1193,5 @@
     uygula();
     if (acikNo != null) { const y = YAPILAR.find(x => x.no === acikNo); if (y) openDrawer(y); }
   });
-  window.__harita = { map, uygula, state, markers, ilSec, ilceSec, ilceKatmani: () => ilceKatman };
+  window.__harita = { map, uygula, state, markers, ilSec, ilceSec, ilceKatmani: () => ilceKatman, panelGoster: () => panelGizli(false, true) };
 })();

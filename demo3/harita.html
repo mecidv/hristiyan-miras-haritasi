@@ -12,7 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
-<link rel="stylesheet" href="css/style.css?v=8">
+<link rel="stylesheet" href="css/style.css?v=9">
 <link rel="stylesheet" href="css/atlas.css?v=18">
 <link rel="stylesheet" href="css/sir.css?v=8">
 <script>
@@ -24,7 +24,7 @@
 (function(){var g=/[?&]gomulu=1\b/.test(location.search);try{g=g||window.self!==window.top}catch(e){g=true}
 if(g){document.documentElement.classList.add('gomulu');var b=document.createElement('base');b.target='_blank';document.head.appendChild(b);}})();
 </script>
-<link rel="stylesheet" href="demo3/css/rulo.css?v=7">
+<link rel="stylesheet" href="demo3/css/rulo.css?v=8">
 </head>
 <body>
 <div class="demo-serit" role="note"><span>Demo: harita açılışı ve yeni menü deneniyor.</span> <a href="harita.html">Yayındaki haritaya git</a></div>
@@ -52,6 +52,7 @@ if(g){document.documentElement.classList.add('gomulu');var b=document.createElem
     <header class="panel-head">
       <button type="button" class="panel-close" id="panel-close" data-i18n="panel_kapat">Haritaya dön</button>
       <h1 data-i18n="panel_baslik">Haritada keşfet</h1>
+      <button type="button" class="panel-gizle" id="panel-gizle" aria-controls="panel" data-i18n-aria="panel_gizle" aria-label="Paneli gizle"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M11.5 4.5 6 10l5.5 5.5M16 4.5v11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </header>
 
     <section class="tally" aria-live="polite">
@@ -62,14 +63,20 @@ if(g){document.documentElement.classList.add('gomulu');var b=document.createElem
     <section class="filters">
       <label class="search">
         <span class="vh" data-i18n="ara_ph">Yapı, il veya ilçe ara</span>
-        <input type="search" id="f-ara" data-i18n-ph="ara_ph" placeholder="Yapı, il veya ilçe ara" autocomplete="off">
+        <input type="search" id="f-ara" data-i18n-ph="ara_ph" placeholder="Yapı, il veya ilçe ara" autocomplete="off" enterkeyhint="search">
+        <button type="button" class="ara-dugme" id="f-ara-dugme" data-i18n-aria="ara_dugme" aria-label="Ara"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m13 13 4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
       </label>
       <div class="ara-kapsam" id="ara-kapsam" role="group" hidden></div>
 
-      <fieldset id="f-turler">
-        <legend data-i18n="yapi_turu">Yapı türü</legend>
-      </fieldset>
+      <details class="p-grup" id="g-tur" open>
+        <summary><span data-i18n="yapi_turu">Yapı türü</span><span class="p-rozet" id="r-tur"></span><span class="p-ok" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 7.5 10 12.5l5-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+        <fieldset id="f-turler">
+          <legend class="vh" data-i18n="yapi_turu">Yapı türü</legend>
+        </fieldset>
+      </details>
 
+      <details class="p-grup" id="g-filtre" open>
+        <summary><span data-i18n="filtreler">Filtreler</span><span class="p-rozet" id="r-filtre"></span><span class="p-ok" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 7.5 10 12.5l5-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
       <div class="selects">
         <label><span data-i18n="guncel_islevi">Güncel işlevi</span>
           <select id="f-islev"></select>
@@ -85,17 +92,23 @@ if(g){document.documentElement.classList.add('gomulu');var b=document.createElem
         </label>
         <label class="chk unesco"><input type="checkbox" id="f-unesco"><span data-i18n="yalniz_unesco">Yalnızca UNESCO listelerindekiler</span></label>
       </div>
+      </details>
 
+      <details class="p-grup" id="g-katman">
+        <summary><span data-i18n="katmanlar">Katmanlar</span><span class="p-rozet" id="r-katman"></span><span class="p-ok" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 7.5 10 12.5l5-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
       <div class="layer-toggles">
         <label class="chk"><input type="checkbox" id="l-noktalar" checked><span data-i18n="yapilari_goster">Yapıları göster</span></label>
         <label class="chk"><input type="checkbox" id="l-iller" checked><span data-i18n="il_yogunluk_goster">İl yoğunluğunu göster</span></label>
       </div>
+      </details>
       <button type="button" class="link-btn" id="f-temizle" data-i18n="filtre_temizle">Filtreleri temizle</button>
     </section>
 
     <section class="provinces">
-      <h2 id="liste-baslik" data-i18n="illere_gore">İllere göre</h2>
-      <ol id="il-listesi" class="il-list"></ol>
+      <details class="p-grup p-liste" id="g-liste" open>
+        <summary><h2 id="liste-baslik" data-i18n="illere_gore">İllere göre</h2><span class="p-ok" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 7.5 10 12.5l5-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+        <ol id="il-listesi" class="il-list"></ol>
+      </details>
     </section>
 
     <footer class="panel-foot">
@@ -117,6 +130,7 @@ if(g){document.documentElement.classList.add('gomulu');var b=document.createElem
       <a class="tam-ekran" id="tam-ekran" href="harita.html" target="_blank" rel="noopener"><span data-i18n="tam_ekran">Tam ekran</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M9 2h5v5M14 2 8 8M12 9.5V14H2V4h4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     </div>
     <div id="map" role="application" aria-label="Harita"></div>
+    <button type="button" class="panel-goster" id="panel-goster" aria-controls="panel" aria-expanded="true" hidden><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M8.5 4.5 14 10l-5.5 5.5M4 4.5v11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="panel_goster">Filtreler ve liste</span></button>
     <button type="button" class="panel-toggle" id="panel-toggle" aria-controls="panel" aria-expanded="false" data-i18n="filtreler_btn">Filtreler</button>
     <div class="legend" id="legend"></div>
     <svg class="pusula" id="pusula" viewBox="0 0 40 64" aria-hidden="true"><path d="M20 4 L29 38 L20 32 L11 38 Z" fill="#1F2A30"/><path d="M20 4 L20 32 L11 38 Z" fill="#F28C28"/><text x="20" y="56" text-anchor="middle" font-family="EB Garamond, serif" font-size="15" font-weight="700" fill="#1F2A30" id="pusula-k">K</text></svg>
@@ -144,14 +158,14 @@ if(g){document.documentElement.classList.add('gomulu');var b=document.createElem
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script src="js/config.js?v=8"></script>
-<script src="js/i18n.js?v=15"></script>
+<script src="js/i18n.js?v=16"></script>
 <script src="js/ceviri-en.js?v=8"></script>
 <script src="data/yapilar.js?v=8"></script>
 <script src="js/surum.js?v=2.26"></script>
 <script src="js/ortak.js?v=14"></script>
-<script src="js/app.js?v=13"></script>
-<script src="demo3/js/rulo.js?v=3"></script>
-<script src="js/tur.js?v=3"></script>
+<script src="js/app.js?v=14"></script>
+<script src="demo3/js/rulo.js?v=4"></script>
+<script src="js/tur.js?v=4"></script>
 <script src="js/atlas.js?v=9"></script>
 </body>
 </html>

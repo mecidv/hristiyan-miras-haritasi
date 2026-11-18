@@ -5,6 +5,8 @@
   const EN = !!(window.I18N && window.I18N.en);
   const L = (tr, en) => (EN ? en : tr);
   const AZALT = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // Dil değiştirilerek yeniden açılan sayfada açılış animasyonu tekrarlanmaz
+  const GECIS = !!(window.I18N && window.I18N.gecis);
   const burasi = location.pathname.split("/").pop() || "index.html";
   const ok = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
@@ -60,7 +62,7 @@
   // ---------- Parşömen rulo açılışı ----------
   function ruloAc(rulo) {
     const yaprak = rulo.querySelector(".rulo-yaprak"), alt = rulo.querySelector(".rulo-alt"), ust = rulo.querySelector(".rulo-ust");
-    if (!yaprak || !alt || AZALT || !yaprak.animate) return;
+    if (!yaprak || !alt || AZALT || GECIS || !yaprak.animate) return;
     const tam = yaprak.offsetHeight;
     const gorunen = Math.max(260, Math.min(tam, window.innerHeight - yaprak.getBoundingClientRect().top - 24));
     const bas = ust.offsetHeight - 6;
@@ -96,7 +98,7 @@
     sol.className = "harita-rulo-cubuk sol"; sag.className = "harita-rulo-cubuk sag";
     sol.setAttribute("aria-hidden", "true"); sag.setAttribute("aria-hidden", "true");
     kap.append(sol, sag);
-    if (AZALT || !harita.animate) return;
+    if (AZALT || GECIS || !harita.animate) return;
     const gen = kap.clientWidth - sag.offsetWidth;
     const sure = 1300, egri = "cubic-bezier(.33,.0,.2,1)";
     harita.animate([{ clipPath: `inset(0 ${gen}px 0 0)` }, { clipPath: "inset(0 0 0 0)" }], { duration: sure, easing: egri });

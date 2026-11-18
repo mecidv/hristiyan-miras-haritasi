@@ -18,7 +18,9 @@
   // ---- Paneli dar ekranda açıp kapatma (harita) ----
   const panelAcik = () => { const p = document.getElementById("panel"); return !!p && p.classList.contains("open"); };
   function panel(ac) {
-    if (!HARITA || !dar()) return false;
+    if (!HARITA) return false;
+    // Geniş ekranda panel gizlenmişse panel adımlarında yeniden açılır
+    if (!dar()) { const g = document.getElementById("panel-goster"); if (ac && g && !g.hidden) { g.click(); return true; } return false; }
     if (ac && !panelAcik()) { document.getElementById("panel-toggle")?.click(); return true; }
     if (!ac && panelAcik()) { document.getElementById("panel-close")?.click(); return true; }
     return false;
@@ -66,7 +68,9 @@
   }
   function goster() {
     const a = ADIMLAR[i];
-    const degisti = HARITA && "panel" in a ? panel(a.panel) : false;
+    let degisti = HARITA && "panel" in a ? panel(a.panel) : false;
+    // Hedef kapalı bir panel bölümündeyse bölüm açılır
+    [].concat(a.hedef).forEach(sec => { const h = document.querySelector(sec); const d = h && h.closest("details.p-grup"); if (d && !d.open) { d.open = true; degisti = true; } });
     balon.innerHTML = `<p class="tur-sira">${i + 1} / ${ADIMLAR.length}</p>
       <h2 id="tur-baslik">${a.baslik}</h2><p class="tur-metin">${a.metin}</p>
       <div class="tur-dugmeler">
@@ -79,7 +83,7 @@
     balon.querySelector(".tur-ileri")?.addEventListener("click", ileri);
     const git = balon.querySelector(".tur-git");
     if (git) git.addEventListener("click", () => kapat(true));
-    const bekle = degisti ? 280 : 0;   // panelin kayma süresi
+    const bekle = degisti ? 480 : 0;   // panelin kayma süresi
     balon.classList.add("tur-gizli");
     setTimeout(() => {
       hedefEl = bul(a.hedef);
