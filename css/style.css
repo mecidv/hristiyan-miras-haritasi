@@ -483,20 +483,30 @@ html.tema-gecis, html.tema-gecis * { transition: background-color .3s ease, colo
 /* ---------- Panelin tamamını gizleme (geniş ekran) ---------- */
 .panel-gizle, .panel-goster { display: none; }
 @media (min-width: 861px) {
-  .app { transition: grid-template-columns .42s cubic-bezier(.33, 0, .2, 1); }
-  .app .panel { width: var(--panel-w); transition: transform .42s cubic-bezier(.33, 0, .2, 1), visibility 0s; }
-  .app.panel-kapali { grid-template-columns: 0px 1fr; }
-  .app.panel-kapali .panel { transform: translateX(-100%); visibility: hidden; transition: transform .42s cubic-bezier(.33, 0, .2, 1), visibility 0s .42s; }
+  /* Panel kayarken yalnızca transform değişir (GPU); harita bir kez boyutlanır */
+  .app { position: relative; }
+  .app.panel-yersiz { grid-template-columns: 0px 1fr; }
+  .app > .map-wrap { grid-column: 2; grid-row: 1; }
+  .app.panel-ustte .panel { position: absolute; left: 0; top: 0; bottom: 0; width: var(--panel-w); z-index: 1001; will-change: transform; }
+  .app .panel { transition: transform .36s cubic-bezier(.33, 0, .2, 1), visibility 0s; }
+  .app.panel-kapali .panel { transform: translateX(-100%); visibility: hidden; transition: transform .36s cubic-bezier(.33, 0, .2, 1), visibility 0s .36s; }
+  .app.panel-anlik .panel { transition: none !important; }
   .panel-head { position: relative; padding-right: 58px; }
   .panel-gizle { display: grid; place-items: center; position: absolute; top: 18px; right: 16px; width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--porselen-kenar); background: var(--porselen); color: var(--murekkep-2); cursor: pointer; box-shadow: var(--sir-golge); }
   .panel-gizle:hover, .panel-goster:hover { color: var(--portakal-metin); border-color: var(--portakal-kenar); }
   .panel-gizle svg, .panel-goster svg { width: 18px; height: 18px; }
   .panel-goster:not([hidden]) { display: inline-flex; align-items: center; gap: 7px; position: absolute; top: 14px; left: 58px; z-index: 960; padding: 8px 14px 8px 10px; border-radius: 999px; border: 1px solid var(--porselen-kenar); background: var(--sir); color: var(--murekkep); font-weight: 700; font-size: 14.5px; cursor: pointer; box-shadow: var(--sir-golge); animation: belir .3s ease .25s both; }
 }
-@media (prefers-reduced-motion: reduce) { .app, .app .panel, .app.panel-kapali .panel { transition: none; } .p-ok { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .app .panel, .app.panel-kapali .panel { transition: none; } .p-ok { transition: none; } }
 /* Yerleşik İngilizce ad (İngilizce arayüz) */
 .d-en-ad { margin: -2px 0 8px; font-family: var(--serif); font-style: italic; font-size: 19px; line-height: 1.25; color: var(--murekkep-2); }
 .d-en-ad a { font-family: var(--sans, inherit); font-style: normal; font-size: 12.5px; font-weight: 600; margin-left: 6px; color: var(--portakal-metin); white-space: nowrap; }
 .yapi-tip .tip-en { margin: -2px 0 6px; font-style: italic; font-size: 14px; color: var(--murekkep-2); }
 .d-hikaye { margin: 0 0 14px; }
 .d-hikaye a { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--portakal-metin); }
+/* Sarılmış yapı kutusu: yalnızca yapının adı iki çubuğun arasında kalır; tıklayınca yeniden açılır */
+.drawer.katli { bottom: auto; height: 92px; max-height: 92px; overflow: hidden; cursor: pointer; }
+.drawer.katli #drawer-body > :not(h2) { display: none; }
+.drawer.katli #drawer-body h2 { font-size: 19px; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-bottom: 0; box-shadow: none; margin: 0; padding: 0 44px 0 0; }
+.drawer.katli:focus-visible { outline-offset: -4px; }
+@media (max-width: 860px) { .drawer.katli { top: auto; bottom: 0; } }

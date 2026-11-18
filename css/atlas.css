@@ -9,6 +9,10 @@
   --doku-ince: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .36 0 0 0 0 .25 0 0 0 0 .13 0 0 0 .5 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   --doku-leke: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='l' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .38 0 0 0 0 .18 0 0 0 .9 -.38'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23l)'/%3E%3C/svg%3E");
   --doku-leke-koyu: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='l' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .62 0 0 0 0 .74 0 0 0 0 .92 0 0 0 .9 -.38'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23l)'/%3E%3C/svg%3E");
+  /* Harita dokusu için 900 piksellik ortak döneme uyan karolar: doku haritayla birlikte kaydırılırken ek yeri oluşmaz */
+  --doku-ince-225: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='225' height='225'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .36 0 0 0 0 .25 0 0 0 0 .13 0 0 0 .5 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --doku-leke-900: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900'%3E%3Cfilter id='l' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .38 0 0 0 0 .18 0 0 0 .9 -.38'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23l)'/%3E%3C/svg%3E");
+  --doku-leke-koyu-900: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900'%3E%3Cfilter id='l' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .62 0 0 0 0 .74 0 0 0 0 .92 0 0 0 .9 -.38'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23l)'/%3E%3C/svg%3E");
 
   --zemin: #E6D6B3;
   --porselen: #F4EAD2;
@@ -144,13 +148,17 @@ html[data-tema="koyu"] #map .altlik-ayrintili { filter: invert(.92) hue-rotate(1
 
 /* Haritanın üstündeki parşömen dokusu (yapıların altında kalır) */
 /* Doku düz katman olarak çizilir: karışım modu (multiply/screen) yakınlaşma sırasında tarayıcıda yanıp sönmeye yol açıyordu */
-.harita-doku { position: absolute; pointer-events: none; background: var(--doku-leke) 0 0 / 600px 600px, var(--doku-ince) 0 0 / 220px 220px; opacity: .76; }
-html[data-tema="koyu"] .harita-doku { background: var(--doku-leke-koyu) 0 0 / 600px 600px; opacity: .16; }
+/* Parşömen dokusu haritaya iliştirilir: harita kaydırılınca doku da kayar. Bütün katmanların dönemi 900 pikselin böleni
+   olduğundan öğe yalnızca 900 piksellik adımlarla yer değiştirir; doku yeniden çizilmez (uçuş sırasında titreme olmaz). */
+.harita-doku { position: absolute; pointer-events: none; opacity: .76; contain: strict;
+  background: url("../img/parsomen/eskitme.png") 0 0 / 900px 900px, var(--doku-leke-900) 0 0 / 900px 900px, var(--doku-ince-225) 0 0 / 225px 225px; }
+html[data-tema="koyu"] .harita-doku { background: var(--doku-leke-koyu-900) 0 0 / 900px 900px; opacity: .16; }
 /* Uçuş sırasında imleç altındaki ilçe ve il sınırları vurgu/ipucu üretmesin */
 #map.ucusta .leaflet-interactive { pointer-events: none !important; }
 #map.ucusta .leaflet-tooltip-pane { visibility: hidden; }
 /* Uçuşta katmanlar her karede yeniden taranmasın, hazır görüntü ölçeklensin (yamalı yanıp sönmeyi önler) */
-#map.ucusta .leaflet-zoom-animated, #map.ucusta .harita-doku { will-change: transform; }
+#map.ucusta .leaflet-zoom-animated { will-change: transform; }
+.harita-doku { will-change: transform; }
 
 /* Çift çerçeve (atlas pervazı) ve kenar yanığı */
 .map-wrap::after { box-shadow: inset 0 0 0 5px rgba(240, 228, 200, .9), inset 0 0 0 6px rgba(46, 32, 20, .55), inset 0 0 0 9px rgba(240, 228, 200, .75), inset 0 0 0 10px rgba(46, 32, 20, .35), inset 0 0 70px rgba(110, 70, 30, .28); }
@@ -455,3 +463,19 @@ html.gomulu .tur-davet--ust { top: 66px; }
 .atif-oneri { padding: 16px 18px; border-radius: 12px; border: 1px solid rgba(201, 150, 46, .55); background: linear-gradient(160deg, rgba(246, 214, 120, .18), rgba(246, 214, 120, .06)); box-shadow: 0 0 0 3px rgba(227, 194, 106, .12); }
 .atif-metinici { margin: 0 0 10px; font-size: 15px; }
 html[data-tema="koyu"] .atif-oneri { border-color: rgba(227, 194, 106, .5); background: linear-gradient(160deg, rgba(240, 210, 122, .14), rgba(240, 210, 122, .04)); }
+
+/* ---------- Haritada komşu ülke, deniz ve KKTC adları (sitenin dilinde) ---------- */
+.ad-yazi span { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; pointer-events: none;
+  font-family: var(--serif); font-style: italic; line-height: 1.1; text-shadow: 0 0 3px rgba(245, 235, 212, .9), 0 0 8px rgba(245, 235, 212, .6); }
+.ulke-ad span { font-size: 15px; letter-spacing: .04em; color: rgba(92, 70, 48, .72); }
+.deniz-ad span { color: #8E2C18; opacity: .78; text-transform: uppercase; letter-spacing: .32em; }
+.deniz-b span { font-size: 17px; } .deniz-o span { font-size: 14px; } .deniz-k span { font-size: 11.5px; letter-spacing: .2em; }
+.kktc-ad span { font-size: 12.5px; color: rgba(92, 70, 48, .85); }
+#map.ad-kucuk .ulke-ad span { font-size: 13px; } #map.ad-kucuk .deniz-b span { font-size: 15px; } #map.ad-kucuk .deniz-k span { display: none; } #map.ad-kucuk .kktc-ad span { font-size: 10.5px; }
+#map.ad-gizli .leaflet-ulkeAd-pane { display: none; }
+html[data-tema="koyu"] .ad-yazi span { text-shadow: 0 0 3px rgba(8, 15, 38, .9), 0 0 8px rgba(8, 15, 38, .6); }
+html[data-tema="koyu"] .ulke-ad span, html[data-tema="koyu"] .kktc-ad span { color: rgba(201, 210, 238, .75); }
+html[data-tema="koyu"] .deniz-ad span { color: #C9D2EE; opacity: .7; }
+/* Okyanus altlığı açık renkli; gece temasında koyulaştırılır */
+html[data-tema="koyu"] #map .altlik-uzak { filter: invert(.88) sepia(1) hue-rotate(190deg) saturate(2.2) brightness(.62) contrast(1.15); }
+.kahraman-harita .kktc-yazi { font-size: 24px; }

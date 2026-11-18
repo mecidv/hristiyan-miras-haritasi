@@ -31,7 +31,7 @@ html[data-tema="koyu"] .acilir-liste a[aria-current="page"] { color: #F0D27A; }
 
 /* ---------- Eskitme ----------
    Yazı alanı temiz kalır; yaş izleri kenarlarda ve rulo uçlarında yoğunlaşır.
-   Lekeler sabit tohumla üretildi (img/parsomen/eskitme.svg): her ziyarette aynı yerde durur. */
+   Lekeler sabit tohumla üretildi (img/parsomen/eskitme.png): her ziyarette aynı yerde durur. */
 :root {
   --maske-yan: url("../img/parsomen/kenar-sol.svg") left top / 16px 512px repeat-y, url("../img/parsomen/kenar-sag.svg") right top / 16px 512px repeat-y, linear-gradient(#000 0 0) center / calc(100% - 30px) 100% no-repeat;
   --maske-yan-ince: url("../img/parsomen/kenar-sol.svg") left top / 10px 320px repeat-y, url("../img/parsomen/kenar-sag.svg") right top / 10px 320px repeat-y, linear-gradient(#000 0 0) center / calc(100% - 18px) 100% no-repeat;
@@ -68,7 +68,7 @@ html[data-tema="koyu"] {
    ve aynı lekeler yan yana duran iki rulonun aynı yerinde görünmesin. */
 .rulo-yaprak, .legend details, .app .panel, .drawer, .modal, .kartus .rulo-yaprak {
   --parsomen:
-    url("../img/parsomen/eskitme.svg") var(--eski-konum, 0 0) / 900px 900px,
+    url("../img/parsomen/eskitme.png") var(--eski-konum, 0 0) / 900px 900px,
     radial-gradient(ellipse 130% 100% at 50% 50%, rgba(120, 72, 26, 0) 60%, rgba(120, 72, 26, .14) 86%, rgba(92, 54, 16, .30) 100%),
     var(--doku-leke, none) var(--eski-konum, 0 0) / 600px 600px,
     var(--doku-ince, none) 0 0 / 220px 220px,
@@ -180,7 +180,7 @@ html[data-tema="koyu"] .harita-rulo-cubuk::before, html[data-tema="koyu"] .harit
 .map-wrap .leaflet-left { left: 20px; } .map-wrap .leaflet-right { right: 20px; }
 @media (min-width: 861px) { .map-wrap .panel-goster:not([hidden]) { left: 78px; } .app .panel .panel-gizle { top: 30px; } }
 /* Haritanın kendisi de eski bir yaprak: pas lekeleri il dolgularının üstünde, yapıların altında */
-html:not([data-tema="koyu"]) .harita-doku { background: url("../img/parsomen/eskitme.svg") 0 0 / 900px 900px, var(--doku-leke) 0 0 / 600px 600px, var(--doku-ince) 0 0 / 220px 220px; }
+
 
 /* 2) Lejant: küçük bir rulo. Kapalıyken iki çubuk birbirine sarılır, açılınca yaprak aralarında açılır */
 .legend { left: 40px; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; filter: drop-shadow(0 8px 12px rgba(60, 38, 14, .3)); }
@@ -196,7 +196,7 @@ html[data-tema="koyu"] .legend details { --murekkep: #EEE6D0; --murekkep-2: #BFC
 .legend.katlaniyor { overflow: visible; }
 
 /* 3) Filtre paneli: solda asılı duran bir rulo; çubuklar kaydırırken üstte ve altta sabit kalır, sağ kenar yıpranmış */
-.app .panel { --eski-konum: 140px -60px; background: var(--parsomen); border-right: 0; box-shadow: none; -webkit-mask: var(--maske-sag-bantli); mask: var(--maske-sag-bantli); }
+.app .panel { --eski-konum: 140px -60px; background: var(--parsomen); background-attachment: local; border-right: 0; box-shadow: none; -webkit-mask: var(--maske-sag-bantli); mask: var(--maske-sag-bantli); }
 .app .panel::before, .app .panel::after { position: sticky; z-index: 6; flex: none; border-radius: 0 11px 11px 0;
   background: var(--cubuk-uc) right center / 14px 100% no-repeat, var(--cubuk-yatay); }
 .app .panel::before { top: 0; order: -10; } .app .panel::after { bottom: 0; order: 10; margin-top: auto; }
@@ -206,11 +206,11 @@ html[data-tema="koyu"] .legend details { --murekkep: #EEE6D0; --murekkep-2: #BFC
 html[data-tema="koyu"] .app .panel .panel-foot { background: linear-gradient(180deg, rgba(21, 33, 72, .97), rgba(17, 28, 64, .97)); box-shadow: 0 -10px 18px rgba(0, 0, 12, .35); }
 
 /* 4) Bilgi kutuları: yapı çekmecesi ve pencereler, açılırken çubuk yukarıdan aşağı iner */
-.drawer { --eski-konum: -200px 180px; background: var(--parsomen); border-left: 0; animation: none; padding-top: 0; padding-bottom: 0; }
+.drawer { --eski-konum: -200px 180px; background: var(--parsomen); background-attachment: local; border-left: 0; animation: none; padding-top: 0; padding-bottom: 0; }
 .drawer::before, .drawer::after { position: sticky; z-index: 6; margin: 0 -26px; }
 .drawer::before { top: 0; margin-bottom: 20px; } .drawer::after { bottom: 0; margin-top: 26px; clear: both; }
 .drawer .drawer-close { top: 30px; margin-top: 0; }
-.modal { --eski-konum: 260px 90px; background: var(--parsomen); border: 0; border-radius: 0; padding: 0 28px; overflow: auto; -webkit-mask: var(--maske-yan-bantli); mask: var(--maske-yan-bantli); }
+.modal { --eski-konum: 260px 90px; background: var(--parsomen); background-attachment: local; border: 0; border-radius: 0; padding: 0 28px; overflow: auto; -webkit-mask: var(--maske-yan-bantli); mask: var(--maske-yan-bantli); }
 .modal::before, .modal::after { position: sticky; left: auto; right: auto; height: 22px; z-index: 6; margin: 0 -28px; border-radius: 11px; }
 .modal::before { top: 0; margin-bottom: 26px; } .modal::after { bottom: 0; margin-top: 22px; }
 .modal .drawer-close { top: 30px; }
@@ -239,3 +239,5 @@ html[data-tema="koyu"] .kartus .rulo-yaprak .link-btn { color: #8E2C18; }
 @media (max-width: 760px) { .kartus.rulo { margin: -10px 16px 30px; } .kartus .rulo-yaprak { padding: 26px 24px 24px; } .kartus .rulo-cubuk { margin: 0 -6px; } }
 
 .rulo .dil-not { text-align: center; margin: 0 auto 18px; max-width: 52ch; font-size: 15px; color: #6B5538; background: rgba(255, 250, 236, .6); border: 1px solid #CDB68A; border-radius: 8px; padding: 8px 12px; }
+.drawer.katli::before { margin-bottom: 12px; } .drawer.katli::after { margin-top: 12px; }
+.drawer.katli .drawer-close { top: 26px; }

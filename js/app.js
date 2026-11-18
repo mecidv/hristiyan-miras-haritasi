@@ -57,25 +57,54 @@
   araHazirla();
 
   // ---------------- Harita ----------------
-  const map = L.map("map", { zoomControl: true, minZoom: 5, maxZoom: 18, zoomSnap: 0.25, worldCopyJump: false }).fitBounds(TURKIYE);
+  const map = L.map("map", { zoomControl: true, minZoom: 5, maxZoom: 18, zoomSnap: 0.25, worldCopyJump: false, maxBoundsViscosity: 1.0 }).fitBounds(TURKIYE);
   // Yakınlaşma/uçuş sürerken imleç altındaki katmanlar vurgu ve ipucu üretmesin (titremeyi önler)
   let ucusSigorta = 0;
   map.on("zoomstart", () => { map.getContainer().classList.add("ucusta"); clearTimeout(ucusSigorta); ucusSigorta = setTimeout(() => map.getContainer().classList.remove("ucusta"), 2600); });
   map.on("zoomend moveend", () => map.getContainer().classList.remove("ucusta"));
   map.setMaxBounds([[33, 20], [45, 50]]);
+  // Harita Türkiye'nin dışına fazla uzaklaşmasın: en uzak görünüm, Türkiye'nin sığdığı yakınlıktan yarım kademe geride kalır
+  function enUzakAyarla() {
+    const z = map.getBoundsZoom(L.latLngBounds(TURKIYE).pad(0.04));
+    map.setMinZoom(Math.max(4, Math.floor((z - 0.5) * 4) / 4));
+  }
+  enUzakAyarla(); map.on("resize", enUzakAyarla);
   const ACILIS_Z = map.getZoom();
   const ALTLIK_URL = {
     acik: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
     koyu: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}"
   };
-  const altlikSade = L.tileLayer(ALTLIK_URL[document.documentElement.dataset.tema === "koyu" ? "koyu" : "acik"], {
-    attribution: 'Esri, HERE, Garmin, &copy; OpenStreetMap | <a href="https://www.geoboundaries.org">geoBoundaries</a> (ODbL)',
-    maxNativeZoom: 16, maxZoom: 18, className: "altlik-sade"
-  }).addTo(map);
+  // Uzak görünümde yazısız okyanus altlığı (deniz tabanı kabartmasıyla eski haritayı andırır; ülke adları İngilizce yazılı gelmez),
+  // yakın görünümde gri altlık. Ülke ve deniz adlarını site kendisi, sitenin diliyle yazar.
+  const ALTLIK_ATIF = 'Esri, GEBCO, NOAA, HERE, Garmin, &copy; OpenStreetMap | <a href="https://www.geoboundaries.org">geoBoundaries</a> (ODbL)';
+  const altlikUzak = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}", {
+    attribution: ALTLIK_ATIF, maxNativeZoom: 10, maxZoom: 8.75, className: "altlik-sade altlik-uzak"
+  });
+  const altlikYakin = L.tileLayer(ALTLIK_URL[document.documentElement.dataset.tema === "koyu" ? "koyu" : "acik"], {
+    attribution: ALTLIK_ATIF, maxNativeZoom: 16, minZoom: 9, maxZoom: 18, className: "altlik-sade"
+  });
+  const altlikSade = L.layerGroup([altlikUzak, altlikYakin]).addTo(map);
   const altlikAyrintili = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>', maxZoom: 19, className: "altlik-ayrintili"
   });
   L.control.layers({ [T("altlik_sade")]: altlikSade, [T("altlik_ayrintili")]: altlikAyrintili }, null, { position: "topright" }).addTo(map);
+
+  // Komşu ülkeler ve denizler: sitenin dilinde, uzak görünümde
+  map.createPane("ulkeAd"); map.getPane("ulkeAd").style.zIndex = 440; map.getPane("ulkeAd").style.pointerEvents = "none";
+  const ULKE_ADLARI = [
+    ["Yunanistan", "Greece", 22.6, 39.4], ["Bulgaristan", "Bulgaria", 25.2, 42.85], ["Romanya", "Romania", 26.6, 44.6], ["Rusya", "Russia", 40.6, 44.6],
+    ["Gürcistan", "Georgia", 43.6, 42.2], ["Ermenistan", "Armenia", 45.0, 40.25], ["Azerbaycan", "Azerbaijan", 47.6, 40.7], ["İran", "Iran", 46.6, 37.6],
+    ["Irak", "Iraq", 43.6, 35.1], ["Suriye", "Syria", 38.6, 34.9], ["Lübnan", "Lebanon", 35.75, 33.75]
+  ];
+  const DENIZ_ADLARI = [["Karadeniz", "Black Sea", 34.6, 43.1, "b"], ["Akdeniz", "Mediterranean Sea", 30.6, 34.9, "b"], ["Ege Denizi", "Aegean Sea", 25.2, 38.4, "o"], ["Marmara Denizi", "Sea of Marmara", 28.15, 40.72, "k"]];
+  const adEtiketi = (sinif, html, lat, lng) => L.marker([lat, lng], { pane: "ulkeAd", interactive: false, keyboard: false, icon: L.divIcon({ className: "ad-yazi " + sinif, html, iconSize: [0, 0] }) });
+  const ulkeKatmani = L.layerGroup([
+    ...ULKE_ADLARI.map(([tr, en, lng, lat]) => adEtiketi("ulke-ad", `<span>${esc(EN ? en : tr)}</span>`, lat, lng)),
+    ...DENIZ_ADLARI.map(([tr, en, lng, lat, b]) => adEtiketi("deniz-ad deniz-" + b, `<span>${esc(EN ? en : tr)}</span>`, lat, lng)),
+    adEtiketi("kktc-ad", EN ? "<span>Turkish Republic of<br>Northern Cyprus</span>" : "<span>Kuzey Kıbrıs<br>Türk Cumhuriyeti</span>", 35.3, 33.55)
+  ]).addTo(map);
+  function ulkeAdGoster() { const z = map.getZoom(), k = document.getElementById("map").classList; k.toggle("ad-gizli", z >= 9.5); k.toggle("ad-kucuk", z < 6.75); }
+  map.on("zoomend", ulkeAdGoster); ulkeAdGoster();
 
   map.createPane("iller"); map.getPane("iller").style.zIndex = 350;
   map.createPane("ilEtiket"); map.getPane("ilEtiket").style.zIndex = 450; map.getPane("ilEtiket").style.pointerEvents = "none";
@@ -113,8 +142,17 @@
   // Parşömen dokusu: il dolgularının ve çizgilerin üstünde, yapıların altında; ekranda sabit durur
   map.createPane("doku"); map.getPane("doku").style.zIndex = 420; map.getPane("doku").style.pointerEvents = "none";
   const dokuEl = L.DomUtil.create("div", "harita-doku", map.getPane("doku"));
-  function dokuYerlestir() { const b = map.getSize(); dokuEl.style.width = b.x + "px"; dokuEl.style.height = b.y + "px"; L.DomUtil.setPosition(dokuEl, map.containerPointToLayerPoint([0, 0])); }
-  map.on("move zoomend viewreset resize", dokuYerlestir); dokuYerlestir();
+  // Doku haritaya iliştirilir: sabit bir coğrafi noktaya göre 900 piksellik döneme oturtulur, öğe yalnızca bu adımlarla taşınır.
+  // Böylece harita kaydırılınca doku da kayar ve doku hiç yeniden çizilmez.
+  const DOKU_T = 900, DOKU_REF = L.latLng(39, 35);
+  function dokuBoyut() { const b = map.getSize(); dokuEl.style.width = (b.x + DOKU_T) + "px"; dokuEl.style.height = (b.y + DOKU_T) + "px"; }
+  function dokuYerlestir() {
+    const tl = map.containerPointToLayerPoint([0, 0]), a = map.latLngToLayerPoint(DOKU_REF);
+    const x = a.x + DOKU_T * Math.floor((tl.x - a.x) / DOKU_T), y = a.y + DOKU_T * Math.floor((tl.y - a.y) / DOKU_T);
+    L.DomUtil.setPosition(dokuEl, L.point(Math.round(x), Math.round(y)));
+  }
+  map.on("move zoom zoomend viewreset", dokuYerlestir); map.on("resize", () => { dokuBoyut(); dokuYerlestir(); });
+  dokuBoyut(); dokuYerlestir();
 
   // Birbirine yakın yapılar sayılı dairelerde toplanır (Leaflet.markercluster); eklenti yüklenemezse düz katman
   const KUME = typeof L.markerClusterGroup === "function";
@@ -255,7 +293,12 @@
       mk.bindTooltip(tipHtml(y), { direction: "top", offset: [0, -12], className: "yapi-tip", opacity: 1 });
       mk.on("tooltipopen", () => { tipYerlestir(mk); engelKontrol(mk, true); });
       mk.on("tooltipclose", () => engelKontrol(mk, false));
-      mk.on("click", () => { if (!picking) openDrawer(y); });
+      mk.on("click", () => {
+        if (picking) return;
+        // Açık kutunun yapısına yeniden tıklanınca kutu yukarı sarılır; bir daha tıklanınca yeniden açılır
+        if (!$("#drawer").hidden && aktifMarker === mk) { cekmeceKatla(!$("#drawer").classList.contains("katli")); return; }
+        openDrawer(y);
+      });
       markers.set(y.no, mk);
     });
   }
@@ -795,7 +838,7 @@
       const h1 = d.offsetHeight; d.open = !d.open; const h2 = d.offsetHeight, kapaniyor = !d.open;
       d.dataset.katlaniyor = "1"; if (kapaniyor) d.open = true;
       d.style.overflow = "hidden";
-      d.animate([{ height: h1 + "px" }, { height: h2 + "px" }], { duration: Math.min(420, 200 + Math.abs(h2 - h1) * .5), easing: "cubic-bezier(.33,.0,.2,1)" })
+      d.animate([{ height: h1 + "px" }, { height: h2 + "px" }], { duration: Math.min(260, 160 + Math.abs(h2 - h1) * .25), easing: "cubic-bezier(.33,.0,.2,1)" })
         .finished.then(() => {
           d.style.overflow = ""; if (kapaniyor) d.open = false; delete d.dataset.katlaniyor;
           grupKayit[d.id] = d.open; try { localStorage.setItem(GRUP_DEPO, JSON.stringify(grupKayit)); } catch (er) { /* yoksay */ }
@@ -805,25 +848,39 @@
   function grupAc(id) { const d = document.getElementById(id); if (d && !d.open) d.open = true; }
 
   // ---------------- Panelin tamamı gizlenir (geniş ekran): yalnızca haritada gezinmek isteyenler için ----------------
+  // Akıcılık için harita yalnızca bir kez yeniden boyutlanır; panel, haritanın üstünde yalnızca kaydırılarak (GPU ile) gelir ya da gider.
   const appEl = $(".app");
+  let panelIs = 0;
+  function haritaBoyutla(fn) {
+    const mw = $(".map-wrap"), once = mw.getBoundingClientRect().left;
+    fn();
+    map.invalidateSize({ pan: false, animate: false });
+    const dx = mw.getBoundingClientRect().left - once;
+    if (dx) map.panBy([dx, 0], { animate: false });   // harita ekranda kıpırdamadan yer açar
+  }
   function panelGizli(gizle, animasyon) {
     if (window.matchMedia("(max-width: 860px)").matches) gizle = false;
     if (gizle === appEl.classList.contains("panel-kapali")) return;
-    const mw = $(".map-wrap"); let onceki = mw.getBoundingClientRect().left;
-    // Panel kayarken harita sabit dursun: kap genişledikçe görünüm ters yönde kaydırılır
-    const izle = () => {
-      map.invalidateSize({ pan: false, animate: false });
-      const sol = mw.getBoundingClientRect().left, dx = sol - onceki; onceki = sol;
-      if (dx) map.panBy([dx, 0], { animate: false });
-    };
-    appEl.classList.toggle("panel-kapali", gizle);
+    const is = ++panelIs, p = $("#panel");
     $("#panel-goster").hidden = !gizle; $("#panel-goster").setAttribute("aria-expanded", String(!gizle));
-    $("#panel").toggleAttribute("inert", gizle);
+    p.toggleAttribute("inert", gizle);
     try { localStorage.setItem("panel", gizle ? "kapali" : "acik"); } catch (e) { /* yoksay */ }
-    if (!animasyon || AZALT) { izle(); return; }
-    const bitis = performance.now() + 450;
-    (function kare() { izle(); if (performance.now() < bitis) requestAnimationFrame(kare); })();
-    if (gizle) $("#panel-goster").focus({ preventScroll: true }); else $("#panel-gizle").focus({ preventScroll: true });
+    const hizli = !animasyon || AZALT;
+    if (gizle) {
+      // Önce harita tüm genişliği alır (panel üstte durur), sonra panel sola kayar
+      haritaBoyutla(() => appEl.classList.add("panel-ustte", "panel-yersiz"));
+      if (hizli) appEl.classList.add("panel-anlik");
+      void p.offsetWidth;
+      appEl.classList.add("panel-kapali");
+      if (hizli) requestAnimationFrame(() => appEl.classList.remove("panel-anlik"));
+      $("#panel-goster").focus({ preventScroll: true });
+    } else {
+      // Panel haritanın üstüne kayarak gelir; bitince harita yeniden daralır
+      appEl.classList.remove("panel-kapali");
+      const bitir = () => { if (is !== panelIs) return; haritaBoyutla(() => appEl.classList.remove("panel-ustte", "panel-yersiz")); };
+      if (hizli) bitir(); else setTimeout(bitir, 380);
+      $("#panel-gizle").focus({ preventScroll: true });
+    }
   }
   $("#panel-gizle").addEventListener("click", () => panelGizli(true, true));
   $("#panel-goster").addEventListener("click", () => panelGizli(false, true));
@@ -832,11 +889,46 @@
   $("#panel-close").addEventListener("click", () => togglePanel(false));
   map.on("click", () => {
     if (window.matchMedia("(max-width: 860px)").matches) togglePanel(false);
-    if (!picking && !$("#drawer").hidden) closeDrawer();
+    if (!picking && !$("#drawer").hidden && !$("#drawer").classList.contains("katli")) closeDrawer();
   });
 
   // ---------------- Ayrıntı çekmecesi ----------------
+  // ---------------- Kutunun sarılması: rulo yukarı kıvrılır, yapının adıyla küçük bir rulo olarak kalır ----------------
+  const KATLI_H = 92;
+  function cekmeceKatla(katla) {
+    const d = $("#drawer"); if (d.hidden || katla === d.classList.contains("katli")) return;
+    const mobil = window.matchMedia("(max-width: 860px)").matches;
+    const yaz = () => { d.classList.toggle("katli", katla); d.tabIndex = katla ? 0 : -1; d.setAttribute("aria-label", katla ? T("cekmece_ac") : ""); if (!katla) d.removeAttribute("aria-label"); $(".map-wrap").classList.toggle("cekmece-acik", !katla); };
+    if (AZALT || !d.animate) { yaz(); return; }
+    const egri = "cubic-bezier(.33,.0,.2,1)";
+    const cubuk = (r, bas, son, sure) => {
+      const c = document.createElement("div"); c.className = "gecici-cubuk"; c.setAttribute("aria-hidden", "true");
+      Object.assign(c.style, { left: r.left + "px", width: r.width + "px", top: "0px" }); document.body.appendChild(c);
+      c.animate([{ transform: `translateY(${bas}px)` }, { transform: `translateY(${son}px)` }], { duration: sure, easing: egri, fill: "forwards" })
+        .finished.then(() => c.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 140, fill: "forwards" }).finished.then(() => c.remove()));
+    };
+    if (katla) {
+      const r = d.getBoundingClientRect(), fark = Math.max(0, r.height - KATLI_H), sure = Math.round(Math.min(560, 260 + fark * .4));
+      // Masaüstünde yukarı, telefonda (alttan açılan kutu) aşağı doğru sarılır
+      const kf = mobil ? [{ clipPath: "inset(0 0 0 0)" }, { clipPath: `inset(${fark}px 0 0 0)` }] : [{ clipPath: "inset(0 0 0 0)" }, { clipPath: `inset(0 0 ${fark}px 0)` }];
+      cubuk(r, mobil ? r.top : r.bottom - 22, mobil ? r.top + fark : r.top + KATLI_H - 22, sure);
+      d.animate(kf, { duration: sure, easing: egri }).finished.then(yaz);
+    } else {
+      yaz(); d.scrollTop = 0;
+      const r = d.getBoundingClientRect(), fark = Math.max(0, r.height - KATLI_H), sure = Math.round(Math.min(560, 260 + fark * .4));
+      const kf = mobil ? [{ clipPath: `inset(${fark}px 0 0 0)` }, { clipPath: "inset(0 0 0 0)" }] : [{ clipPath: `inset(0 0 ${fark}px 0)` }, { clipPath: "inset(0 0 0 0)" }];
+      cubuk(r, mobil ? r.top + fark : r.top + KATLI_H - 22, mobil ? r.top : r.bottom - 22, sure);
+      d.animate(kf, { duration: sure, easing: egri });
+    }
+  }
+  $("#drawer").addEventListener("click", e => {
+    if ($("#drawer").classList.contains("katli") && !e.target.closest(".drawer-close")) { e.preventDefault(); cekmeceKatla(false); }
+  });
+  $("#drawer").addEventListener("keydown", e => {
+    if ($("#drawer").classList.contains("katli") && (e.key === "Enter" || e.key === " ") && e.target === $("#drawer")) { e.preventDefault(); cekmeceKatla(false); }
+  });
   function openDrawer(y) {
+    $("#drawer").classList.remove("katli"); $("#drawer").removeAttribute("aria-label");
     if (aktifMarker) { const el = aktifMarker.getElement(); if (el) el.classList.remove("is-active"); }
     aktifMarker = markers.get(y.no); $(".map-wrap").classList.add("cekmece-acik");
     const el = aktifMarker && aktifMarker.getElement(); if (el) el.classList.add("is-active");
@@ -897,7 +989,7 @@
     }, 60);
   }
   function closeDrawer() {
-    $("#drawer").hidden = true; $(".map-wrap").classList.remove("cekmece-acik");
+    $("#drawer").hidden = true; $("#drawer").classList.remove("katli"); $(".map-wrap").classList.remove("cekmece-acik");
     if (aktifMarker) { const el = aktifMarker.getElement(); if (el) el.classList.remove("is-active"); aktifMarker = null; }
     history.replaceState(null, "", location.pathname + location.search);
   }
@@ -1124,7 +1216,7 @@
 
   // ---------------- Tema değişimi ----------------
   window.addEventListener("temadegisti", () => {
-    altlikSade.setUrl(ALTLIK_URL[koyuMu() ? "koyu" : "acik"]);
+    altlikYakin.setUrl(ALTLIK_URL[koyuMu() ? "koyu" : "acik"]);
     portolanCiz();
     cizIller(sonIlSay); cizLejant();
     if (vurgu) vurgu.setStyle({ color: HR().vurgu });

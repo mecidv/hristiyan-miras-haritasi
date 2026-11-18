@@ -120,7 +120,10 @@
     const ulkeYazi = ([tr, en, lng, lat]) => { const [x, y] = px(lng, lat); return `<text class="ulke-yazi" x="${x}" y="${y}" text-anchor="middle">${esc(EN ? en : tr)}</text>`; };
     const ULKELER = [["Yunanistan", "Greece", 23.9, 39.6], ["Bulgaristan", "Bulgaria", 25.2, 42.85], ["Romanya", "Romania", 25.6, 45.75], ["Ukrayna", "Ukraine", 31.2, 46.15], ["Rusya", "Russia", 40.8, 45.6],
       ["Gürcistan", "Georgia", 43.6, 42.2], ["Ermenistan", "Armenia", 45.0, 40.25], ["Azerbaycan", "Azerbaijan", 47.0, 40.7], ["İran", "Iran", 46.6, 37.9], ["Irak", "Iraq", 43.6, 35.1], ["Suriye", "Syria", 38.6, 34.9], ["Kıbrıs", "Cyprus", 33.2, 34.75], ["Lübnan", "Lebanon", 35.6, 33.55]];
+    // Kuzey Kıbrıs Türk Cumhuriyeti: adanın kuzeyinde, kısaltmasıyla
+    const KKTC = EN ? "TRNC" : "KKTC";
     svg.innerHTML = `<g id="g-komsu"></g><g id="g-iller"></g><g id="g-nokta"></g>` + ULKELER.map(ulkeYazi).join("")
+      + `<text class="ulke-yazi kktc-yazi" x="${px(33.55, 35.42)[0]}" y="${px(33.55, 35.42)[1]}" text-anchor="middle">${KKTC}</text>`
       + `<text class="kita-yazi" x="${px(23.5, 44.15)[0]}" y="${px(23.5, 44.15)[1]}" text-anchor="middle">${esc(EN ? "EUROPE" : "AVRUPA")}</text>`
       + yazi("deniz_karadeniz", 34.6, 43.0, 42) + yazi("deniz_akdeniz", 30.4, 34.6, 40) + yazi("deniz_ege", 25.1, 38.2, 30);
     kap.appendChild(svg);
