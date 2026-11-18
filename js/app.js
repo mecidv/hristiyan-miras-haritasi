@@ -859,7 +859,7 @@
   $("#panel-close").addEventListener("click", () => togglePanel(false));
   map.on("click", () => {
     if (window.matchMedia("(max-width: 860px)").matches) togglePanel(false);
-    if (!picking && !$("#drawer").hidden && !$("#drawer").classList.contains("katli")) cekmeceSarKapat();
+    if (!picking && !$("#drawer").hidden && !$("#drawer").classList.contains("katli")) cekmeceKatla(true);
   });
 
   // ---------------- Ayrıntı çekmecesi ----------------
@@ -968,21 +968,10 @@
     if (aktifMarker) { const el = aktifMarker.getElement(); if (el) el.classList.remove("is-active"); aktifMarker = null; }
     history.replaceState(null, "", location.pathname + location.search);
   }
-  // Mühüre basınca açık kutu ruloya sarılır; sarılı rulonun mührüne basınca rulo da kıvrılıp kaybolur
-  function cekmeceSarKapat() {
-    const d = $("#drawer"); if (d.hidden) return;
-    if (AZALT || !d.animate) { closeDrawer(); return; }
-    const asagi = !genisEkran();
-    ruloKatla(d, true, 22, asagi, true, () => {
-      const f = d.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 160, easing: "ease-out", fill: "forwards" });
-      return f.finished.then(() => { closeDrawer(); f.cancel(); });
-    });
-  }
-  $("#drawer-close").addEventListener("click", e => {
-    e.stopPropagation();
-    if ($("#drawer").classList.contains("katli")) cekmeceSarKapat(); else cekmeceKatla(true);
-  });
-  document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#modal").open) { if (picking) pickBitir(null); else cekmeceSarKapat(); } });
+  // Kutu hiçbir zaman bir anda kaybolmaz: mühür, Esc ya da haritanın boş bir yerine tıklamak kutuyu ruloya sarar.
+  // Sarılı rulo, yeni bir yapı açılana ya da il/Türkiye görünümü değişene kadar yerinde kalır; üstüne tıklayınca yeniden açılır.
+  $("#drawer-close").addEventListener("click", e => { e.stopPropagation(); cekmeceKatla(true); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#modal").open) { if (picking) pickBitir(null); else cekmeceKatla(true); } });
 
   async function fotolariGoster(y) {
     if (!CFG.FEEDBACK_ENDPOINT || !CFG.SHOW_APPROVED_PHOTOS) return;

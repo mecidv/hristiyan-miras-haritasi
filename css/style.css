@@ -513,6 +513,6 @@ html.tema-gecis, html.tema-gecis * { transition: background-color .3s ease, colo
 /* Sarılmış yapı kutusu: yalnızca yapının adı iki çubuğun arasında kalır; tıklayınca yeniden açılır */
 .drawer.katli { bottom: auto; height: 92px; max-height: 92px; overflow: hidden; cursor: pointer; }
 .drawer.katli #drawer-body > :not(h2) { display: none; }
-.drawer.katli #drawer-body h2 { font-size: 19px; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-bottom: 0; box-shadow: none; margin: 0; padding: 0 44px 0 0; }
+.drawer.katli #drawer-body h2 { font-size: 19px; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-bottom: 0; box-shadow: none; margin: 0; padding: 0; text-align: center; }
 .drawer.katli:focus-visible { outline-offset: -4px; }
 @media (max-width: 860px) { .drawer.katli { top: auto; bottom: 0; } }

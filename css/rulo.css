@@ -240,7 +240,6 @@ html[data-tema="koyu"] .kartus .rulo-yaprak .link-btn { color: #8E2C18; }
 
 .rulo .dil-not { text-align: center; margin: 0 auto 18px; max-width: 52ch; font-size: 15px; color: #6B5538; background: rgba(255, 250, 236, .6); border: 1px solid #CDB68A; border-radius: 8px; padding: 8px 12px; }
 .drawer.katli::before { margin-bottom: 12px; } .drawer.katli::after { margin-top: 12px; }
-.drawer.katli .drawer-close { top: 26px; }
 
 /* Kapatma düğmesi: rulonun mühürü. Gündüz kırmızı balmumu, gece altın mühür; kenarı tırtıllı. */
 .drawer-close { display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; cursor: pointer; width: 34px; height: 34px;
@@ -255,6 +254,7 @@ html[data-tema="koyu"] .drawer-close { color: #3A2706; text-shadow: 0 1px 0 rgba
   box-shadow: inset 0 0 0 3px rgba(120, 90, 20, .55), inset 0 0 0 4.5px rgba(255, 245, 210, .3), inset 0 -3px 5px rgba(60, 40, 5, .35); }
 html[data-tema="koyu"] .drawer-close:hover { background: radial-gradient(circle at 36% 30%, #FBE7A8 0%, #E2BC58 46%, #B08A30 78%, #8E6E20 100%); color: #2A1C04; }
 .drawer .drawer-close { margin: 2px -10px 0 10px; }
-.drawer.katli .drawer-close { margin: -6px -10px 0 10px; width: 32px; height: 32px; font-size: 20px; }
+/* Sarılı rulonun mührü yok: rulo kaybolmaz, üstüne tıklayınca açılır */
+.drawer.katli .drawer-close { display: none; }
 .modal .drawer-close { margin: 0 -10px 0 10px; }
 @media (prefers-reduced-motion: reduce) { .drawer-close { transition: none; } .drawer-close:hover { transform: none; } }
