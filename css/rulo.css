@@ -258,3 +258,6 @@ html[data-tema="koyu"] .drawer-close:hover { background: radial-gradient(circle 
 .drawer.katli .drawer-close { display: none; }
 .modal .drawer-close { margin: 0 -10px 0 10px; }
 @media (prefers-reduced-motion: reduce) { .drawer-close { transition: none; } .drawer-close:hover { transform: none; } }
+
+.harita-ortu { position: absolute; inset: 0; z-index: 954; pointer-events: none; background: var(--doku-ince, none) 0 0 / 220px 220px, var(--zemin); }
+html[data-tema="koyu"] .harita-ortu { background: var(--zemin); }

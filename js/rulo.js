@@ -115,7 +115,12 @@
     if (AZALT || GECIS || !harita.animate) return;
     const gen = kap.clientWidth - sag.offsetWidth;
     const sure = 1300, egri = "cubic-bezier(.33,.0,.2,1)";
-    harita.animate([{ clipPath: `inset(0 ${gen}px 0 0)` }, { clipPath: "inset(0 0 0 0)" }], { duration: sure, easing: egri });
+    // Haritanın kendisi kırpılmaz (Safari'de kırpma bitince bazı ikonlar yeniden çizilmeyebiliyor); bunun yerine sayfa zemininde
+    // bir örtü, çubuğun ardından geri çekilir. Örtünün içinde katman olmadığı için hareket her tarayıcıda temiz biter.
+    const ortu = document.createElement("div"); ortu.className = "harita-ortu"; ortu.setAttribute("aria-hidden", "true");
+    kap.insertBefore(ortu, sol);
+    ortu.animate([{ clipPath: "inset(0 0 0 0px)" }, { clipPath: `inset(0 0 0 ${gen}px)` }], { duration: sure, easing: egri, fill: "forwards" })
+      .finished.then(() => ortu.remove());
     sag.animate([{ transform: `translateX(${-gen}px)` }, { transform: "translateX(0)" }], { duration: sure, easing: egri });
     const lej = document.getElementById("legend");
     if (lej) lej.animate([{ opacity: 0 }, { opacity: 0, offset: .7 }, { opacity: 1 }], { duration: sure + 200 });
