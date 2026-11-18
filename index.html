@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Türkiye İnanç Turizmi Yaşayan Envanter Projesi</title>
+<meta name="description" content="Türkiye’nin 76 ilindeki 622 kilise, manastır ve şapel kaydını kültürel miras olarak bir araya getiren interaktif envanter haritası.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=8">
+<script>
+/* Tema: kullanıcının seçimi, yoksa cihazın ayarı. Sayfa çizilmeden önce uygulanır. */
+(function(){var t;try{t=localStorage.getItem('tema')}catch(e){}if(t!=='koyu'&&t!=='acik'){t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'koyu':'acik'}document.documentElement.dataset.tema=t;})();
+</script>
+<link rel="stylesheet" href="css/giris.css?v=8">
+<link rel="stylesheet" href="css/atlas.css?v=17">
+<link rel="stylesheet" href="css/sir.css?v=8">
+</head>
+<body class="giris">
+
+
+<header class="ust">
+  <a class="ust-marka" href="index.html"><div><b data-i18n="marka_baslik">Türkiye İnanç Turizmi Yaşayan Envanter Projesi</b><span data-i18n="marka_alt">Kilise, manastır ve şapel envanteri</span></div></a>
+  <div class="ust-sag">
+    <nav aria-label="Site">
+      <a href="#proje" data-i18n="nav_proje">Proje</a>
+      <a href="#ekip" data-i18n="nav_ekip">Ekip</a>
+      <a href="harita.html" data-i18n="nav_harita">Harita</a>
+      <a href="tarihsel-baglam.html" data-i18n="nav_tarih">Tarihsel bağlam</a>
+      <a href="tasarim-dili.html" data-i18n="nav_tasarim">Tasarım dili</a>
+      <a href="sss.html" data-i18n="nav_sss">SSS</a>
+      <a href="#atif" data-i18n="nav_atif">Atıf</a>
+      <a href="#iletisim" data-i18n="nav_iletisim">İletişim</a>
+    </nav>
+    <button type="button" class="tema-dugme" data-tema-dugme aria-pressed="false" aria-label="Tema"><svg class="ay" viewBox="0 0 20 20" aria-hidden="true"><path d="M15.5 12.6A6.6 6.6 0 0 1 7.4 4.5a6.6 6.6 0 1 0 8.1 8.1Z" fill="currentColor"/></svg><svg class="gunes" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M10 1.8v2.2M10 16v2.2M1.8 10h2.2M16 10h2.2M4.2 4.2l1.6 1.6M14.2 14.2l1.6 1.6M4.2 15.8l1.6-1.6M14.2 5.8l1.6-1.6"/></g></svg></button>
+    <div class="dil-sec" role="group" data-i18n-aria="dil_etiket"><button type="button" data-dil="tr">TR</button><button type="button" data-dil="en">EN</button></div>
+  </div>
+</header>
+
+<main>
+  <section class="kahraman" aria-labelledby="baslik">
+    <div class="kahraman-harita" id="kahraman-harita" aria-hidden="true"></div>
+    <div class="kartus">
+      <h1 id="baslik" data-i18n="marka_baslik">Türkiye İnanç Turizmi Yaşayan Envanter Projesi</h1>
+      <p class="kartus-alt" id="kartus-alt"></p>
+      <p class="kartus-metin" data-i18n="h_metin"></p>
+      <div class="kartus-dugmeler">
+        <a class="btn btn-ana" href="harita.html" data-i18n="h_harita_ac">Haritayı aç</a>
+        <a class="btn btn-ghost" href="#proje" data-i18n="h_proje">Proje hakkında</a>
+        <button type="button" class="link-btn site-turu-bag" data-site-turu data-i18n="site_turu_uzun">1 dakikada site turu</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="rakamlar">
+    <div class="sarmal">
+      <dl class="tur-rakam" id="tur-rakam"></dl>
+      <div class="kullanim">
+        <h3 data-i18n="r_kullanim"></h3>
+        <div class="kullanim-cubuk" id="kullanim-cubuk" role="img"></div>
+        <ul class="kullanim-lejant" id="kullanim-lejant"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="bolum" id="proje" aria-labelledby="proje-baslik">
+    <div class="sarmal iki-sutun">
+      <div>
+        <h2 id="proje-baslik" data-i18n="p_baslik">Proje hakkında</h2>
+        <p class="giris-paragraf" data-metin="proje_ozet"></p>
+        <h3 data-i18n="p_yontem"></h3>
+        <p data-metin="yontem_ozet"></p>
+        <p data-i18n="p_yasayan"></p>
+      </div>
+      <aside class="iller-kutu" aria-labelledby="il-baslik">
+        <h3 id="il-baslik" data-i18n="p_iller"></h3>
+        <ol class="il-sira" id="il-sira"></ol>
+        <a class="link-btn" href="harita.html" data-i18n="p_tum_iller"></a>
+      </aside>
+    </div>
+  </section>
+
+  <section class="bolum bolum-koyu" id="ekip" aria-labelledby="ekip-baslik">
+    <div class="sarmal">
+      <h2 id="ekip-baslik" data-i18n="e_baslik">Ekip</h2>
+      <div class="ekip" id="ekip-kartlar"></div>
+    </div>
+  </section>
+
+  <section class="bolum" id="atif" aria-labelledby="atif-baslik">
+    <div class="sarmal iki-sutun">
+      <div>
+        <h2 id="atif-baslik" data-i18n="a_baslik">Nasıl atıf yapılır?</h2>
+        <p data-i18n="atif_lead"></p>
+        <div id="atif-kutu" data-atif-kutu></div>
+      </div>
+      <aside class="lisans">
+        <h3 data-i18n="l_baslik"></h3>
+        <p id="lisans-metin"></p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="bolum bolum-katki" aria-labelledby="katki-baslik">
+    <div class="sarmal">
+      <h2 id="katki-baslik" data-i18n="k_baslik"></h2>
+      <div class="katki">
+        <div><h3 data-i18n="k1_b"></h3><p data-i18n="k1_m"></p></div>
+        <div><h3 data-i18n="k2_b"></h3><p data-i18n="k2_m"></p></div>
+        <div><h3 data-i18n="k3_b"></h3><p data-i18n="k3_m"></p></div>
+      </div>
+      <a class="btn btn-ana" href="harita.html" data-i18n="k_git"></a>
+    </div>
+  </section>
+
+  <section class="bolum bolum-iletisim" id="iletisim" aria-labelledby="iletisim-baslik">
+    <div class="sarmal iletisim">
+      <div>
+        <h2 id="iletisim-baslik" data-i18n="il_baslik">İletişim</h2>
+        <p data-i18n="il_metin"></p>
+      </div>
+      <ul class="iletisim-liste" id="iletisim-liste"></ul>
+    </div>
+  </section>
+</main>
+
+<footer class="alt">
+  <div class="sarmal alt-izgara">
+    <div>
+      <p><b data-i18n="f_bagimsiz_b"></b> <span data-i18n="f_bagimsiz_m"></span></p>
+      <p class="tez-kunye"><span data-i18n="f_tez_temel"></span><br><span id="tez-kunye"></span></p>
+    </div>
+    <div>
+      <details class="kvkk" id="kvkk">
+        <summary data-i18n="f_kvkk"></summary>
+        <p data-metin="kvkk_metni"></p>
+      </details>
+      <p class="kucuk" data-i18n="f_krediler"></p>
+    </div>
+  </div>
+  <div class="sarmal"><div class="site-kunye" id="site-bilgi" aria-live="polite"></div></div>
+</footer>
+
+
+<script src="js/config.js?v=8"></script>
+<script src="js/i18n.js?v=15"></script>
+<script src="js/ceviri-en.js?v=8"></script>
+<script src="data/yapilar.js?v=8"></script>
+<script src="js/surum.js?v=2.24"></script>
+<script src="js/ortak.js?v=14"></script>
+<script src="js/giris.js?v=11"></script>
+<script src="js/tur.js?v=2"></script>
+<script src="js/atlas.js?v=9"></script>
+</body>
+</html>

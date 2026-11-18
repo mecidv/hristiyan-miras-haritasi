@@ -1,0 +1,52 @@
+# Ayda bir, e-tablodaki envanter değiştiyse veriyi (data/yapilar.json, data/envanter.csv) depoya alır ve
+# Zenodo'ya aynı DOI çatısı (10.5281/zenodo.24338235) altında yeni bir sürüm olarak YALNIZCA veri dosyalarını yükler.
+# Kaynak kod Zenodo'ya gönderilmez. Zenodo yüklemesi için deponun ZENODO_TOKEN gizli anahtarı gerekir.
+# Elle çalıştırmak için: Actions › Veri sürümü › Run workflow.
+name: Veri sürümü
+
+on:
+  schedule:
+    - cron: "17 0 1 * *"   # her ayın 1'i, 03:17 (Türkiye saati)
+  workflow_dispatch:
+    inputs:
+      zorla:
+        description: "Veri değişmese de Zenodo'ya yeni sürüm yükle"
+        type: boolean
+        default: false
+      yayimla:
+        description: "Zenodo'da hemen yayımla (işaretsizse taslak olarak bırakır)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  veri:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Envanteri e-tablodan al
+        run: python araclar/veri_aktar.py
+      - name: Değiştiyse depoya kaydet
+        id: kayit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- data/; then
+            echo "Veri değişmedi."; echo "degisti=false" >> "$GITHUB_OUTPUT"
+          else
+            git add data/yapilar.json data/envanter.csv
+            git commit -m "Envanter verisi güncellendi ($(TZ=Europe/Istanbul date +%Y-%m-%d))"
+            git push
+            echo "degisti=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Zenodo'ya yalnızca veriyi yükle
+        if: steps.kayit.outputs.degisti == 'true' || inputs.zorla
+        env:
+          ZENODO_TOKEN: ${{ secrets.ZENODO_TOKEN }}
+          YAYIMLA: ${{ github.event_name == 'schedule' || inputs.yayimla }}
+        run: python araclar/zenodo_yukle.py

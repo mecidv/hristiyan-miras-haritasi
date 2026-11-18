@@ -1,0 +1,33 @@
+{
+  "title": "Türkiye İnanç Turizmi Yaşayan Envanter Projesi / Religious Tourism of Türkiye: Living Inventory Project",
+  "upload_type": "dataset",
+  "description": "<p><b>Türkçe.</b> Türkiye İnanç Turizmi Yaşayan Envanter Projesi, Türkiye'deki kilise, manastır ve şapelleri tek bir etkileşimli haritada toplayan, ziyaretçi katkılarıyla güncellenen bir envanterdir. Bu kayıt, envanter verisini (<code>data/envanter.csv</code>, alan açıklamaları <code>data/VERI.md</code>) belirli bir sürüm olarak arşivler. Canlı site: <a href=\"https://envanter.mecidvergul.com\">https://envanter.mecidvergul.com</a>. Envanter, A. Mecid Vergül'ün Kastamonu Üniversitesi'nde 2024'te tamamladığı “Türkiye'de Hristiyan Kültür Mirasının Haritalandırılması” başlıklı yüksek lisans tezinde derlenen verilere dayanır. Konumlar yaklaşıktır; her kaydın konum hassasiyeti belirtilmiştir. Veri ve metinler CC BY 4.0 ile paylaşılır; sitenin kaynak kodu ve tasarımı tüm hakları saklıdır (LICENSE, LISANS.md).</p><p><b>English.</b> The Religious Tourism of Türkiye Living Inventory Project brings together the churches, monasteries and chapels of Türkiye on a single interactive map and is updated with visitors' contributions. This record archives a version of the inventory data (<code>data/envanter.csv</code>, field descriptions in <code>data/VERI.md</code>). Live site: <a href=\"https://envanter.mecidvergul.com\">https://envanter.mecidvergul.com</a>. The inventory is based on data compiled in A. Mecid Vergül's master's thesis “Mapping the Christian Cultural Heritage in Türkiye” (Kastamonu University, 2024). Locations are approximate; the precision of each location is given. Data and texts are licensed under CC BY 4.0; the source code and design of the website are all rights reserved (LICENSE, LISANS.md).</p>",
+  "creators": [
+    {
+      "name": "Vergül, A. Mecid",
+      "affiliation": "İstanbul Gelişim Üniversitesi",
+      "orcid": "0000-0002-4003-1077"
+    },
+    {
+      "name": "Tanrısever, Canan",
+      "affiliation": "Kastamonu Üniversitesi",
+      "orcid": "0000-0003-4747-5903"
+    }
+  ],
+  "license": "cc-by-4.0",
+  "access_right": "open",
+  "language": "tur",
+  "keywords": [
+    "inanç turizmi",
+    "kültürel miras",
+    "kilise",
+    "manastır",
+    "şapel",
+    "Türkiye",
+    "religious tourism",
+    "faith tourism",
+    "Christian cultural heritage",
+    "cultural heritage inventory",
+    "digital mapping"
+  ]
+}

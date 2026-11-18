@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tasarım dili | Türkiye İnanç Turizmi Yaşayan Envanter Projesi</title>
+<meta name="description" content="Envanter haritasının görsel dili: Piri Reis ve Lapis Lazuli temaları, parşömen, rüzgâr gülü, ikonlar, hare ve yazı karakterleri.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=8">
+<script>
+(function(){var t;try{t=localStorage.getItem('tema')}catch(e){}if(t!=='koyu'&&t!=='acik'){t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'koyu':'acik'}document.documentElement.dataset.tema=t;})();
+</script>
+<link rel="stylesheet" href="css/atlas.css?v=17">
+<link rel="stylesheet" href="css/sir.css?v=8">
+<style>
+  .td .ornek { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: center; margin: 18px 0 8px; padding: 18px 20px; border-radius: 8px; background: var(--sir); border: 1px solid var(--porselen-kenar); box-shadow: var(--sir-golge); }
+  .td .renk { display: grid; gap: 4px; font-size: 13.5px; color: var(--murekkep-2); }
+  .td .renk i { display: block; width: 76px; height: 46px; border-radius: 6px; border: 1px solid rgba(0,0,0,.12); }
+  .td .ikon-ornek { display: grid; justify-items: center; gap: 4px; font-size: 14px; color: var(--murekkep-2); }
+  .td .ikon-ornek .ik { width: 34px; height: 34px; }
+  .td .hare-kutu { position: relative; isolation: isolate; width: 90px; height: 90px; display: grid; place-items: center; }
+  .td .hare-kutu .yapi-ic { position: relative; width: 26px; height: 26px; }
+  .td .hare-kutu .ik { width: 25px; height: 25px; }
+  .td .imlec-ornek { display: grid; justify-items: center; gap: 4px; font-size: 14px; color: var(--murekkep-2); }
+  .td .imlec-ornek img { width: 48px; height: 48px; }
+  .td .gul-ornek svg { width: 160px; height: 160px; overflow: visible; }
+  .td .kerte-renk { display: flex; gap: 16px; flex-wrap: wrap; font-size: 14.5px; }
+  .td .kerte-renk span { display: inline-flex; align-items: center; gap: 7px; }
+  .td .kerte-renk b { display: inline-block; width: 28px; height: 3px; border-radius: 2px; }
+  .td .yazi-ornek { display: grid; gap: 10px; }
+  .td .yazi-ornek div { font-size: 15px; color: var(--murekkep-2); }
+  .td .yazi-ornek strong { display: block; color: var(--murekkep); font-weight: 600; }
+  .td .y-cinzel strong { font-family: var(--baslik); font-size: 26px; }
+  .td .y-garamond strong { font-family: var(--serif); font-size: 24px; }
+  .td .y-alegreya strong { font-family: var(--sans); font-size: 21px; }
+  .td .kaynaklar li { font-size: 15px; margin-bottom: 6px; }
+  .td .kaynaklar a { word-break: break-word; }
+  .td [data-dil-blok][hidden] { display: none; }
+  /* Gündüz ve gece yan yana */
+  .td .iki-tema { width: min(1060px, calc(100vw - 40px)); margin-left: 50%; transform: translateX(-50%); }
+  .td .tema-izgara { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .td .tema-kart { padding: 20px 22px 18px; border-radius: 8px; background: var(--doku-yaldiz, none), radial-gradient(ellipse at 28% 14%, rgba(255,251,238,.75), rgba(255,251,238,0) 62%), linear-gradient(180deg, #F5EBD4, #EFE2C4); color: #2E2014; border: 1px solid #CDB68A; box-shadow: inset 0 0 26px rgba(140,95,40,.17); }
+  .td .tema-kart.koyu-kart { background: radial-gradient(circle at 22% 31%, rgba(246,214,120,.75) 0 .9px, transparent 3px) 0 0 / 331px 307px, radial-gradient(circle at 71% 64%, rgba(240,210,122,.5) 0 .7px, transparent 2.6px) 0 0 / 467px 419px, linear-gradient(180deg, #172654, #121F47); color: #EEE6D0; border-color: #2C407D; box-shadow: inset 0 0 26px rgba(0,0,25,.35); }
+  .td .tema-kart h3 { font-family: var(--baslik); font-size: 21px; font-weight: 600; margin: 0 0 10px; letter-spacing: .02em; }
+  .td .tema-kart p { font-size: 16px; }
+  .td .tema-kart .renk { color: inherit; opacity: .85; }
+  .td .renkler { display: flex; flex-wrap: wrap; gap: 10px 14px; margin-top: 6px; }
+  .td .renkler .renk i { width: 58px; height: 34px; }
+  @media (max-width: 760px) { .td .tema-izgara { grid-template-columns: 1fr; } }
+  /* Geçiş önizlemesi */
+  .onizleme-kap { margin-top: 18px; }
+  .onizleme { position: relative; border-radius: 10px; overflow: hidden; border: 1px solid var(--porselen-kenar); box-shadow: var(--sir-golge); }
+  .onizleme svg { display: block; width: 100%; height: auto; }
+  .onizleme * { transition: fill 1.8s ease, stroke 1.8s ease, color 1.8s ease, opacity 1.8s ease, transform 2.6s cubic-bezier(.45,.05,.25,1); }
+  .onizleme .o-deniz { fill: #E3D2AC; } .onizleme .o-kara { fill: #EEE0BF; stroke: #6B4E2E; stroke-width: 1.2; }
+  .onizleme .o-cizgi-a { stroke: #2E2014; } .onizleme .o-cizgi-y { stroke: #2F6B3F; } .onizleme .o-cizgi-c { stroke: #A8321E; }
+  .onizleme .o-kerte { stroke-width: .7; opacity: .22; }
+  .onizleme .o-gul .ga { fill: #F6ECD4; stroke: #2E2014; stroke-width: 1.2; } .onizleme .o-gul .gk { fill: #A8321E; stroke: #2E2014; stroke-width: 1.2; } .onizleme .o-gul .gm { fill: #2E2014; } .onizleme .o-gul .gy { fill: #2F6B3F; } .onizleme .o-gul .gc { fill: none; stroke: #2E2014; stroke-width: 2; }
+  .onizleme .o-benek { fill: #C9962E; opacity: .55; }
+  .onizleme .o-panel { fill: #F4EAD2; stroke: #CDB68A; } .onizleme .o-baslik { fill: #2E2014; font-family: var(--baslik); font-size: 15px; font-weight: 600; } .onizleme .o-satir { fill: #85704F; opacity: .5; }
+  .onizleme .o-dugme { fill: #B23A22; }
+  .onizleme .o-ik-k { color: #24497F; } .onizleme .o-ik-m { color: #A33A26; } .onizleme .o-ik-s { color: #A87412; }
+  .onizleme { --ikon-kenar: #F7EDD6; }
+  .onizleme .o-hare { fill: url(#o-hare-g); }
+  .onizleme .o-cam-g { fill: rgba(255,255,252,.22); } .onizleme .o-cam-i { fill: rgba(255,255,252,.3); } .onizleme .o-cam-k { stroke: rgba(255,255,255,.6); stroke-width: 2; }
+  .onizleme[data-t="koyu"] { --ikon-kenar: #EEE6D0; border-color: #2C407D; }
+  .onizleme[data-t="koyu"] .o-deniz { fill: #0F1D45; } .onizleme[data-t="koyu"] .o-kara { fill: #1B2B5E; stroke: #8C9BC8; }
+  .onizleme[data-t="koyu"] .o-cizgi-a { stroke: #E9DFC4; } .onizleme[data-t="koyu"] .o-cizgi-y { stroke: #7CC79A; } .onizleme[data-t="koyu"] .o-cizgi-c { stroke: #E58A6C; }
+  .onizleme[data-t="koyu"] .o-gul .ga { fill: #1B2B5E; stroke: #E9DFC4; } .onizleme[data-t="koyu"] .o-gul .gk { fill: #E58A6C; stroke: #E9DFC4; } .onizleme[data-t="koyu"] .o-gul .gm { fill: #E9DFC4; } .onizleme[data-t="koyu"] .o-gul .gy { fill: #7CC79A; } .onizleme[data-t="koyu"] .o-gul .gc { stroke: #E9DFC4; }
+  .onizleme[data-t="koyu"] .o-benek { fill: #F0D27A; opacity: .8; }
+  .onizleme[data-t="koyu"] .o-panel { fill: #13204A; stroke: #2C407D; } .onizleme[data-t="koyu"] .o-baslik { fill: #EEE6D0; } .onizleme[data-t="koyu"] .o-satir { fill: #8E99BC; }
+  .onizleme[data-t="koyu"] .o-dugme { fill: #D9B04A; }
+  .onizleme[data-t="koyu"] .o-ik-k { color: #8FB0F0; } .onizleme[data-t="koyu"] .o-ik-m { color: #EE8F78; } .onizleme[data-t="koyu"] .o-ik-s { color: #EBC15A; }
+  .onizleme[data-t="koyu"] .o-cam-g { fill: rgba(210,222,255,.07); } .onizleme[data-t="koyu"] .o-cam-i { fill: rgba(220,230,255,.1); } .onizleme[data-t="koyu"] .o-cam-k { stroke: rgba(200,215,255,.22); }
+  .onizleme-dugmeler { display: flex; gap: 8px; justify-content: center; margin-top: 10px; }
+  .onizleme-dugmeler button { border: 1px solid var(--porselen-kenar); background: var(--sir); color: var(--murekkep-2); border-radius: 999px; padding: 6px 16px; font-weight: 700; font-size: 14px; }
+  .onizleme-dugmeler button[aria-pressed="true"] { background: var(--portakal); border-color: var(--portakal); color: var(--portakal-ust-metin); }
+  @media (prefers-reduced-motion: reduce) { .onizleme * { transition: none; } }
+  .ruzgar-gulu-sayfa .gc { fill: none; stroke: var(--gul-cizgi); stroke-width: 1.2; opacity: .75; }
+  .ruzgar-gulu-sayfa .gc.ince { stroke-width: .6; }
+  .ruzgar-gulu-sayfa .ga { fill: var(--gul-acik); stroke: var(--gul-cizgi); stroke-width: .6; }
+  .ruzgar-gulu-sayfa .gk { fill: var(--gul-ana); stroke: var(--gul-cizgi); stroke-width: .6; }
+  .ruzgar-gulu-sayfa .gm { fill: var(--gul-cizgi); stroke: var(--gul-cizgi); stroke-width: .6; }
+  .ruzgar-gulu-sayfa .gy { fill: var(--gul-yarim); stroke: var(--gul-cizgi); stroke-width: .6; }
+  .ruzgar-gulu-sayfa .gm-orta { fill: var(--yaldiz); stroke: var(--gul-cizgi); }
+  .ruzgar-gulu-sayfa .gn { font-family: var(--baslik); font-size: 17px; font-weight: 700; fill: var(--gul-cizgi); }
+</style>
+</head>
+<body class="td">
+<header class="ust">
+  <a class="ust-marka" href="index.html"><div><b data-i18n="marka_baslik">Türkiye İnanç Turizmi Yaşayan Envanter Projesi</b><span data-i18n="marka_alt">Kilise, manastır ve şapel envanteri</span></div></a>
+  <div class="ust-sag">
+    <nav aria-label="Site">
+      <a href="index.html#proje" data-i18n="nav_proje">Proje</a>
+      <a href="index.html#ekip" data-i18n="nav_ekip">Ekip</a>
+      <a href="harita.html" data-i18n="nav_harita">Harita</a>
+      <a href="tarihsel-baglam.html" data-i18n="nav_tarih">Tarihsel bağlam</a>
+      <a href="tasarim-dili.html" aria-current="page" data-i18n="nav_tasarim">Tasarım dili</a>
+      <a href="sss.html" data-i18n="nav_sss">SSS</a>
+      <a href="index.html#atif" data-i18n="nav_atif">Atıf</a>
+      <a href="index.html#iletisim" data-i18n="nav_iletisim">İletişim</a>
+    </nav>
+    <button type="button" class="tema-dugme" data-tema-dugme aria-pressed="false" aria-label="Tema"><svg class="ay" viewBox="0 0 20 20" aria-hidden="true"><path d="M15.5 12.6A6.6 6.6 0 0 1 7.4 4.5a6.6 6.6 0 1 0 8.1 8.1Z" fill="currentColor"/></svg><svg class="gunes" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M10 1.8v2.2M10 16v2.2M1.8 10h2.2M16 10h2.2M4.2 4.2l1.6 1.6M14.2 14.2l1.6 1.6M4.2 15.8l1.6-1.6M14.2 5.8l1.6-1.6"/></g></svg></button>
+    <div class="dil-sec" role="group" data-i18n-aria="dil_etiket"><button type="button" data-dil="tr">TR</button><button type="button" data-dil="en">EN</button></div>
+  </div>
+</header>
+
+<main>
+<!-- ============================ TÜRKÇE ============================ -->
+<article data-dil-blok="tr">
+  <h1>Tasarım dili</h1>
+  <p class="giris-not">Bu harita bir envanter; ama aynı zamanda yüzyıllardır kıyıları, yolları ve kutsal yerleri kayda geçiren harita geleneğinin küçük bir devamı. Görsel dilini de o gelenekten aldı.</p>
+
+  <section class="iki-tema">
+    <h2>İki tema: gündüz ve gece</h2>
+    <div class="tema-izgara">
+      <div class="tema-kart">
+        <h3>Gündüz: Piri Reis</h3>
+    <figure class="kart-gorsel"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Piri_reis_world_map_01.jpg/960px-Piri_reis_world_map_01.jpg" alt="Piri Reis'in 1513 tarihli dünya haritası" loading="lazy" decoding="async" width="960" height="1280"><figcaption>Piri Reis'in 1513 tarihli dünya haritasının günümüze ulaşan parçası. Topkapı Sarayı Müzesi Kütüphanesi, H. 1824. <a href="https://commons.wikimedia.org/wiki/File:Piri_reis_world_map_01.jpg" target="_blank" rel="noopener">Wikimedia Commons, kamu malı</a></figcaption></figure>
+        <p>Açık tema, Osmanlı denizcisi ve haritacısı Piri Reis'in 1513 tarihli dünya haritasından ilham alır. Haritanın günümüze ulaşan parçası, aslının yaklaşık üçte biri kadardır ve İstanbul'da Topkapı Sarayı'nda korunur. Ceylan derisinden yapılmış parşömen üzerine çizilmiştir ve portolan denilen denizci haritaları geleneğinin özelliklerini taşır.</p>
+        <p>Bu temanın seçilme nedeni, Türkiye'nin kendi haritacılık mirasından gelen ve geniş ölçüde tanınan bir esere dayanmasıdır. Zemin parşömen tonunda, yazılar demir mürekkebi kahvesinde, vurgular portolanlarda önemli yerleri işaretlemek için kullanılan kırmızıdadır. Panellerdeki seyrek altın kırıntılar, el yazmalarındaki yaldızı anımsatır.</p>
+        <div class="renkler"><div class="renk"><i style="background:#F4EAD2"></i>Parşömen</div><div class="renk"><i style="background:#2E2014"></i>Mürekkep</div><div class="renk"><i style="background:#B23A22"></i>Portolan kırmızısı</div><div class="renk"><i style="background:#C9962E"></i>Yaldız</div></div>
+      </div>
+      <div class="tema-kart koyu-kart">
+        <h3>Gece: Lapis Lazuli</h3>
+    <figure class="kart-gorsel"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Lapis-lazuli_hg.jpg/960px-Lapis-lazuli_hg.jpg" alt="Afganistan kökenli lapis lazuli parçası" loading="lazy" decoding="async" width="960" height="823"><figcaption>Afganistan'dan lapis lazuli; altın renkli benekler pirittir. Fotoğraf: Hannes Grobe. <a href="https://commons.wikimedia.org/wiki/File:Lapis-lazuli_hg.jpg" target="_blank" rel="noopener">Wikimedia Commons, CC BY-SA 2.5</a></figcaption></figure>
+        <p>Koyu tema, derin mavisi ve içindeki altın renkli benekleriyle tanınan lapis lazuli taşına dayanır. Bu benekler pirit kristalleridir; panellerdeki seyrek altın noktalar bunu yansıtır.</p>
+        <p>Araştırmalar, antik dünyada kullanılan lapisin en olası kaynağı olarak Afganistan'daki Badahşan madenlerini gösterir. Kaynaklara göre taş, buradan binlerce kilometre yol alarak Mezopotamya, Anadolu, Ege ve Levant'a ulaşmıştır. Bizi bu taşa çeken de bu yolculuk: uzak yerleri birbirine bağlaması. Lapisten elde edilen ultramarin pigmentinin adı "denizin ötesinden" anlamına gelir; kaynaklar, bu pigmentin Rönesans'ta altından değerli sayıldığını aktarır.</p>
+        <div class="renkler"><div class="renk"><i style="background:#0B1530"></i>Gece laciverti</div><div class="renk"><i style="background:#2E4C96"></i>Ultramarin</div><div class="renk"><i style="background:#D9B04A"></i>Pirit altını</div><div class="renk"><i style="background:#EEE6D0"></i>Krem yazı</div></div>
+      </div>
+    </div>
+    <div class="onizleme-kap" id="onizleme-tr"></div>
+  </section>
+
+  <section>
+    <h2>Parşömen ve Bergama</h2>
+    <figure class="td-gorsel"><img src="https://upload.wikimedia.org/wikipedia/commons/b/be/Codex_Sinaiticus_Matthew_6%2C4-32.JPG" alt="Codex Sinaiticus el yazmasından parşömen bir sayfa" loading="lazy" decoding="async" width="960"><figcaption>Parşömen üzerine yazılmış 4. yüzyıl el yazması Codex Sinaiticus'tan bir sayfa (Matta 6:4–32). British Library. <a href="https://commons.wikimedia.org/wiki/File:Codex_Sinaiticus_Matthew_6,4-32.JPG" target="_blank" rel="noopener">Wikimedia Commons, kamu malı</a></figcaption></figure>
+    <p>Haritanın zemini parşömen dokusundadır. Parşömen sözcüğü, Latince <i>pergamenum</i> üzerinden Anadolu'daki Bergama (Pergamon) kentinin adına dayanır. Kaynaklar, kentin Helenistik ve Roma dönemlerinde parşömen üretiminin önemli merkezlerinden biri olduğunu belirtir.</p>
+    <p>Parşömenin kökenine ilişkin kaynaklarda iki farklı anlatım bulunur. Roma dönemi yazarı Plinius'un aktardığına göre parşömen, papirüs ithalatının engellenmesi üzerine Bergama'da geliştirilmiştir. Herodotos ise MÖ 5. yüzyılda Anadolu'daki İonların kitaplara "deri" adını verdiğini yazar.</p>
+    <p>İki anlatımın ortak noktası Anadolu'dur: parşömenin hikâyesi, ister Bergama'yla ister daha eski İon geleneğiyle başlasın, bu topraklarda geçer. Bergama aynı zamanda Yeni Ahit'teki Vahiy kitabında adı geçen yedi kiliseden birinin bulunduğu kenttir.</p>
+  </section>
+
+  <section>
+    <h2>Rüzgâr gülü ve rüzgâr çizgileri</h2>
+    <figure class="td-gorsel"><div class="gul-detay" role="img" aria-label="Piri Reis haritasında bir rüzgâr gülü" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Piri_reis_world_map_01.jpg/1920px-Piri_reis_world_map_01.jpg')"></div><figcaption>Piri Reis haritasından ayrıntı: bir rüzgâr gülü ve ondan yayılan çizgiler. <a href="https://commons.wikimedia.org/wiki/File:Piri_reis_world_map_01.jpg" target="_blank" rel="noopener">Wikimedia Commons, kamu malı</a></figcaption></figure>
+    <p>Türkiye ölçeğinde bakıldığında Karadeniz'de ve Doğu Akdeniz'de birer rüzgâr gülü ve bunlardan yayılan ince çizgiler görünür. Portolan haritalarında bu çizgiler belirli bir renk düzeniyle çizilirdi: sekiz ana rüzgâr siyah (bazen altın), sekiz yarım rüzgâr yeşil, on altı çeyrek rüzgâr kırmızı. Haritadaki çizgiler aynı düzeni izler.</p>
+    <div class="ornek gul-ornek">
+      <span class="ruzgar-gulu-sayfa" id="gul-tr"></span>
+      <div class="kerte-renk">
+        <span><b style="background:var(--gul-cizgi)"></b>8 ana rüzgâr</span>
+        <span><b style="background:var(--gul-yarim)"></b>8 yarım rüzgâr</span>
+        <span><b style="background:var(--gul-ana)"></b>16 çeyrek rüzgâr</span>
+      </div>
+    </div>
+    <p>Küçük ama güzel bir ayrıntı: web haritaları Mercator izdüşümünü kullanır ve bu izdüşümde sabit pusula yönüyle ilerleyen bir rota (loksodrom) düz bir çizgi olarak görünür. Bu yüzden bizim çizgilerimiz gerçekten "sabit yön" çizgileridir. Kaynaklarda, ortaçağ portolanlarındaki çizgilerin modern anlamda loksodrom olmadığı belirtilir ve bunlar için "rüzgâr gülü çizgileri" adı da kullanılır. Haritayı kalabalıklaştırmamaları için güller küçük, çizgiler çok soluk tutuldu; yakınlaştırdıkça tümüyle silinirler.</p>
+  </section>
+
+  <section>
+    <h2>Sır: İznik çinisi</h2>
+    <figure class="td-gorsel"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Iznik_dish_British_Museum_1878%2C1230.530.jpg/960px-Iznik_dish_British_Museum_1878%2C1230.530.jpg" alt="Lale ve rozet bezemeli İznik tabağı" loading="lazy" decoding="async" width="960" height="957"><figcaption>İznik tabağı, yaklaşık 1545–1550; bezemeler sırın altına boyanmıştır. British Museum, 1878,1230.530. Fotoğraf: Aa77zz. <a href="https://commons.wikimedia.org/wiki/File:Iznik_dish_British_Museum_1878,1230.530.jpg" target="_blank" rel="noopener">Wikimedia Commons, kamu malı</a></figcaption></figure>
+    <p>Kartlar, düğmeler ve kutular sırlı çini gibi tasarlandı. İlham, adını Anadolu'daki İznik kentinden alan ve 15. yüzyılın son çeyreğinden 17. yüzyılın sonuna kadar üretilen İznik seramiğinden geliyor. Bu seramiklerde desenler renksiz, şeffaf bir sırın altına boyanır; renkler sırın altında canlı ve örtücü kalırken yüzey camsı bir parlaklık kazanır.</p>
+    <p>Sitedeki renk şeritleri de bu paletten gelir: beyaz zemin üzerinde kobalt mavisi, turkuaz, yeşil ve özel bir kil astarıyla elde edilen kırmızı; çizgilerde siyah. İznik, tarihsel bağlam sayfasında anlatılan 325 konsilinin de toplandığı kenttir.</p>
+    <p>Parlama, ekranın üstünde değil, nesnelerin kendi sırındadır. Sayfanın üst tarafında sabit, hayali bir ışık kaynağı vardır; sayfayı kaydırdıkça kartlar bu ışığın altından geçer ve parlama kartın üzerinde kayar. Kaydırmayı bıraktığınızda yansıma da durur. Bir düğmenin üzerine geldiğinizde sırın üzerinden tek bir ışık geçer. Yansıma yazıların altında kalır, metni örtmez. Cihazında "hareketi azalt" ayarı açık olanlarda parlama sabit kalır.</p>
+  </section>
+
+  <section>
+    <h2>İkonlar</h2>
+    <p>Üç yapı türü yalnızca renkle değil, biçimle de ayrılır; böylece renk ayırt etmekte zorlanan kullanıcılar da türleri tanıyabilir. Kilise çan kulesi ve uzun bir nefle, manastır avlu duvarı ve kubbeyle, şapel ise tek mekânlı küçük bir yapıyla çizildi. Hepsinin üstünde bir haç vardır; kapı açıklıkları zemin renginde bırakıldı.</p>
+    <div class="ornek" id="ikonlar-tr"></div>
+  </section>
+
+  <section>
+    <h2>Hare</h2>
+    <figure class="td-gorsel"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Christ_Pantocrator_Deesis_mosaic_Hagia_Sophia.jpg/960px-Christ_Pantocrator_Deesis_mosaic_Hagia_Sophia.jpg" alt="Ayasofya'daki Deesis mozaiğinde Pantokrator İsa" loading="lazy" decoding="async" width="960" height="1218"><figcaption>Ayasofya'daki Deesis mozaiğinde Pantokrator İsa, 13. yüzyıl; başın çevresinde altın bir hare. Fotoğraf: Myrabella. <a href="https://commons.wikimedia.org/wiki/File:Christ_Pantocrator_Deesis_mosaic_Hagia_Sophia.jpg" target="_blank" rel="noopener">Wikimedia Commons, CC0</a></figcaption></figure>
+    <p>Haritada bir yapıyı seçtiğinizde ya da listede üzerine geldiğinizde, yapının çevresinde yavaşça dönen ışınlı altın bir hare belirir. Hare, kutsallığı ışıkla anlatan çok eski bir görsel gelenektir. Kaynaklara göre Helenistik ve Roma sanatında tanrıları ve hükümdarları belirtmek için kullanılmış, Hristiyan sanatı da bu geleneği devralmıştır. Bir inanç mirası envanterinde "baktığınız yapı"yı işaretlemek için bundan daha uygun bir dil düşünemedik.</p>
+    <p>İmleç de bir hare biçimindedir, ama bilerek farklı tasarlandı: ince, ışınsız bir halka. Tıklanabilir bir bağlantının ya da düğmenin üzerine geldiğinizde halka altın renginde parlar. Seçili yapının dönen ışınlı haresiyle karışmaması için imleçte ışın yoktur.</p>
+    <div class="ornek" id="hare-tr"></div>
+  </section>
+
+  <section>
+    <h2>Yazı karakterleri</h2>
+    <div class="ornek yazi-ornek">
+      <div class="y-cinzel"><strong>Cinzel</strong>Başlıklar. Natanael Gama'nın tasarımı; birinci yüzyıl Roma yazıtlarından esinlenir ve klasik oranlara dayanır.</div>
+      <div class="y-garamond"><strong>EB Garamond</strong>İl adları ve seçkin metinler. Claude Garamond'un 16. yüzyıl harflerinin, 1592 tarihli Egenolff-Berner örnek kitabından yapılmış açık kaynaklı uyarlaması.</div>
+      <div class="y-alegreya"><strong>Alegreya Sans</strong>Arayüz ve uzun metinler. Küçük boyutta da rahat okunan, kalem izini andıran hümanist bir yazı.</div>
+    </div>
+  </section>
+
+  <section class="kaynaklar">
+    <h2>Kaynaklar</h2>
+    <ul>
+      <li><a href="https://en.wikipedia.org/wiki/Piri_Reis_map">Piri Reis map</a>, Wikipedia (kaynaklarıyla birlikte).</li>
+      <li><a href="https://nwcartographic.com/blogs/essays-articles/the-piri-reis-map">The Piri Reis Map</a>, Northwest Cartographic.</li>
+      <li><a href="https://en.wikipedia.org/wiki/Parchment">Parchment</a>, Wikipedia (Herodotos v.58 ve Plinius anlatısı).</li>
+      <li><a href="https://apps.lib.umn.edu/bell/map/PORTO/CHAR/rhumb.html">Portolan charts: characteristics in common</a>, University of Minnesota, James Ford Bell Library.</li>
+      <li><a href="https://mostre.museogalileo.it/framauro/en/land-and-sea/marine-charts.html">Marine charts</a>, Museo Galileo.</li>
+      <li><a href="https://www.britannica.com/topic/rhumb-line">Rhumb line</a>, Encyclopaedia Britannica.</li>
+      <li><a href="https://en.wikipedia.org/wiki/Windrose_line">Windrose line</a>, Wikipedia.</li>
+      <li><a href="https://the-past.com/feature/lapis-lazuli-the-blue-road-seeking-the-sources-of-the-longest-trade/">Lapis Lazuli, The Blue Road</a>, The Past.</li>
+      <li><a href="https://the-past.com/ancient-egypt/143/feature/hilary-wilson-on-lapis-lazuli/">Hilary Wilson on lapis lazuli</a>, The Past.</li>
+      <li><a href="https://www.winsornewton.com/blogs/articles/ultramarine">Ultramarine</a>, Winsor &amp; Newton.</li>
+      <li><a href="https://www.facsimiles.com/worlds-of-wisdom/of-art-and-history/halo-mandorla-and-aureole">Halos in Christian art</a>, Facsimile Finder.</li>
+      <li><a href="https://en.wikipedia.org/wiki/Iznik_pottery">Iznik pottery</a>, Wikipedia.</li>
+      <li><a href="https://collections.vam.ac.uk/item/O67313/dish-unknown">Iznik dish</a>, Victoria and Albert Museum.</li>
+      <li>Görseller: Wikimedia Commons. Her görselin altında kaynağı, yazarı ve lisansı belirtilmiştir.</li>
+      <li><a href="https://fonts.google.com/specimen/Cinzel/about">Cinzel</a> ve <a href="https://fonts.google.com/specimen/EB+Garamond/about">EB Garamond</a>, Google Fonts.</li>
+    </ul>
+  </section>
+</article>
+
+<!-- ============================ ENGLISH ============================ -->
+<article data-dil-blok="en" hidden>
+  <h1>Design language</h1>
+  <p class="giris-not">This map is an inventory, but also a small continuation of the mapmaking tradition that has recorded coasts, roads and holy places for centuries. Its visual language comes from that tradition.</p>
+
+  <section class="iki-tema">
+    <h2>Two themes: day and night</h2>
+    <div class="tema-izgara">
+      <div class="tema-kart">
+        <h3>Day: Piri Reis</h3>
+    <figure class="kart-gorsel"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Piri_reis_world_map_01.jpg/960px-Piri_reis_world_map_01.jpg" alt="Piri Reis's world map of 1513" loading="lazy" decoding="async" width="960" height="1280"><figcaption>The surviving fragment of Piri Reis's 1513 world map. Topkapı Palace Museum Library, H. 1824. <a href="https://commons.wikimedia.org/wiki/File:Piri_reis_world_map_01.jpg" target="_blank" rel="noopener">Wikimedia Commons, public domain</a></figcaption></figure>
+        <p>The light theme draws on the 1513 world map by the Ottoman admiral and cartographer Piri Reis. The surviving fragment is roughly a third of the original and is kept at Topkapı Palace in Istanbul. It is drawn on gazelle-skin parchment and carries the features of the portolan sailing-chart tradition.</p>
+        <p>We chose it because it comes from Türkiye's own cartographic heritage and is widely known. The ground is parchment, the ink iron-gall brown, and accents use the red that portolans used to mark important places. Sparse gold specks on the panels recall the gilding of manuscripts.</p>
+        <div class="renkler"><div class="renk"><i style="background:#F4EAD2"></i>Parchment</div><div class="renk"><i style="background:#2E2014"></i>Ink</div><div class="renk"><i style="background:#B23A22"></i>Portolan red</div><div class="renk"><i style="background:#C9962E"></i>Gilding</div></div>
+      </div>
+      <div class="tema-kart koyu-kart">
+        <h3>Night: Lapis Lazuli</h3>
+    <figure class="kart-gorsel"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Lapis-lazuli_hg.jpg/960px-Lapis-lazuli_hg.jpg" alt="A piece of lapis lazuli from Afghanistan" loading="lazy" decoding="async" width="960" height="823"><figcaption>Lapis lazuli from Afghanistan; the golden flecks are pyrite. Photo: Hannes Grobe. <a href="https://commons.wikimedia.org/wiki/File:Lapis-lazuli_hg.jpg" target="_blank" rel="noopener">Wikimedia Commons, CC BY-SA 2.5</a></figcaption></figure>
+        <p>The dark theme is based on lapis lazuli, known for its deep blue and golden flecks. The flecks are pyrite crystals; the sparse gold specks on the panels echo them.</p>
+        <p>Research points to the mines of Badakhshan in Afghanistan as the most likely source of the lapis used in the ancient world. According to the sources, the stone travelled from there thousands of kilometres to Mesopotamia, Anatolia, the Aegean and the Levant. That journey, linking distant places, is what drew us to it. The pigment made from lapis, ultramarine, takes its name from "beyond the sea"; sources report that it was valued above gold in the Renaissance.</p>
+        <div class="renkler"><div class="renk"><i style="background:#0B1530"></i>Night blue</div><div class="renk"><i style="background:#2E4C96"></i>Ultramarine</div><div class="renk"><i style="background:#D9B04A"></i>Pyrite gold</div><div class="renk"><i style="background:#EEE6D0"></i>Cream text</div></div>
+      </div>
+    </div>
+    <div class="onizleme-kap" id="onizleme-en"></div>
+  </section>
+
+  <section>
+    <h2>Parchment and Pergamon</h2>
+    <figure class="td-gorsel"><img src="https://upload.wikimedia.org/wikipedia/commons/b/be/Codex_Sinaiticus_Matthew_6%2C4-32.JPG" alt="A parchment leaf of the Codex Sinaiticus" loading="lazy" decoding="async" width="960"><figcaption>A leaf of the Codex Sinaiticus, a 4th-century manuscript written on parchment (Matthew 6:4–32). British Library. <a href="https://commons.wikimedia.org/wiki/File:Codex_Sinaiticus_Matthew_6,4-32.JPG" target="_blank" rel="noopener">Wikimedia Commons, public domain</a></figcaption></figure>
+    <p>The map's ground uses a parchment texture. The word parchment derives, through Latin <i>pergamenum</i>, from the name of Pergamon (today's Bergama) in Anatolia. Sources describe the city as an important centre of parchment production in the Hellenistic and Roman periods.</p>
+    <p>The sources give two different accounts of parchment's origin. According to the Roman author Pliny, parchment was developed at Pergamon after the import of papyrus was blocked. Herodotus, writing in the 5th century BC, records that the Ionians of Asia Minor called books "skins".</p>
+    <p>What the two accounts share is Anatolia: whether it begins with Pergamon or with the older Ionian practice, the story of parchment takes place on this land. Pergamon is also the city of one of the seven churches named in the Book of Revelation.</p>
+  </section>
+
+  <section>
+    <h2>Compass roses and wind lines</h2>
+    <figure class="td-gorsel"><div class="gul-detay" role="img" aria-label="A compass rose on the Piri Reis map" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Piri_reis_world_map_01.jpg/1920px-Piri_reis_world_map_01.jpg')"></div><figcaption>Detail of the Piri Reis map: a compass rose and the lines radiating from it. <a href="https://commons.wikimedia.org/wiki/File:Piri_reis_world_map_01.jpg" target="_blank" rel="noopener">Wikimedia Commons, public domain</a></figcaption></figure>
+    <p>At the scale of all Türkiye, a compass rose sits in the Black Sea and another in the eastern Mediterranean, each with fine lines radiating from it. Portolan charts drew these lines in a fixed colour scheme: the eight main winds in black (sometimes gold), the eight half-winds in green and the sixteen quarter-winds in red. The map follows the same scheme.</p>
+    <div class="ornek gul-ornek">
+      <span class="ruzgar-gulu-sayfa" id="gul-en"></span>
+      <div class="kerte-renk">
+        <span><b style="background:var(--gul-cizgi)"></b>8 main winds</span>
+        <span><b style="background:var(--gul-yarim)"></b>8 half-winds</span>
+        <span><b style="background:var(--gul-ana)"></b>16 quarter-winds</span>
+      </div>
+    </div>
+    <p>A small detail: web maps use the Mercator projection, on which a route of constant compass bearing (a loxodrome) is a straight line. So our lines really are constant-bearing lines. Sources note that the lines on medieval portolans were not loxodromes in the modern sense, and the name "windrose lines" is also used for them. To keep the map uncluttered, the roses are small and the lines very faint, and both disappear as you zoom in.</p>
+  </section>
+
+  <section>
+    <h2>Glaze: Iznik tiles</h2>
+    <figure class="td-gorsel"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Iznik_dish_British_Museum_1878%2C1230.530.jpg/960px-Iznik_dish_British_Museum_1878%2C1230.530.jpg" alt="Iznik dish with tulips and rosettes" loading="lazy" decoding="async" width="960" height="957"><figcaption>Iznik dish, c. 1545–1550, painted under the glaze. British Museum, 1878,1230.530. Photo: Aa77zz. <a href="https://commons.wikimedia.org/wiki/File:Iznik_dish_British_Museum_1878,1230.530.jpg" target="_blank" rel="noopener">Wikimedia Commons, public domain</a></figcaption></figure>
+    <p>Cards, buttons and boxes are designed like glazed tiles. The inspiration is Iznik pottery, named after the town of İznik in Anatolia and produced from the last quarter of the 15th century until the end of the 17th. Its designs are painted under a colourless, transparent glaze, so the colours stay vivid and opaque beneath a glassy surface.</p>
+    <p>The colour stripes on the site come from that palette: cobalt blue, turquoise, green and a red made from a special clay slip, on a white ground, with black for outlines. İznik is also the town where the council of 325 described on the historical context page was held.</p>
+    <p>The shine sits in each object's own glaze, not on top of the screen. Imagine a fixed light source above the page: as you scroll, the cards pass beneath it and the highlight slides across them. When you stop scrolling, the reflection stops too. Hovering over a button sends a single gleam across its glaze. The reflection stays beneath the text and never covers it. If your device is set to reduce motion, the shine stays still.</p>
+  </section>
+
+  <section>
+    <h2>Icons</h2>
+    <p>The three building types differ by shape as well as colour, so people who find colours hard to tell apart can still recognise them. The church is drawn with a bell tower and a long nave, the monastery with an enclosure wall and a dome, and the chapel as a small single-room building. Each carries a cross; door openings are left in the background colour.</p>
+    <div class="ornek" id="ikonlar-en"></div>
+  </section>
+
+  <section>
+    <h2>Halo</h2>
+    <figure class="td-gorsel"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Christ_Pantocrator_Deesis_mosaic_Hagia_Sophia.jpg/960px-Christ_Pantocrator_Deesis_mosaic_Hagia_Sophia.jpg" alt="Christ Pantocrator in the Deesis mosaic, Hagia Sophia" loading="lazy" decoding="async" width="960" height="1218"><figcaption>Christ Pantocrator in the Deesis mosaic of Hagia Sophia, 13th century, with a golden halo around the head. Photo: Myrabella. <a href="https://commons.wikimedia.org/wiki/File:Christ_Pantocrator_Deesis_mosaic_Hagia_Sophia.jpg" target="_blank" rel="noopener">Wikimedia Commons, CC0</a></figcaption></figure>
+    <p>When you select a building on the map, or hover over it in the list, a golden halo with slowly turning rays appears around it. The halo is an old visual tradition that expresses holiness through light. According to the sources, Hellenistic and Roman art used it to mark gods and rulers, and Christian art inherited it. For an inventory of religious heritage, we could not think of a better way to mark "the building you are looking at".</p>
+    <p>The cursor is a halo too, but deliberately different: a thin ring without rays. Over a clickable link or button, the ring glows gold. It has no rays, so it never looks like the turning halo of a selected building.</p>
+    <div class="ornek" id="hare-en"></div>
+  </section>
+
+  <section>
+    <h2>Typefaces</h2>
+    <div class="ornek yazi-ornek">
+      <div class="y-cinzel"><strong>Cinzel</strong>Headings. Designed by Natanael Gama; inspired by first-century Roman inscriptions and built on classical proportions.</div>
+      <div class="y-garamond"><strong>EB Garamond</strong>Province names and display text. An open-source revival of Claude Garamond's 16th-century letters, taken from the Egenolff–Berner specimen of 1592.</div>
+      <div class="y-alegreya"><strong>Alegreya Sans</strong>Interface and running text. A humanist face with a hint of the pen, comfortable to read at small sizes.</div>
+    </div>
+  </section>
+
+  <section class="kaynaklar">
+    <h2>Sources</h2>
+    <ul>
+      <li><a href="https://en.wikipedia.org/wiki/Piri_Reis_map">Piri Reis map</a>, Wikipedia (with its references).</li>
+      <li><a href="https://nwcartographic.com/blogs/essays-articles/the-piri-reis-map">The Piri Reis Map</a>, Northwest Cartographic.</li>
+      <li><a href="https://en.wikipedia.org/wiki/Parchment">Parchment</a>, Wikipedia (Herodotus v.58 and Pliny's account).</li>
+      <li><a href="https://apps.lib.umn.edu/bell/map/PORTO/CHAR/rhumb.html">Portolan charts: characteristics in common</a>, University of Minnesota, James Ford Bell Library.</li>
+      <li><a href="https://mostre.museogalileo.it/framauro/en/land-and-sea/marine-charts.html">Marine charts</a>, Museo Galileo.</li>
+      <li><a href="https://www.britannica.com/topic/rhumb-line">Rhumb line</a>, Encyclopaedia Britannica.</li>
+      <li><a href="https://en.wikipedia.org/wiki/Windrose_line">Windrose line</a>, Wikipedia.</li>
+      <li><a href="https://the-past.com/feature/lapis-lazuli-the-blue-road-seeking-the-sources-of-the-longest-trade/">Lapis Lazuli, The Blue Road</a>, The Past.</li>
+      <li><a href="https://the-past.com/ancient-egypt/143/feature/hilary-wilson-on-lapis-lazuli/">Hilary Wilson on lapis lazuli</a>, The Past.</li>
+      <li><a href="https://www.winsornewton.com/blogs/articles/ultramarine">Ultramarine</a>, Winsor &amp; Newton.</li>
+      <li><a href="https://www.facsimiles.com/worlds-of-wisdom/of-art-and-history/halo-mandorla-and-aureole">Halos in Christian art</a>, Facsimile Finder.</li>
+      <li><a href="https://en.wikipedia.org/wiki/Iznik_pottery">Iznik pottery</a>, Wikipedia.</li>
+      <li><a href="https://collections.vam.ac.uk/item/O67313/dish-unknown">Iznik dish</a>, Victoria and Albert Museum.</li>
+      <li>Images: Wikimedia Commons. The source, author and licence are given under each image.</li>
+      <li><a href="https://fonts.google.com/specimen/Cinzel/about">Cinzel</a> and <a href="https://fonts.google.com/specimen/EB+Garamond/about">EB Garamond</a>, Google Fonts.</li>
+    </ul>
+  </section>
+</article>
+</main>
+
+<script src="js/config.js?v=8"></script>
+<script src="js/i18n.js?v=15"></script>
+<script src="js/surum.js?v=2.24"></script>
+<script src="js/ortak.js?v=14"></script>
+<script>
+(function () {
+  const I = window.I18N, O = window.Ortak, EN = I.en;
+  I.uygula(); I.baglantiDil();
+  document.querySelectorAll("[data-dil-blok]").forEach(a => { a.hidden = a.dataset.dilBlok !== (EN ? "en" : "tr"); });
+  if (EN) document.title = "Design language | Religious Tourism of Türkiye: Living Inventory Project";
+  // Rüzgâr gülü (haritadakiyle aynı çizim)
+  const uc = (a, l, w, s) => `<g transform="rotate(${a})"><path class="ga" d="M0 0L0 -${l}L-${w} -${w}Z"/><path class="${s}" d="M0 0L0 -${l}L${w} -${w}Z"/></g>`;
+  let g = ""; for (let i = 0; i < 8; i++) g += uc(22.5 + i * 45, 46, 7, "gy"); for (let i = 0; i < 4; i++) g += uc(45 + i * 90, 66, 10, "gm"); for (let i = 0; i < 4; i++) g += uc(i * 90, 92, 13, "gk");
+  const gul = `<svg viewBox="-110 -110 220 220" aria-hidden="true"><circle class="gc" r="76"/><circle class="gc ince" r="71"/><circle class="gc ince" r="30"/>${g}<circle class="gm-orta" r="5"/><text class="gn" y="-97" text-anchor="middle">${EN ? "N" : "K"}</text></svg>`;
+  ["gul-tr", "gul-en"].forEach(id => { document.getElementById(id).innerHTML = gul; });
+  // Gündüzden geceye geçiş önizlemesi
+  const SILUET = ["M234,181L243,186L248,186L252,181L249,182L250,180L253,180L258,175L261,177L263,179L262,185L253,193L258,202L256,204L258,204L261,208L262,203L266,202L267,196L274,195L270,188L273,178L280,180L282,184L291,184L308,175L315,178L320,182L330,183L344,180L365,169L382,171L393,168L397,164L400,166L401,170L406,169L410,162L414,164L418,162L434,168L440,164L444,166L442,170L445,174L452,168L455,169L455,164L451,160L451,152L443,147L449,134L444,133L445,126L443,123L445,121L442,118L442,112L438,105L447,103L448,96L451,93L456,96L445,86L435,86L430,83L431,81L427,73L432,67L430,60L426,57L425,52L420,53L418,50L420,49L411,43L412,41L406,41L404,45L392,42L389,45L382,43L372,51L352,60L335,54L311,60L300,58L296,54L292,57L273,47L267,50L261,44L259,38L257,36L248,39L242,37L238,31L238,28L240,28L236,26L229,30L199,28L174,37L155,49L154,52L150,55L140,55L129,51L123,54L104,51L101,57L107,62L107,63L122,65L100,68L96,71L103,73L104,74L102,76L78,76L76,75L79,73L73,71L71,73L76,76L73,78L66,77L62,73L58,74L49,75L42,81L41,86L38,86L37,97L35,101L55,99L47,107L53,112L51,117L57,117L57,119L54,120L54,123L50,123L50,125L55,132L60,131L52,134L49,132L49,135L47,132L48,129L43,125L41,126L42,131L45,132L42,135L40,133L39,136L42,137L47,141L48,138L50,138L53,143L55,142L61,145L61,152L56,154L61,156L60,163L65,161L65,164L67,164L66,166L70,166L66,171L64,169L62,169L62,174L65,172L69,174L86,172L82,176L79,175L79,179L70,179L64,182L65,183L71,183L72,180L81,179L81,182L78,182L81,183L77,185L79,186L85,181L84,177L87,179L89,177L89,179L92,178L92,182L96,182L97,185L99,180L103,182L103,184L101,186L104,186L103,191L116,198L127,193L132,194L132,196L135,192L134,189L136,185L137,178L146,177L169,187L177,197L186,201L194,198L203,198L205,196L206,198L210,193L212,195L216,189L226,180L230,179L234,181Z", "M55,29L47,29L46,34L41,36L47,40L48,46L41,50L42,59L34,65L35,68L45,69L52,68L52,69L38,77L40,80L37,85L49,73L63,66L67,58L75,58L83,55L97,59L101,57L100,56L102,56L103,51L83,42L78,34L80,32L79,29L75,28L68,31L61,26L56,26L55,29Z"];
+  function onizlemeHtml() {
+    const kerte = []; const [gx, gy] = [226, 27];
+    for (let i = 0; i < 32; i++) { const a = i * Math.PI / 16, d = 520; kerte.push(`<line class="o-kerte ${i % 4 === 0 ? "o-cizgi-a" : i % 2 === 0 ? "o-cizgi-y" : "o-cizgi-c"}" x1="${gx}" y1="${gy}" x2="${(gx + Math.sin(a) * d).toFixed(0)}" y2="${(gy - Math.cos(a) * d).toFixed(0)}"/>`); }
+    const benek = [[40,30],[120,200],[300,215],[410,40],[455,180],[180,95],[350,150],[70,140],[260,180],[395,105]].map(([x, y]) => `<circle class="o-benek" cx="${x}" cy="${y}" r="1.3"/>`).join("");
+    const ik = (id, sinif, x, y) => `<svg class="${sinif}" x="${x - 11}" y="${y - 12}" width="22" height="22" viewBox="0 0 24 24"><use href="#${id}"/></svg>`;
+    return `<div class="onizleme" data-t="acik"><svg viewBox="0 0 480 250" role="img" aria-label="${EN ? "Preview: day and night themes" : "Önizleme: gündüz ve gece temaları"}">
+      <defs><radialGradient id="o-hare-g"><stop offset="0" stop-color="#FFECAA"/><stop offset=".45" stop-color="#FFCD5F" stop-opacity=".75"/><stop offset="1" stop-color="#FFAA28" stop-opacity="0"/></radialGradient>
+      <radialGradient id="o-gunes"><stop offset="0" stop-color="#FFFCEE" stop-opacity=".95"/><stop offset=".3" stop-color="#FFF0C8" stop-opacity=".45"/><stop offset="1" stop-color="#FFF0C8" stop-opacity="0"/></radialGradient>
+      <radialGradient id="o-ay-g"><stop offset="0" stop-color="#DCE6FF" stop-opacity=".55"/><stop offset=".35" stop-color="#AFC3F5" stop-opacity=".18"/><stop offset="1" stop-color="#AFC3F5" stop-opacity="0"/></radialGradient></defs>
+      <rect class="o-deniz" width="480" height="250"/>
+      <g>${kerte.join("")}</g>
+      ${SILUET.map(d => `<path class="o-kara" d="${d}"/>`).join("")}
+      ${benek}
+      <g class="o-gul" transform="translate(${gx} ${gy}) scale(.2)">${gulIc}</g>
+      <circle class="o-hare" cx="231" cy="127" r="20"/>
+      ${ik("ik-kilise", "o-ik-k", 101, 58)}${ik("ik-manastir", "o-ik-m", 341, 60)}${ik("ik-sapel", "o-ik-s", 231, 127)}${ik("ik-kilise", "o-ik-k", 160, 150)}${ik("ik-sapel", "o-ik-s", 290, 170)}
+      <rect class="o-panel" x="14" y="168" width="150" height="68" rx="6"/>
+      <text class="o-baslik" x="26" y="191">${EN ? "Explore the map" : "Haritada keşfet"}</text>
+      <rect class="o-satir" x="26" y="200" width="104" height="5" rx="2"/><rect class="o-satir" x="26" y="210" width="80" height="5" rx="2"/>
+      <rect class="o-dugme" x="26" y="220" width="70" height="9" rx="4"/>
+      <g class="o-cam"><polygon points="-40,0 70,0 -40,170" class="o-cam-g"/><polygon points="96,0 110,0 -40,212 -40,192" class="o-cam-i"/><rect width="480" height="250" fill="none" class="o-cam-k"/></g>
+    </svg></div>
+    <div class="onizleme-dugmeler" role="group"><button type="button" data-t="acik" aria-pressed="true">${EN ? "Day" : "Gündüz"}</button><button type="button" data-t="koyu" aria-pressed="false">${EN ? "Night" : "Gece"}</button></div>`;
+  }
+  const gulIc = gul.replace(/^<svg[^>]*>/, "").replace(/<\/svg>$/, "");
+  const onKap = document.getElementById(EN ? "onizleme-en" : "onizleme-tr");
+  onKap.innerHTML = onizlemeHtml();
+  const onEl = onKap.querySelector(".onizleme");
+  const onSec = t => { onEl.dataset.t = t; onKap.querySelectorAll("[data-t]").forEach(b => { if (b.tagName === "BUTTON") b.setAttribute("aria-pressed", String(b.dataset.t === t)); }); };
+  let oynadi = false;
+  onKap.addEventListener("click", e => { const b = e.target.closest("button[data-t]"); if (b) { oynadi = true; onSec(b.dataset.t); } });
+  // Görününce bir kez gündüzden geceye, sonra yeniden gündüze geçer; sürekli dönmez
+  if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const io = new IntersectionObserver(es => {
+      if (!es.some(x => x.isIntersecting) || oynadi) return; oynadi = true; io.disconnect();
+      setTimeout(() => onSec("koyu"), 900); setTimeout(() => onSec("acik"), 5200);
+    }, { threshold: 0.5 });
+    io.observe(onEl);
+  }
+  // İkonlar
+  const turler = [["Kilise", EN ? "Church" : "Kilise"], ["Manastır", EN ? "Monastery" : "Manastır"], ["Şapel", EN ? "Chapel" : "Şapel"]];
+  const ikonHtml = turler.map(([t, ad]) => `<div class="ikon-ornek">${O.ikon(t)}<span>${ad}</span></div>`).join("");
+  ["ikonlar-tr", "ikonlar-en"].forEach(id => { document.getElementById(id).innerHTML = ikonHtml; });
+  // Hare ve imleç örnekleri
+  const css = [...document.styleSheets].flatMap(s => { try { return [...s.cssRules]; } catch (e) { return []; } });
+  function imlecUrl(tiklanir) {
+    const koyu = document.documentElement.dataset.tema === "koyu";
+    const metin = css.map(r => r.cssText || "").join("\n");
+    const bloklar = (metin.match(/url\("data:image\/svg\+xml[^"]+"\)/g) || []).map(u => u.slice(5, -2));
+    // İmleç çizimleri: genel halka r=9.5, tıklanır halka r=8.5; koyu temada F0D27A rengi
+    const bul = tiklanir
+      ? bloklar.find(u => u.includes("radialGradient") && u.includes(koyu ? "EEE6D0" : "A8321E"))
+      : bloklar.find(u => u.includes("r='9.5'") && u.includes("F0D27A") === koyu);
+    return bul || "";
+  }
+  function hareCiz() {
+    const html = `<div class="hare-kutu"><div class="yapi-ic is-active">${O.ikon("Kilise")}</div></div>
+      <div class="imlec-ornek"><img alt="" src="${imlecUrl(false)}"><span>${EN ? "Cursor" : "İmleç"}</span></div>
+      <div class="imlec-ornek"><img alt="" src="${imlecUrl(true)}"><span>${EN ? "Over a link" : "Bağlantı üzerinde"}</span></div>`;
+    ["hare-tr", "hare-en"].forEach(id => { document.getElementById(id).innerHTML = html; });
+  }
+  hareCiz();
+  window.addEventListener("temadegisti", hareCiz);
+})();
+</script>
+<script src="js/atlas.js?v=9"></script>
+</body>
+</html>

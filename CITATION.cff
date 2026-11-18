@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "Bu envanteri kullanırsanız lütfen aşağıdaki şekilde kaynak gösterin. / If you use this inventory, please cite it as below."
+type: dataset
+title: "Türkiye İnanç Turizmi Yaşayan Envanter Projesi / Religious Tourism of Türkiye: Living Inventory Project"
+authors:
+  - family-names: "Vergül"
+    given-names: "A. Mecid"
+    affiliation: "İstanbul Gelişim Üniversitesi"
+    orcid: "https://orcid.org/0000-0002-4003-1077"
+  - family-names: "Tanrısever"
+    given-names: "Canan"
+    affiliation: "Kastamonu Üniversitesi"
+    orcid: "https://orcid.org/0000-0003-4747-5903"
+license: CC-BY-4.0
+doi: "10.5281/zenodo.24338235"
+url: "https://envanter.mecidvergul.com"
+repository-code: "https://github.com/mecidv/religious-tourism-inventory"
+keywords:
+  - "inanç turizmi"
+  - "kültürel miras"
+  - "religious tourism"
+  - "Christian cultural heritage"
+  - "cultural heritage inventory"

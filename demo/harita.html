@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harita | Türkiye İnanç Turizmi Yaşayan Envanter Projesi</title>
+<meta name="description" content="Türkiye’deki 622 kilise, manastır ve şapel kaydının interaktif haritası.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+<link rel="stylesheet" href="../css/style.css?v=6">
+<link rel="stylesheet" href="css/atlas.css?v=d7">
+<script>
+/* Tema: kullanıcının seçimi, yoksa cihazın ayarı. Sayfa çizilmeden önce uygulanır. */
+(function(){var t;try{t=localStorage.getItem('tema')}catch(e){}if(t!=='koyu'&&t!=='acik'){t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'koyu':'acik'}document.documentElement.dataset.tema=t;})();
+</script>
+<script>
+/* Gömülü mod: sayfa başka bir sitenin içinde (iframe) açıldığında ya da adres ?gomulu=1 içerdiğinde üst başlık gizlenir. */
+(function(){var g=/[?&]gomulu=1\b/.test(location.search);try{g=g||window.self!==window.top}catch(e){g=true}
+if(g){document.documentElement.classList.add('gomulu');var b=document.createElement('base');b.target='_blank';document.head.appendChild(b);}})();
+</script>
+</head>
+<body>
+<div class="demo-serit" role="note"><span data-i18n="demo_serit">Demo sürümü: yeni tasarım deneniyor.</span> <a href="../" data-i18n="demo_canli">Yayındaki siteye git</a></div>
+
+<header class="ust">
+  <a class="ust-marka" href="index.html"><div><b data-i18n="marka_baslik">Türkiye İnanç Turizmi Yaşayan Envanter Projesi</b><span data-i18n="marka_alt">Kilise, manastır ve şapel envanteri</span></div></a>
+  <div class="ust-sag">
+    <nav aria-label="Site">
+      <a href="index.html#proje" data-i18n="nav_proje">Proje</a>
+      <a href="index.html#ekip" data-i18n="nav_ekip">Ekip</a>
+      <a href="harita.html" aria-current="page" data-i18n="nav_harita">Harita</a>
+      <a href="tarihsel-baglam.html" data-i18n="nav_tarih">Tarihsel bağlam</a>
+      <a href="tasarim-dili.html" data-i18n="nav_tasarim">Tasarım dili</a>
+      <a href="sss.html" data-i18n="nav_sss">SSS</a>
+      <a href="index.html#atif" data-i18n="nav_atif">Atıf</a>
+      <a href="index.html#iletisim" data-i18n="nav_iletisim">İletişim</a>
+    </nav>
+    <button type="button" class="tema-dugme" data-tema-dugme aria-pressed="false" aria-label="Tema"><svg class="ay" viewBox="0 0 20 20" aria-hidden="true"><path d="M15.5 12.6A6.6 6.6 0 0 1 7.4 4.5a6.6 6.6 0 1 0 8.1 8.1Z" fill="currentColor"/></svg><svg class="gunes" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M10 1.8v2.2M10 16v2.2M1.8 10h2.2M16 10h2.2M4.2 4.2l1.6 1.6M14.2 14.2l1.6 1.6M4.2 15.8l1.6-1.6M14.2 5.8l1.6-1.6"/></g></svg></button>
+    <div class="dil-sec" role="group" data-i18n-aria="dil_etiket"><button type="button" data-dil="tr">TR</button><button type="button" data-dil="en">EN</button></div>
+  </div>
+</header>
+<div class="app">
+
+  <aside class="panel" id="panel">
+    <header class="panel-head">
+      <button type="button" class="panel-close" id="panel-close" data-i18n="panel_kapat">Haritaya dön</button>
+      <h1 data-i18n="panel_baslik">Haritada keşfet</h1>
+    </header>
+
+    <section class="tally" aria-live="polite">
+      <div class="tally-total"><span id="t-toplam">622</span> <span class="tally-yazi" data-i18n="kayit_gosteriliyor">kayıt gösteriliyor</span></div>
+      <ul class="tally-types" id="tally-types"></ul>
+    </section>
+
+    <section class="filters">
+      <label class="search">
+        <span class="vh" data-i18n="ara_ph">Yapı, il veya ilçe ara</span>
+        <input type="search" id="f-ara" data-i18n-ph="ara_ph" placeholder="Yapı, il veya ilçe ara" autocomplete="off">
+      </label>
+      <div class="ara-kapsam" id="ara-kapsam" role="group" hidden></div>
+
+      <fieldset id="f-turler">
+        <legend data-i18n="yapi_turu">Yapı türü</legend>
+      </fieldset>
+
+      <div class="selects">
+        <label><span data-i18n="guncel_islevi">Güncel işlevi</span>
+          <select id="f-islev"></select>
+        </label>
+        <label><span data-i18n="topluluk">Topluluk</span>
+          <select id="f-topluluk"></select>
+        </label>
+        <label><span data-i18n="bolge">Bölge</span>
+          <select id="f-bolge"></select>
+        </label>
+        <label><span data-i18n="il">İl</span>
+          <select id="f-il"></select>
+        </label>
+        <label class="chk unesco"><input type="checkbox" id="f-unesco"><span data-i18n="yalniz_unesco">Yalnızca UNESCO listelerindekiler</span></label>
+      </div>
+
+      <div class="layer-toggles">
+        <label class="chk"><input type="checkbox" id="l-noktalar" checked><span data-i18n="yapilari_goster">Yapıları göster</span></label>
+        <label class="chk"><input type="checkbox" id="l-iller" checked><span data-i18n="il_yogunluk_goster">İl yoğunluğunu göster</span></label>
+      </div>
+      <button type="button" class="link-btn" id="f-temizle" data-i18n="filtre_temizle">Filtreleri temizle</button>
+    </section>
+
+    <section class="provinces">
+      <h2 id="liste-baslik" data-i18n="illere_gore">İllere göre</h2>
+      <ol id="il-listesi" class="il-list"></ol>
+    </section>
+
+    <footer class="panel-foot">
+      <button type="button" class="btn btn-ana" id="btn-yeni" data-i18n="yeni_oner">Listede olmayan bir yapı öner</button>
+      <div class="foot-links">
+        <button type="button" class="link-btn" id="btn-hakkinda" data-i18n="kilavuz">Haritayı okuma kılavuzu</button>
+        <button type="button" class="link-btn" id="btn-atif" data-i18n="atif_nasil">Nasıl atıf yapılır?</button>
+      </div>
+      <div class="foot-bilgi" id="site-bilgi" aria-live="polite"></div>
+      <div class="foot-gelistiren"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.5c.6 4.4 2.1 5.9 6.5 6.5-4.4.6-5.9 2.1-6.5 6.5-.6-4.4-2.1-5.9-6.5-6.5 4.4-.6 5.9-2.1 6.5-6.5Z" fill="currentColor"/></svg><span data-i18n="gelistiren_kisa"></span></div>
+    </footer>
+  </aside>
+
+  <main class="map-wrap">
+    <div class="gomulu-arac">
+      <button type="button" class="tema-dugme" data-tema-dugme aria-pressed="false" aria-label="Tema"><svg class="ay" viewBox="0 0 20 20" aria-hidden="true"><path d="M15.5 12.6A6.6 6.6 0 0 1 7.4 4.5a6.6 6.6 0 1 0 8.1 8.1Z" fill="currentColor"/></svg><svg class="gunes" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M10 1.8v2.2M10 16v2.2M1.8 10h2.2M16 10h2.2M4.2 4.2l1.6 1.6M14.2 14.2l1.6 1.6M4.2 15.8l1.6-1.6M14.2 5.8l1.6-1.6"/></g></svg></button>
+      <div class="dil-sec" role="group" data-i18n-aria="dil_etiket"><button type="button" data-dil="tr">TR</button><button type="button" data-dil="en">EN</button></div>
+      <a class="tam-ekran" id="tam-ekran" href="harita.html" target="_blank" rel="noopener"><span data-i18n="tam_ekran">Tam ekran</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M9 2h5v5M14 2 8 8M12 9.5V14H2V4h4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+    <div id="map" role="application" aria-label="Harita"></div>
+    <button type="button" class="panel-toggle" id="panel-toggle" aria-controls="panel" aria-expanded="false" data-i18n="filtreler_btn">Filtreler</button>
+    <div class="legend" id="legend"></div>
+    <svg class="pusula" id="pusula" viewBox="0 0 40 64" aria-hidden="true"><path d="M20 4 L29 38 L20 32 L11 38 Z" fill="#1F2A30"/><path d="M20 4 L20 32 L11 38 Z" fill="#F28C28"/><text x="20" y="56" text-anchor="middle" font-family="EB Garamond, serif" font-size="15" font-weight="700" fill="#1F2A30" id="pusula-k">K</text></svg>
+    <div class="geri-grup" id="geri-grup">
+      <button type="button" class="geri" id="geri" hidden><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4 6.5 10l6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="geri_turkiye">Türkiye haritasına dön</span></button>
+      <button type="button" class="geri geri-il" id="geri-il" hidden><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4 6.5 10l6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="geri-il-yazi"></span></button>
+    </div>
+    <div class="pick-banner" id="pick-banner" hidden>
+      <span data-i18n="pick_banner">Haritada yapının bulunduğu yere tıklayın</span>
+      <button type="button" class="link-btn" id="pick-iptal" data-i18n="vazgec">Vazgeç</button>
+    </div>
+  </main>
+
+  <aside class="drawer" id="drawer" hidden>
+    <button type="button" class="drawer-close" id="drawer-close" data-i18n-aria="kapat" aria-label="Kapat">×</button>
+    <div id="drawer-body"></div>
+  </aside>
+</div>
+
+<dialog id="modal" class="modal">
+  <form method="dialog" class="modal-close-form"><button class="drawer-close" data-i18n-aria="kapat" aria-label="Kapat">×</button></form>
+  <div id="modal-body"></div>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="../js/config.js?v=6"></script>
+<script src="js/i18n.js?v=d7"></script>
+<script src="../js/ceviri-en.js?v=6"></script>
+<script src="../data/yapilar.js?v=d7"></script>
+<script src="js/ortak.js?v=d7"></script>
+<script src="js/app.js?v=d7"></script>
+<script src="js/atlas.js?v=d7"></script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+/* Tanıtım sayfası */
+body.giris { height: auto; overflow-x: hidden; }
+.sarmal { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+.giris h2 { font-family: var(--serif); font-weight: 600; font-size: clamp(30px, 3.4vw, 42px); line-height: 1.05; margin: 0 0 18px; letter-spacing: -.01em; }
+.giris h3 { font-family: var(--serif); font-weight: 600; font-size: 21px; margin: 26px 0 8px; }
+.giris p { max-width: 68ch; }
+
+/* ---------- Kahraman: canlanan harita + başlık ---------- */
+.kahraman { position: relative; min-height: clamp(440px, calc(100svh - 72px - 168px), 700px); display: grid; align-items: end; overflow: hidden; background: linear-gradient(180deg, #E3F0F0 0%, #EEF5F4 100%); border-bottom: 1px solid var(--porselen-kenar); }
+.kahraman::before { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 1; background: radial-gradient(ellipse at 62% 42%, rgba(255,255,255,.55) 0%, transparent 55%), radial-gradient(ellipse at 60% 45%, transparent 60%, rgba(15,90,95,.08) 100%); }
+.kahraman-harita { position: absolute; inset: 0; display: grid; place-items: center; padding: 40px 36px 40px 37%; }
+.kahraman-harita svg { width: 100%; height: 100%; max-height: 640px; overflow: visible; }
+.kahraman-harita canvas { position: absolute; pointer-events: none; }
+.kahraman-harita .il { fill: #F2F7F4; stroke: #56656B; stroke-width: .7; stroke-dasharray: 1; stroke-dashoffset: 1; vector-effect: non-scaling-stroke; }
+.kahraman-harita .il.ciz { animation: ciz 1.3s cubic-bezier(.4,.1,.3,1) forwards; }
+.kahraman-harita .il.dolu { transition: fill 1s ease; }
+.kahraman-harita .deniz-yazi { font-family: var(--serif); font-style: italic; fill: #4F98A3; letter-spacing: .35em; opacity: 0; transition: opacity 1.5s ease .8s; }
+.kahraman-harita.hazir .deniz-yazi { opacity: .9; }
+
+.kartus { position: relative; z-index: 3; margin: 24px 0 40px 54px; max-width: 470px; padding: 30px 32px 28px; border-radius: 20px; }
+.kartus::before { border-radius: 19px 19px 40% 40% / 19px 19px 24px 24px; }
+.kartus h1 { font-family: var(--serif); font-weight: 600; font-size: clamp(30px, 3.3vw, 44px); line-height: 1.02; letter-spacing: -.015em; margin: 0 0 12px; }
+.kartus-alt { font-family: var(--serif); font-style: italic; font-size: 21px; line-height: 1.25; color: var(--murekkep-2); margin: 0 0 14px; }
+.kartus-metin { margin: 0 0 20px; font-size: 16px; }
+.kartus-dugmeler { display: flex; gap: 10px; flex-wrap: wrap; }
+.kartus .btn-ana { font-size: 16px; padding: 12px 24px; }
+
+/* ---------- Rakamlar ---------- */
+.rakamlar { padding: 30px 0 46px; background: var(--zemin); border-bottom: 1px solid var(--porselen-kenar); }
+.tur-rakam { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin: 0 0 30px; }
+.tur-rakam div { display: flex; flex-direction: column-reverse; justify-content: flex-end; padding: 16px 18px; position: relative; isolation: isolate; background: var(--sir); border: 1px solid var(--porselen-kenar); border-radius: var(--r-m); box-shadow: var(--sir-golge); }
+.tur-rakam div::before { content: ""; position: absolute; left: 1px; right: 1px; top: 1px; height: 46%; z-index: -1; border-radius: 13px 13px 40% 40% / 13px 13px 16px 16px; background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,0)); }
+.tur-rakam dt { font-size: 15px; color: var(--murekkep-2); display: flex; align-items: center; gap: 7px; }
+.tur-rakam dt .ik { width: 20px; height: 20px; }
+.tur-rakam dd { margin: 0 0 4px; font-family: var(--serif); font-weight: 600; font-size: clamp(38px, 4vw, 54px); line-height: 1; color: var(--portakal-koyu); }
+.kullanim h3 { margin: 0 0 12px; font-size: 20px; }
+.kullanim-cubuk { display: flex; height: 22px; border-radius: 999px; overflow: hidden; background: var(--cizgi); box-shadow: inset 0 1px 3px rgba(31,42,48,.12); }
+.kullanim-cubuk i { display: block; height: 100%; position: relative; }
+.kullanim-cubuk i::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 45%; background: linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,0)); }
+.kullanim-lejant { list-style: none; padding: 0; margin: 12px 0 0; display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 15px; color: var(--murekkep-2); }
+.kullanim-lejant li { display: flex; align-items: center; gap: 8px; }
+.kullanim-lejant i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.kullanim-lejant b { color: var(--murekkep); }
+
+/* ---------- Bölümler ---------- */
+.bolum { padding: 72px 0; border-bottom: 1px solid var(--porselen-kenar); background: var(--porselen); }
+.bolum-koyu { background: var(--zemin); }
+.iki-sutun { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 56px; align-items: start; }
+.giris-paragraf { font-family: var(--serif); font-size: 21px; line-height: 1.5; }
+.iller-kutu, .lisans { padding: 22px 24px; }
+.iller-kutu h3, .lisans h3 { margin-top: 0; }
+.il-sira { list-style: none; margin: 0 0 14px; padding: 0; display: grid; gap: 8px; }
+.il-sira a { display: grid; grid-template-columns: 1fr auto; gap: 3px 10px; text-decoration: none; color: var(--murekkep); }
+.il-sira a:hover .il-ad { color: var(--portakal-metin); }
+.il-sira .il-n { font-weight: 700; font-variant-numeric: tabular-nums; }
+.il-sira .bar { grid-column: 1 / -1; display: flex; height: 6px; border-radius: 3px; overflow: hidden; }
+.il-sira .bar i { display: block; height: 100%; }
+
+.ekip { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.kisi { display: grid; grid-template-columns: 112px 1fr; gap: 22px; align-items: start; padding: 24px; }
+.kisi-foto { width: 112px; height: 136px; border-radius: 12px; object-fit: cover; background: linear-gradient(160deg, #FFF3E6, #FFE0C2); border: 1px solid #FFD9B3; display: grid; place-items: center; font-family: var(--serif); font-size: 40px; color: var(--portakal-koyu); }
+.kisi h3 { margin: 0 0 2px; font-size: 24px; }
+.kisi .unvan { margin: 0 0 10px; color: var(--murekkep-2); font-style: italic; font-family: var(--serif); font-size: 17px; }
+.kisi p { margin: 0 0 10px; }
+
+.bolum-katki { background: var(--zemin); }
+.katki { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-bottom: 28px; }
+.katki h3 { margin-top: 0; }
+.katki p { margin: 0; color: var(--murekkep-2); }
+
+/* ---------- Alt bilgi ---------- */
+.alt { background: var(--koyu-zemin); color: #C9D1D5; padding: 40px 0 46px; font-size: 15px; border-top: 3px solid var(--portakal); }
+.alt a { color: var(--portakal-acik); }
+.alt b { color: #fff; }
+.alt-izgara { display: grid; grid-template-columns: 1.4fr 1fr; gap: 40px; }
+.kvkk summary { cursor: pointer; font-family: var(--serif); font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 8px; }
+.kvkk p { font-size: 14px; line-height: 1.5; }
+.kucuk { font-size: 13px; color: #97A3A9; }
+
+@keyframes ciz { to { stroke-dashoffset: 0; } }
+
+@media (max-width: 900px) {
+  .kahraman { min-height: 0; display: block; }
+  .kahraman-harita { position: relative; inset: auto; height: auto; aspect-ratio: 1.75; padding: 30px 22px 6px; }
+  .kartus { margin: -10px 16px 30px; max-width: none; padding: 22px 20px; }
+  .tur-rakam { grid-template-columns: repeat(2, 1fr); }
+  .tur-rakam div:first-child { grid-column: 1 / -1; }
+  .iki-sutun, .ekip, .katki, .alt-izgara { grid-template-columns: 1fr; gap: 28px; }
+  .kisi { grid-template-columns: 84px 1fr; padding: 18px; }
+  .kisi-foto { width: 84px; height: 102px; font-size: 30px; }
+  .bolum { padding: 52px 0; }
+  .sarmal { padding: 0 18px; }
+}
+
+/* Ziyaret ve son güncelleme satırı */
+.site-bilgi { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 22px; margin: 26px 0 0; font-size: 15px; color: var(--murekkep-2); }
+.site-bilgi:empty { display: none; }
+.site-bilgi b { color: var(--murekkep); font-weight: 700; font-variant-numeric: tabular-nums; }
+.site-bilgi .sb-ziyaret b { color: var(--portakal-koyu); font-family: var(--serif); font-size: 19px; }
+
+/* ---------- Koyu tema (giriş) ---------- */
+html[data-tema="koyu"] .kahraman { background: linear-gradient(180deg, #121C21 0%, #0F171B 100%); }
+html[data-tema="koyu"] .kahraman::before { opacity: .12; }
+html[data-tema="koyu"] .kahraman-harita .il { fill: #1C282E; stroke: #6E8189; }
+html[data-tema="koyu"] .kahraman-harita .deniz-yazi { fill: #5FA8B2; }
+html[data-tema="koyu"] .tur-rakam div::before, html[data-tema="koyu"] .kullanim-cubuk i::after { opacity: .12; }
+html[data-tema="koyu"] .kisi-foto { background: linear-gradient(160deg, #33241A, #3F2A1A); border-color: var(--portakal-kenar); }
+html[data-tema="koyu"] .tur-rakam dd { color: var(--portakal); }
+
+/* Kahraman cümlesindeki dönen sayılar */
+.kahraman-sayi { color: var(--portakal-koyu); font-style: normal; font-weight: 700; font-size: 1.12em; white-space: nowrap; }
+html[data-tema="koyu"] .kahraman-sayi { color: var(--portakal); }
+
+/* İletişim */
+.bolum-iletisim { background: var(--porselen-2); }
+.iletisim { display: grid; grid-template-columns: 1fr 1.1fr; gap: 40px; align-items: center; }
+.iletisim h2 { margin-top: 0; }
+.iletisim-liste { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.iletisim-liste li { display: grid; grid-template-columns: 150px 1fr; gap: 12px; align-items: baseline; padding: 14px 18px; border-radius: 14px; background: var(--sir); border: 1px solid var(--porselen-kenar); box-shadow: var(--sir-golge); }
+.iletisim-liste span { font-size: 14px; color: var(--murekkep-3); font-weight: 600; }
+.iletisim-liste a { font-weight: 700; color: var(--portakal-metin); word-break: break-word; }
+
+/* Footer: tez künyesi ve geliştirici */
+.alt .tez-kunye { font-size: 14px; line-height: 1.55; opacity: .88; }
+.alt .tez-kunye i { font-style: italic; }
+.alt .gelistiren { display: flex; gap: 9px; align-items: flex-start; margin-top: 18px; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(255,180,107,.35); background: linear-gradient(135deg, rgba(242,140,40,.14), rgba(242,140,40,.03)); font-size: 14px; }
+.alt .gelistiren svg { flex: none; width: 18px; height: 18px; color: var(--portakal-acik); margin-top: 1px; animation: parilda 3.2s ease-in-out infinite; }
+@keyframes parilda { 0%, 100% { opacity: .75; transform: scale(.92) rotate(0deg); } 50% { opacity: 1; transform: scale(1.08) rotate(12deg); } }
+@media (max-width: 900px) { .iletisim { grid-template-columns: 1fr; gap: 20px; } .iletisim-liste li { grid-template-columns: 1fr; gap: 2px; } }
+@media (prefers-reduced-motion: reduce) { .alt .gelistiren svg { animation: none; } }

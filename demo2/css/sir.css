@@ -1,0 +1,95 @@
+/* =====================================================================
+   Demo 2: sırlı çini
+   Renkler sırın altında (canlı, örtücü), üstte cam gibi şeffaf bir sır.
+   Yansıma: ekranın üst kısmında sabit, hayali bir ışık kaynağı var. Sırlı nesneler sayfa
+   kaydırıldıkça bu ışığın altından geçer; parlama nesnenin üzerinde kayar.
+   Teknik: parlama katmanı "background-attachment: fixed" ile ekrana sabitlenir, nesne
+   hareket ettikçe parlama nesnenin içinde yer değiştirir. Betik ve işlemci yükü yoktur.
+   ===================================================================== */
+
+/* Camaltı katmanı bu demoda yok */
+.cam { display: none !important; }
+
+:root {
+  /* İznik paleti (sırın altındaki pigmentler) */
+  --cini-kobalt: #1D4F9C;
+  --cini-turkuaz: #12898C;
+  --cini-kirmizi: #B8322A;
+  --cini-yesil: #2F7D4A;
+  --cini-siyah: #1E1A16;
+
+  /* Fildişi sır gövdesi: beyaz parlamanın seçilebilmesi için hafif krem tonunda */
+  --sir-govde: radial-gradient(ellipse 90% 70% at 50% -12%, rgba(255, 255, 255, .9), rgba(255, 255, 255, 0) 60%), linear-gradient(180deg, #FBF4E3 0%, #F3E5C8 60%, #EADAB8 100%);
+  --sir-kenar: rgba(120, 88, 48, .32);
+  --sir-golge-c: inset 0 1px 0 #FFFFFF, inset 0 0 0 1px rgba(255, 255, 255, .5), inset 0 -4px 9px rgba(120, 80, 30, .14), 0 1px 1px rgba(60, 40, 20, .14), 0 10px 26px rgba(60, 40, 20, .16);
+  /* Kayan parlama: geniş, yumuşak bir ışık bandı; iki yanında hafif sıcak gölge (yansımayı belirgin kılan karşıtlık) */
+  --sir-isik: linear-gradient(118deg, rgba(110, 78, 40, 0) 8%, rgba(110, 78, 40, .09) 20%, rgba(255, 255, 255, .06) 28%, rgba(255, 255, 255, .42) 36%, rgba(255, 255, 255, .78) 43%, rgba(255, 255, 255, .62) 48%, rgba(255, 255, 255, .22) 56%, rgba(110, 78, 40, .07) 66%, rgba(110, 78, 40, 0) 78%),
+              radial-gradient(ellipse 75% 50% at 50% 8%, rgba(255, 255, 255, .4), rgba(255, 255, 255, 0) 70%);
+}
+html[data-tema="koyu"] {
+  --sir-govde: radial-gradient(ellipse 90% 70% at 50% -12%, rgba(170, 195, 255, .22), rgba(170, 195, 255, 0) 62%), linear-gradient(180deg, #1C2D63 0%, #16245A 60%, #101C48 100%);
+  --sir-kenar: rgba(150, 175, 240, .28);
+  --sir-golge-c: inset 0 1px 0 rgba(200, 215, 255, .35), inset 0 0 0 1px rgba(160, 185, 255, .08), inset 0 -3px 7px rgba(0, 0, 20, .35), 0 1px 1px rgba(0, 0, 0, .5), 0 10px 28px rgba(0, 0, 15, .5);
+  --sir-isik: linear-gradient(118deg, rgba(0, 0, 20, 0) 8%, rgba(0, 0, 20, .14) 20%, rgba(200, 220, 255, .02) 28%, rgba(205, 222, 255, .13) 36%, rgba(215, 228, 255, .26) 43%, rgba(215, 228, 255, .2) 48%, rgba(205, 222, 255, .07) 56%, rgba(0, 0, 20, .1) 66%, rgba(0, 0, 20, 0) 78%),
+              radial-gradient(ellipse 75% 50% at 50% 8%, rgba(170, 195, 255, .12), rgba(170, 195, 255, 0) 70%);
+  --cini-kobalt: #6E9BEA;
+  --cini-turkuaz: #4CC3C2;
+  --cini-kirmizi: #EE7E6C;
+  --cini-yesil: #6CCB8E;
+}
+
+/* ---------- Sırlı nesneler ---------- */
+.kartus, .tur-rakam div, .iller-kutu, .kisi, .lisans, .atif-metin, .iletisim-liste li {
+  position: relative; isolation: isolate; overflow: hidden;
+  background: var(--sir-govde); border: 1px solid var(--sir-kenar); box-shadow: var(--sir-golge-c);
+}
+.kartus { border-radius: 16px; }
+.tur-rakam div, .iller-kutu, .kisi, .lisans, .iletisim-liste li { border-radius: 14px; }
+/* Sırın kabarık üst kısmındaki sabit parlaklık */
+.kartus::before, .tur-rakam div::before, .iller-kutu::before, .kisi::before, .lisans::before, .atif-metin::before, .iletisim-liste li::before {
+  content: ""; position: absolute; left: 6px; right: 6px; top: 3px; height: 38%; z-index: -1; pointer-events: none; display: block;
+  border-radius: 12px 12px 50% 50% / 12px 12px 20px 20px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .85), rgba(255, 255, 255, 0)); opacity: .9;
+}
+html[data-tema="koyu"] .kartus::before, html[data-tema="koyu"] .tur-rakam div::before, html[data-tema="koyu"] .iller-kutu::before, html[data-tema="koyu"] .kisi::before,
+html[data-tema="koyu"] .lisans::before, html[data-tema="koyu"] .atif-metin::before, html[data-tema="koyu"] .iletisim-liste li::before { background: linear-gradient(180deg, rgba(190, 210, 255, .16), rgba(190, 210, 255, 0)); opacity: 1; }
+/* Kaydırınca kayan yansıma */
+.kartus::after, .tur-rakam div::after, .iller-kutu::after, .kisi::after, .lisans::after, .atif-metin::after, .iletisim-liste li::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: var(--sir-isik); background-attachment: fixed; background-size: 100vw 100vh; background-repeat: no-repeat;
+}
+
+/* Sayı kartları: her kartın üstünde bir pigment şeridi (İznik paleti) */
+.tur-rakam div { padding-top: 20px; }
+.tur-rakam div > dt, .tur-rakam div > dd { position: relative; }
+.tur-rakam div { border-top: 5px solid var(--serit, var(--cini-kobalt)); }
+.tur-rakam div:nth-child(1) { --serit: var(--cini-kobalt); }
+.tur-rakam div:nth-child(2) { --serit: var(--cini-turkuaz); }
+.tur-rakam div:nth-child(3) { --serit: var(--c-kilise); }
+.tur-rakam div:nth-child(4) { --serit: var(--c-manastir); }
+.tur-rakam div:nth-child(5) { --serit: var(--c-sapel); }
+.tur-rakam dd { color: var(--serit, var(--cini-kirmizi)); }
+.tur-rakam div:nth-child(n+3) dd { color: var(--cini-siyah); }
+html[data-tema="koyu"] .tur-rakam div:nth-child(n+3) dd { color: #F3EBD6; }
+
+/* Başlık kartı: kobalt çerçeve çizgisi */
+.kartus { box-shadow: var(--sir-golge-c), inset 0 0 0 5px rgba(255, 255, 255, .35), inset 0 0 0 6px rgba(29, 79, 156, .25); }
+html[data-tema="koyu"] .kartus { box-shadow: var(--sir-golge-c), inset 0 0 0 5px rgba(20, 35, 80, .5), inset 0 0 0 6px rgba(217, 176, 74, .3); }
+
+/* ---------- Düğmeler: sırlı ve üzerine gelince tek bir ışık geçer ---------- */
+.btn { position: relative; overflow: hidden; isolation: isolate; }
+.btn-ana { background: radial-gradient(ellipse 90% 60% at 50% 0%, rgba(255, 220, 200, .55), rgba(255, 220, 200, 0) 70%), linear-gradient(180deg, #D44A3C 0%, var(--cini-kirmizi) 55%, #8E2219 100%); color: #FFF8EE; border: 1px solid rgba(90, 15, 10, .45);
+  box-shadow: inset 0 1px 0 rgba(255, 235, 220, .75), inset 0 -2px 4px rgba(60, 5, 0, .3), 0 2px 8px rgba(140, 30, 20, .3); }
+html[data-tema="koyu"] .btn-ana { background: radial-gradient(ellipse 90% 60% at 50% 0%, rgba(255, 245, 210, .6), rgba(255, 245, 210, 0) 70%), linear-gradient(180deg, #F2D27A 0%, #D9B04A 55%, #A9822A 100%); color: #1A1606; border-color: rgba(90, 65, 10, .5); }
+.btn-ghost { background: var(--sir-govde); border: 1px solid var(--sir-kenar); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9), 0 1px 2px rgba(60, 40, 20, .12); }
+html[data-tema="koyu"] .btn-ghost { box-shadow: inset 0 1px 0 rgba(200, 215, 255, .25), 0 1px 2px rgba(0, 0, 0, .4); }
+.btn::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(110deg, rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, .7) 50%, rgba(255, 255, 255, 0) 60%) no-repeat;
+  background-size: 260% 100%; background-position: 130% 0; transition: background-position 0s; }
+.btn:hover::after { background-position: -30% 0; transition: background-position .85s ease; }
+html[data-tema="koyu"] .btn-ghost::after { background-image: linear-gradient(110deg, rgba(200, 220, 255, 0) 40%, rgba(200, 220, 255, .3) 50%, rgba(200, 220, 255, 0) 60%); }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn:hover::after { transition: none; background-position: 130% 0; }
+  .kartus::after, .tur-rakam div::after, .iller-kutu::after, .kisi::after, .lisans::after, .atif-metin::after, .iletisim-liste li::after { background-attachment: scroll; }
+}
