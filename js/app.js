@@ -143,20 +143,7 @@
   }
   portolanCiz();
 
-  // Parşömen dokusu: il dolgularının ve çizgilerin üstünde, yapıların altında; ekranda sabit durur
-  map.createPane("doku"); map.getPane("doku").style.zIndex = 420; map.getPane("doku").style.pointerEvents = "none";
-  const dokuEl = L.DomUtil.create("div", "harita-doku", map.getPane("doku"));
-  // Doku haritaya iliştirilir: sabit bir coğrafi noktaya göre 900 piksellik döneme oturtulur, öğe yalnızca bu adımlarla taşınır.
-  // Böylece harita kaydırılınca doku da kayar ve doku hiç yeniden çizilmez.
-  const DOKU_T = 900, DOKU_REF = L.latLng(39, 35);
-  function dokuBoyut() { const b = map.getSize(); dokuEl.style.width = (b.x + DOKU_T) + "px"; dokuEl.style.height = (b.y + DOKU_T) + "px"; }
-  function dokuYerlestir() {
-    const tl = map.containerPointToLayerPoint([0, 0]), a = map.latLngToLayerPoint(DOKU_REF);
-    const x = a.x + DOKU_T * Math.floor((tl.x - a.x) / DOKU_T), y = a.y + DOKU_T * Math.floor((tl.y - a.y) / DOKU_T);
-    L.DomUtil.setPosition(dokuEl, L.point(Math.round(x), Math.round(y)));
-  }
-  map.on("move zoom zoomend viewreset", dokuYerlestir); map.on("resize", () => { dokuBoyut(); dokuYerlestir(); });
-  dokuBoyut(); dokuYerlestir();
+  // Not: haritanın üstündeki parşömen dokusu katmanı kaldırıldı; yakınlaşırken harita üzerinde bir perde gibi duruyordu.
 
   // Birbirine yakın yapılar sayılı dairelerde toplanır (Leaflet.markercluster); eklenti yüklenemezse düz katman
   const KUME = typeof L.markerClusterGroup === "function";
@@ -1189,7 +1176,7 @@
       <p>${esc(T("kil_nokta_1"))}</p><p>${esc(T("kil_nokta_2"))}</p>
       <h3>${esc(T("kil_konum_b"))}</h3><p>${esc(T("kil_konum_1"))}</p>
       <h3>${esc(T("kil_katki_b"))}</h3><p>${esc(T("kil_katki_1"))}</p>
-      <p><a href="index.html${EN ? "?lang=en" : ""}">${esc(T("kil_proje_link"))}</a></p>
+      <p><a href="./${EN ? "?lang=en" : ""}">${esc(T("kil_proje_link"))}</a></p>
     </div>`));
   function atifPenceresi() {
     openModal(`<div class="about"><h2>${esc(T("atif_nasil"))}</h2><p class="lead">${esc(T("atif_lead"))}</p><div data-atif-kutu>${Ortak.atifHtml(esc)}</div></div>`);

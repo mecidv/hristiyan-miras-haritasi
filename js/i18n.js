@@ -203,6 +203,8 @@
     kume_not: ["Sayılı daireler birbirine yakın yapıları bir arada gösterir; tıklayınca açılır.", "Numbered circles group nearby buildings; click to expand."]
   };
 
+  // Ana sayfanın adresi sade kalsın: /index.html yerine / gösterilir
+  try { if (/\/index\.html$/.test(location.pathname)) history.replaceState(history.state, "", location.pathname.replace(/index\.html$/, "") + location.search + location.hash); } catch (e) {}
   function dilBul() {
     const p = new URLSearchParams(location.search).get("lang");
     if (p === "en" || p === "tr") { try { localStorage.setItem("dil", p); } catch (e) {} return p; }
@@ -277,7 +279,7 @@
   // Sayfalar arası bağlantılarda dil korunur
   function baglantiDil() {
     if (dil !== "en") return;
-    document.querySelectorAll('a[href$=".html"], a[href*=".html?"], a[href*=".html#"]').forEach(a => {
+    document.querySelectorAll('a[href$=".html"], a[href*=".html?"], a[href*=".html#"], a[href="./"], a[href^="./#"]').forEach(a => {
       const h = a.getAttribute("href"); if (/^https?:/.test(h) || /[?&]lang=/.test(h)) return;
       const [yol, hash] = h.split("#"); a.setAttribute("href", yol + (yol.includes("?") ? "&" : "?") + "lang=en" + (hash ? "#" + hash : ""));
     });

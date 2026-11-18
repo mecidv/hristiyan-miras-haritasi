@@ -12,18 +12,18 @@
   // ---------- Menü ----------
   const MENU = [
     { ad: L("Proje", "Project"), alt: [
-      { ad: L("Hakkında", "About"), href: "index.html#proje" },
-      { ad: L("Proje ekibi", "Project team"), href: "index.html#ekip" },
+      { ad: L("Hakkında", "About"), href: "./#proje" },
+      { ad: L("Proje ekibi", "Project team"), href: "./#ekip" },
       { ad: L("Tasarım dili", "Design language"), href: "tasarim-dili.html" },
       { ad: L("SSS", "FAQ"), href: "sss.html" },
-      { ad: L("İletişim", "Contact"), href: "index.html#iletisim" } ] },
+      { ad: L("İletişim", "Contact"), href: "./#iletisim" } ] },
     { ad: L("Haritayı keşfet", "Explore the map"), alt: [
       { ad: L("Harita", "Map"), not: L("Tüm kayıtlar, il ve ilçelere göre", "All records by province and district"), href: "harita.html" },
       { ad: L("Dikkat çeken yapılar", "Notable buildings"), not: L("27 yapı, dört tema", "27 buildings, four themes"), href: "dikkat-ceken-yapilar.html" },
       { ad: L("Dönüşen yapılar", "Repurposed buildings"), not: L("Yakında", "Coming soon"), href: "#", yakinda: true },
       { ad: L("Tur programlarındaki yapılar", "Buildings in tour programmes"), not: L("Yakında", "Coming soon"), href: "#", yakinda: true } ] },
     { ad: L("Tarihsel bağlam", "Historical context"), href: "tarihsel-baglam.html" },
-    { ad: L("Atıf", "Citation"), href: "index.html#atif" }
+    { ad: L("Atıf", "Citation"), href: "./#atif" }
   ];
   // İngilizce arayüzde dil bağlantılarda taşınır
   const dh = (h) => { if (!EN || !h || h === "#") return h; const [y, hs] = h.split("#"); return y + (y.includes("?") ? "&" : "?") + "lang=en" + (hs ? "#" + hs : ""); };
