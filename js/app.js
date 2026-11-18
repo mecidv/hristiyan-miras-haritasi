@@ -96,7 +96,7 @@
     ["Gürcistan", "Georgia", 43.6, 42.2], ["Ermenistan", "Armenia", 45.0, 40.25], ["Azerbaycan", "Azerbaijan", 47.6, 40.7], ["İran", "Iran", 46.6, 37.6],
     ["Irak", "Iraq", 43.6, 35.1], ["Suriye", "Syria", 38.6, 34.9], ["Lübnan", "Lebanon", 35.75, 33.75]
   ];
-  const DENIZ_ADLARI = [["Karadeniz", "Black Sea", 34.6, 43.1, "b"], ["Akdeniz", "Mediterranean Sea", 30.6, 34.9, "b"], ["Ege Denizi", "Aegean Sea", 25.2, 38.4, "o"], ["Marmara Denizi", "Sea of Marmara", 28.15, 40.72, "k"]];
+  const DENIZ_ADLARI = [["Karadeniz", "Black Sea", 34.6, 43.1, "b"], ["Akdeniz", "Mediterranean Sea", 28.9, 34.85, "b"], ["Ege Denizi", "Aegean Sea", 25.9, 36.95, "o"], ["Marmara Denizi", "Sea of Marmara", 28.15, 40.72, "k"]];
   const adEtiketi = (sinif, html, lat, lng) => L.marker([lat, lng], { pane: "ulkeAd", interactive: false, keyboard: false, icon: L.divIcon({ className: "ad-yazi " + sinif, html, iconSize: [0, 0] }) });
   const ulkeKatmani = L.layerGroup([
     ...ULKE_ADLARI.map(([tr, en, lng, lat]) => adEtiketi("ulke-ad", `<span>${esc(EN ? en : tr)}</span>`, lat, lng)),
