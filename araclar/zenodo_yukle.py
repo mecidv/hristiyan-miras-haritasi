@@ -12,6 +12,7 @@ from pathlib import Path
 KOK = Path(__file__).resolve().parent.parent
 API = "https://zenodo.org/api"
 KAYIT = "24338236"            # bu çatıdaki herhangi bir sürümün kayıt numarası (ilk sürüm)
+CATI = "24338235"             # tüm sürümleri kapsayan çatı kaydı (concept)
 DOSYALAR = ["data/envanter.csv", "data/VERI.md"]
 TOKEN = os.environ.get("ZENODO_TOKEN", "").strip()
 
@@ -43,13 +44,14 @@ def main():
     gun = datetime.now(tr).strftime("%Y-%m-%d")
     son, son_ad = son_surum()
     print("En son yayımlanmış sürüm:", son, son_ad)
-    # Yeni sürüm taslağı (önceden kalmış bir taslak varsa onu kullan)
-    dep = istek("GET", f"{API}/deposit/depositions/{son}")
-    taslak_url = dep.get("links", {}).get("latest_draft")
-    if not taslak_url or taslak_url.rstrip("/").endswith("/" + son):
+    # Yeni sürüm taslağı: bu çatıda yayımlanmamış bir taslak varsa onu kullan, yoksa yenisini aç
+    taslaklar = istek("GET", f"{API}/deposit/depositions?status=draft&size=50")
+    mevcut = [t for t in taslaklar if str(t.get("conceptrecid")) == CATI]
+    if mevcut:
+        taslak = istek("GET", f"{API}/deposit/depositions/{mevcut[0]['id']}")
+    else:
         yeni = istek("POST", f"{API}/deposit/depositions/{son}/actions/newversion")
-        taslak_url = yeni["links"]["latest_draft"]
-    taslak = istek("GET", taslak_url)
+        taslak = istek("GET", yeni["links"]["latest_draft"])
     tid = str(taslak["id"])
     print("Taslak:", tid)
     # Önceki sürümden devralınan dosyaları kaldır (ilk sürümdeki depo arşivi dahil)
