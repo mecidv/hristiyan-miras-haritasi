@@ -178,7 +178,7 @@ html[data-tema="koyu"] .rulo { filter: drop-shadow(0 0 40px rgba(240, 200, 110, 
 html[data-tema="koyu"] .harita-rulo-cubuk { box-shadow: 0 0 18px rgba(240, 200, 110, .14); }
 html[data-tema="koyu"] .harita-rulo-cubuk::before, html[data-tema="koyu"] .harita-rulo-cubuk::after { background: var(--cubuk-uc), #1D2C5E; box-shadow: inset 0 0 0 1.2px rgba(201, 165, 72, .5); }
 .map-wrap .leaflet-left { left: 20px; } .map-wrap .leaflet-right { right: 20px; }
-@media (min-width: 861px) { .map-wrap .panel-goster:not([hidden]) { left: 78px; } .app .panel .panel-gizle { top: 30px; } }
+@media (min-width: 861px) { .app .panel .panel-gizle { top: 30px; } .app .map-wrap .leaflet-left { left: calc(var(--panel-w) + 14px); } .app.panel-sarili .map-wrap .legend { left: 40px; } }
 /* Haritanın kendisi de eski bir yaprak: pas lekeleri il dolgularının üstünde, yapıların altında */
 
 
@@ -241,3 +241,20 @@ html[data-tema="koyu"] .kartus .rulo-yaprak .link-btn { color: #8E2C18; }
 .rulo .dil-not { text-align: center; margin: 0 auto 18px; max-width: 52ch; font-size: 15px; color: #6B5538; background: rgba(255, 250, 236, .6); border: 1px solid #CDB68A; border-radius: 8px; padding: 8px 12px; }
 .drawer.katli::before { margin-bottom: 12px; } .drawer.katli::after { margin-top: 12px; }
 .drawer.katli .drawer-close { top: 26px; }
+
+/* Kapatma düğmesi: rulonun mühürü. Gündüz kırmızı balmumu, gece altın mühür; kenarı tırtıllı. */
+.drawer-close { display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; cursor: pointer; width: 34px; height: 34px;
+  font: 400 21px/1 var(--serif); color: #F7E6C8; text-shadow: 0 1px 0 rgba(70, 18, 8, .6);
+  background: radial-gradient(circle at 36% 30%, #D3633F 0%, #A8321E 46%, #842512 78%, #6A1C0E 100%);
+  box-shadow: inset 0 0 0 3px rgba(110, 28, 12, .55), inset 0 0 0 4.5px rgba(255, 205, 175, .22), inset 0 -3px 5px rgba(50, 10, 4, .35);
+  clip-path: polygon(50.0% 0.0%, 56.6% 4.0%, 64.1% 2.0%, 69.3% 7.7%, 77.0% 7.9%, 80.5% 14.9%, 87.8% 17.3%, 89.1% 24.9%, 95.5% 29.2%, 94.6% 36.9%, 99.5% 42.9%, 96.5% 50.0%, 99.5% 57.1%, 94.6% 63.1%, 95.5% 70.8%, 89.1% 75.1%, 87.8% 82.7%, 80.5% 85.1%, 77.0% 92.1%, 69.3% 92.3%, 64.1% 98.0%, 56.6% 96.0%, 50.0% 100.0%, 43.4% 96.0%, 35.9% 98.0%, 30.7% 92.3%, 23.0% 92.1%, 19.5% 85.1%, 12.2% 82.7%, 10.9% 75.1%, 4.5% 70.8%, 5.4% 63.1%, 0.5% 57.1%, 3.5% 50.0%, 0.5% 42.9%, 5.4% 36.9%, 4.5% 29.2%, 10.9% 24.9%, 12.2% 17.3%, 19.5% 14.9%, 23.0% 7.9%, 30.7% 7.7%, 35.9% 2.0%, 43.4% 4.0%); transition: transform .15s ease, filter .15s ease; }
+.drawer-close:hover { background: radial-gradient(circle at 36% 30%, #DC6E49 0%, #B23A24 46%, #8C2914 78%, #6E1E0F 100%); color: #FFF3DE; transform: rotate(-8deg); }
+.drawer-close:focus-visible { outline: 2px solid #C9962E; outline-offset: 2px; clip-path: none; }
+html[data-tema="koyu"] .drawer-close { color: #3A2706; text-shadow: 0 1px 0 rgba(255, 240, 200, .5);
+  background: radial-gradient(circle at 36% 30%, #F6DE96 0%, #D9B04A 46%, #A9842C 78%, #8A6A1E 100%);
+  box-shadow: inset 0 0 0 3px rgba(120, 90, 20, .55), inset 0 0 0 4.5px rgba(255, 245, 210, .3), inset 0 -3px 5px rgba(60, 40, 5, .35); }
+html[data-tema="koyu"] .drawer-close:hover { background: radial-gradient(circle at 36% 30%, #FBE7A8 0%, #E2BC58 46%, #B08A30 78%, #8E6E20 100%); color: #2A1C04; }
+.drawer .drawer-close { margin: 2px -10px 0 10px; }
+.drawer.katli .drawer-close { margin: -6px -10px 0 10px; width: 32px; height: 32px; font-size: 20px; }
+.modal .drawer-close { margin: 0 -10px 0 10px; }
+@media (prefers-reduced-motion: reduce) { .drawer-close { transition: none; } .drawer-close:hover { transform: none; } }

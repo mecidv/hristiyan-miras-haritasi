@@ -20,7 +20,7 @@
   function panel(ac) {
     if (!HARITA) return false;
     // Geniş ekranda panel gizlenmişse panel adımlarında yeniden açılır
-    if (!dar()) { const g = document.getElementById("panel-goster"); if (ac && g && !g.hidden) { g.click(); return true; } return false; }
+    if (!dar()) { const app = document.querySelector(".app"), g = document.getElementById("panel-gizle"); if (ac && app && app.classList.contains("panel-sarili") && g) { g.click(); return true; } return false; }
     if (ac && !panelAcik()) { document.getElementById("panel-toggle")?.click(); return true; }
     if (!ac && panelAcik()) { document.getElementById("panel-close")?.click(); return true; }
     return false;
@@ -83,7 +83,7 @@
     balon.querySelector(".tur-ileri")?.addEventListener("click", ileri);
     const git = balon.querySelector(".tur-git");
     if (git) git.addEventListener("click", () => kapat(true));
-    const bekle = degisti ? 480 : 0;   // panelin kayma süresi
+    const bekle = degisti ? 620 : 0;   // panelin kayma süresi
     balon.classList.add("tur-gizli");
     setTimeout(() => {
       hedefEl = bul(a.hedef);

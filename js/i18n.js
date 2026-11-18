@@ -195,7 +195,7 @@
     gelistiren_kisa: ["Claude Opus 5.5 ile tasarlanıp kodlandı", "Designed and coded with Claude Opus 5.5"],
     filtreler: ["Filtreler", "Filters"], katmanlar: ["Katmanlar", "Layers"], ara_dugme: ["Ara", "Search"],
     rozet_etkin: ["{n} etkin", "{n} active"], rozet_kapali: ["{n} kapalı", "{n} hidden"],
-    panel_gizle: ["Paneli gizle", "Hide panel"], panel_goster: ["Filtreler ve liste", "Filters and list"],
+    panel_gizle: ["Paneli sar", "Roll up the panel"], panel_ac: ["Paneli aç", "Unroll the panel"], panel_goster: ["Filtreler ve liste", "Filters and list"],
     ara_kapsam_ipucu: ["Aradığınızı yazıp Enter’a ya da büyütece basın; harita Türkiye geneline döner.", "Type your search and press Enter or the magnifier; the map returns to all of Türkiye."],
     arama_tum: ["Arama sonuçları · tüm Türkiye", "Search results · all of Türkiye"],
     ara_kapsam_il: ["{il} içinde", "In {il}"], ara_kapsam_tum: ["Tüm Türkiye’de ara", "Search all of Türkiye"], ara_kapsam_etiket: ["Arama kapsamı", "Search scope"],

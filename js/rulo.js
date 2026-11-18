@@ -40,13 +40,24 @@
     const kapat = (haric) => nav.querySelectorAll(".acilir.acik").forEach(x => { if (x !== haric) { x.classList.remove("acik"); x.querySelector("button").setAttribute("aria-expanded", "false"); } });
     nav.querySelectorAll(".acilir").forEach(g => {
       const b = g.querySelector("button");
-      b.addEventListener("click", e => { e.stopPropagation(); const ac = !g.classList.contains("acik"); kapat(g); g.classList.toggle("acik", ac); b.setAttribute("aria-expanded", String(ac)); });
+      let hoverActi = 0;
+      b.addEventListener("click", e => {
+        e.stopPropagation();
+        // Fareyle üzerine gelince açılmış menüye hemen ardından tıklamak onu kapatmasın
+        if (g.classList.contains("acik") && Date.now() - hoverActi < 700) return;
+        const ac = !g.classList.contains("acik"); kapat(g); g.classList.toggle("acik", ac); b.setAttribute("aria-expanded", String(ac));
+      });
       if (window.matchMedia("(hover: hover)").matches) {
-        let t; g.addEventListener("mouseenter", () => { clearTimeout(t); kapat(g); g.classList.add("acik"); b.setAttribute("aria-expanded", "true"); });
+        let t; g.addEventListener("mouseenter", () => { clearTimeout(t); if (!g.classList.contains("acik")) hoverActi = Date.now(); kapat(g); g.classList.add("acik"); b.setAttribute("aria-expanded", "true"); });
         g.addEventListener("mouseleave", () => { t = setTimeout(() => { g.classList.remove("acik"); b.setAttribute("aria-expanded", "false"); }, 220); });
       }
+      g.addEventListener("focusout", e => { if (!g.contains(e.relatedTarget)) setTimeout(() => { if (!g.contains(document.activeElement)) { g.classList.remove("acik"); b.setAttribute("aria-expanded", "false"); } }, 0); });
     });
-    document.addEventListener("click", e => { if (!nav.contains(e.target)) kapat(); });
+    // Haritanın kendisi tıklamaları yutabildiği için kapanma, yakalama aşamasında pointerdown ile dinlenir
+    document.addEventListener("pointerdown", e => { if (!nav.contains(e.target)) kapat(); }, true);
+    document.addEventListener("click", e => { if (!nav.contains(e.target)) kapat(); }, true);
+    window.addEventListener("blur", () => kapat());
+    window.addEventListener("scroll", () => kapat(), { passive: true });
     document.addEventListener("keydown", e => { if (e.key === "Escape") kapat(); });
   })();
   // Dar ekran menüsü (atlas.js düz bir liste kurar): grup başlıklarıyla yeniden kur

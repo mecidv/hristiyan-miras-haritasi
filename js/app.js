@@ -62,10 +62,17 @@
   let ucusSigorta = 0;
   map.on("zoomstart", () => { map.getContainer().classList.add("ucusta"); clearTimeout(ucusSigorta); ucusSigorta = setTimeout(() => map.getContainer().classList.remove("ucusta"), 2600); });
   map.on("zoomend moveend", () => map.getContainer().classList.remove("ucusta"));
+  // Geniş ekranda sol panel haritanın üstünde durur; harita hiç yeniden boyutlanmaz. Görünümler panelin kapladığı payı hesaba katar.
+  const appEl = $(".app");
+  const genisEkran = () => window.matchMedia("(min-width: 861px)").matches;
+  try { if (localStorage.getItem("panel") === "kapali" || localStorage.getItem("panel") === "sarili") appEl.classList.add("panel-sarili"); } catch (e) { /* yoksay */ }
+  const solPay = () => (genisEkran() && !appEl.classList.contains("panel-sarili") ? ($("#panel").offsetWidth || 0) : 0);
+  const payli = (ek, ust) => ({ paddingTopLeft: [ek + solPay(), ust == null ? ek : ust], paddingBottomRight: [ek, ust == null ? ek : ust] });
+  map.fitBounds(TURKIYE, Object.assign(payli(0, 0), { animate: false }));
   map.setMaxBounds([[33, 20], [45, 50]]);
   // Harita Türkiye'nin dışına fazla uzaklaşmasın: en uzak görünüm, Türkiye'nin sığdığı yakınlıktan yarım kademe geride kalır
   function enUzakAyarla() {
-    const z = map.getBoundsZoom(L.latLngBounds(TURKIYE).pad(0.04));
+    const z = map.getBoundsZoom(L.latLngBounds(TURKIYE).pad(0.04), false, L.point(solPay(), 0));
     map.setMinZoom(Math.max(4, Math.floor((z - 0.5) * 4) / 4));
   }
   enUzakAyarla(); map.on("resize", enUzakAyarla);
@@ -182,7 +189,7 @@
     const z = map.getZoom(), sinir = kume.getBounds();
     const bz = map.getBoundsZoom(sinir, false, L.point(80, 80));
     if (z >= map.getMaxZoom() - 0.01 || bz <= z + 0.3) kume.spiderfy();
-    else map.flyToBounds(sinir, { padding: [60, 60], maxZoom: Math.min(bz, 17), duration: AZALT ? 0 : 0.8 });
+    else map.flyToBounds(sinir, Object.assign(payli(60), { maxZoom: Math.min(bz, 17), duration: AZALT ? 0 : 0.8 }));
   }
   const ilKatmani = L.layerGroup().addTo(map);
   const etiketKatmani = L.layerGroup().addTo(map);
@@ -650,7 +657,7 @@
     const sec2 = $(".provinces"); sec2.classList.remove("parla"); void sec2.offsetWidth; sec2.classList.add("parla");
     if (state.ilce && ilceKatman) {
       let hedef = null; ilceKatman.eachLayer(l => { if (l.feature.properties.ad === state.ilce) hedef = l; });
-      if (hedef) map.flyToBounds(hedef.getBounds(), Object.assign({ padding: [56, 56], maxZoom: 12 }, sec));
+      if (hedef) map.flyToBounds(hedef.getBounds(), Object.assign(payli(56), { maxZoom: 12 }, sec));
     } else if (ilGeoFeatures[state.il]) {
       const [mrk, zm] = ilGorunumu(state.il, ilGeoFeatures[state.il]); map.flyTo(mrk, zm, sec);
     }
@@ -675,11 +682,12 @@
     const sinir = (f.feature && anaSinir(f.feature.geometry)) || f.getBounds();
     const bilgi = ILLER.find(i => i.ad === il);
     const merkez = bilgi ? L.latLng(bilgi.lat, bilgi.lng) : sinir.getCenter();
-    const pay = L.point(56, 56);
+    const sol = solPay(), pay = L.point(56 + sol, 56);
     let z = Math.min(map.getBoundsZoom(sinir, false, pay), 10);
     const sigar = zz => { const boy = map.getSize().subtract(pay).divideBy(2); const p = map.project(merkez, zz); return L.latLngBounds(map.unproject(p.subtract(boy), zz), map.unproject(p.add(boy), zz)).contains(sinir); };
     if (!sigar(z) && z > 6) z -= 1;
-    return [merkez, z];
+    // Panel açıksa il, panelin dışında kalan alanın ortasına gelir
+    return [sol ? map.unproject(map.project(merkez, z).subtract([sol / 2, 0]), z) : merkez, z];
   }
   function ilSec(il) {
     state.il = il; state.ilce = ""; state.araKapsam = "il"; ilceAtama = new Map(); $("#f-il").value = il; uygula();
@@ -692,7 +700,7 @@
     if (vurgu) { map.removeLayer(vurgu); vurgu = null; }
     const sec = AZALT ? { animate: false } : { duration: 1.2, easeLinearity: 0.2 };
     ilceleriGoster(il, AZALT ? 0 : 1000);
-    if (!il) { map.flyToBounds(TURKIYE, Object.assign({ padding: [10, 10] }, sec)); return; }
+    if (!il) { map.flyToBounds(TURKIYE, Object.assign(payli(10), sec)); return; }
     const f = ilGeoFeatures[il];
     if (f) {
       const [mrk, zm] = ilGorunumu(il, f);
@@ -702,7 +710,7 @@
       setTimeout(() => cizAnimasyon(yollar, 1400, 0, false), AZALT ? 0 : 700);
     } else {
       const pts = YAPILAR.filter(y => y.il === il).map(y => [y.lat, y.lng]);
-      if (pts.length) map.flyToBounds(L.latLngBounds(pts).pad(0.4), Object.assign({ maxZoom: 11 }, sec));
+      if (pts.length) map.flyToBounds(L.latLngBounds(pts).pad(0.4), Object.assign(payli(0), { maxZoom: 11 }, sec));
     }
     if (window.matchMedia("(max-width: 860px)").matches) togglePanel(false);
   }
@@ -844,45 +852,23 @@
   });
   function grupAc(id) { const d = document.getElementById(id); if (d && !d.open) d.open = true; }
 
-  // ---------------- Panelin tamamı gizlenir (geniş ekran): yalnızca haritada gezinmek isteyenler için ----------------
-  // Akıcılık için harita yalnızca bir kez yeniden boyutlanır; panel, haritanın üstünde yalnızca kaydırılarak (GPU ile) gelir ya da gider.
-  const appEl = $(".app");
-  let panelIs = 0;
-  function haritaBoyutla(fn) {
-    const mw = $(".map-wrap"), once = mw.getBoundingClientRect().left;
-    fn();
-    map.invalidateSize({ pan: false, animate: false });
-    const dx = mw.getBoundingClientRect().left - once;
-    if (dx) map.panBy([dx, 0], { animate: false });   // harita ekranda kıpırdamadan yer açar
+  // ---------------- Sol panel (geniş ekran): yukarı sarılan, aşağı açılan bir rulo ----------------
+  // Panel haritanın üstünde durduğu için sarılıp açılırken harita yerinden kıpırdamaz.
+  function panelSar(sar, animasyon) {
+    if (!genisEkran() || sar === appEl.classList.contains("panel-sarili")) return;
+    const p = $("#panel"), dugme = $("#panel-gizle");
+    const yaz = () => {
+      appEl.classList.toggle("panel-sarili", sar);
+      dugme.setAttribute("aria-label", T(sar ? "panel_ac" : "panel_gizle")); dugme.setAttribute("aria-expanded", String(!sar));
+      try { localStorage.setItem("panel", sar ? "sarili" : "acik"); } catch (e) { /* yoksay */ }
+    };
+    const katliBoy = () => 44 + p.querySelector(".panel-head").offsetHeight;
+    if (sar) { p.scrollTop = 0; ruloKatla(p, true, katliBoy(), false, animasyon, yaz); }
+    else ruloKatla(p, false, katliBoy(), false, animasyon, yaz);
   }
-  function panelGizli(gizle, animasyon) {
-    if (window.matchMedia("(max-width: 860px)").matches) gizle = false;
-    if (gizle === appEl.classList.contains("panel-kapali")) return;
-    const is = ++panelIs, p = $("#panel");
-    $("#panel-goster").hidden = !gizle; $("#panel-goster").setAttribute("aria-expanded", String(!gizle));
-    p.toggleAttribute("inert", gizle);
-    try { localStorage.setItem("panel", gizle ? "kapali" : "acik"); } catch (e) { /* yoksay */ }
-    const hizli = !animasyon || AZALT;
-    if (gizle) {
-      // Önce harita tüm genişliği alır (panel üstte durur), sonra panel sola kayar
-      haritaBoyutla(() => appEl.classList.add("panel-ustte", "panel-yersiz"));
-      if (hizli) appEl.classList.add("panel-anlik");
-      void p.offsetWidth;
-      appEl.classList.add("panel-kapali");
-      if (hizli) requestAnimationFrame(() => appEl.classList.remove("panel-anlik"));
-      $("#panel-goster").focus({ preventScroll: true });
-    } else {
-      // Panel haritanın üstüne kayarak gelir; bitince harita yeniden daralır
-      appEl.classList.remove("panel-kapali");
-      const bitir = () => { if (is !== panelIs) return; haritaBoyutla(() => appEl.classList.remove("panel-ustte", "panel-yersiz")); };
-      if (hizli) bitir(); else setTimeout(bitir, 380);
-      $("#panel-gizle").focus({ preventScroll: true });
-    }
-  }
-  $("#panel-gizle").addEventListener("click", () => panelGizli(true, true));
-  $("#panel-goster").addEventListener("click", () => panelGizli(false, true));
-  try { if (localStorage.getItem("panel") === "kapali") panelGizli(true, false); } catch (e) { /* yoksay */ }
-  window.addEventListener("resize", () => { if (window.matchMedia("(max-width: 860px)").matches && appEl.classList.contains("panel-kapali")) panelGizli(false, false); });
+  $("#panel-gizle").addEventListener("click", e => { e.stopPropagation(); panelSar(!appEl.classList.contains("panel-sarili"), true); });
+  $("#panel").addEventListener("click", e => { if (appEl.classList.contains("panel-sarili") && genisEkran()) panelSar(false, true); });
+  { const d = $("#panel-gizle"), sar = appEl.classList.contains("panel-sarili"); d.setAttribute("aria-label", T(sar ? "panel_ac" : "panel_gizle")); d.setAttribute("aria-expanded", String(!sar)); }
   $("#panel-close").addEventListener("click", () => togglePanel(false));
   map.on("click", () => {
     if (window.matchMedia("(max-width: 860px)").matches) togglePanel(false);
@@ -892,11 +878,10 @@
   // ---------------- Ayrıntı çekmecesi ----------------
   // ---------------- Kutunun sarılması: rulo yukarı kıvrılır, yapının adıyla küçük bir rulo olarak kalır ----------------
   const KATLI_H = 92;
-  function cekmeceKatla(katla) {
-    const d = $("#drawer"); if (d.hidden || katla === d.classList.contains("katli")) return;
-    const mobil = window.matchMedia("(max-width: 860px)").matches;
-    const yaz = () => { d.classList.toggle("katli", katla); d.tabIndex = katla ? 0 : -1; d.setAttribute("aria-label", katla ? T("cekmece_ac") : ""); if (!katla) d.removeAttribute("aria-label"); $(".map-wrap").classList.toggle("cekmece-acik", !katla); };
-    if (AZALT || !d.animate) { yaz(); return; }
+  // Ortak rulo hareketi: öğe, geçici bir çubuk eşliğinde katlı boya sarılır ya da tam boyuna açılır.
+  // asagi: telefonda alttan açılan kutu aşağı doğru sarılır. yaz: sınıfları uygulayan işlev.
+  function ruloKatla(el, katla, katliH, asagi, animasyon, yaz) {
+    if (!animasyon || AZALT || !el.animate) { yaz(); return; }
     const egri = "cubic-bezier(.33,.0,.2,1)";
     const cubuk = (r, bas, son, sure) => {
       const c = document.createElement("div"); c.className = "gecici-cubuk"; c.setAttribute("aria-hidden", "true");
@@ -904,19 +889,23 @@
       c.animate([{ transform: `translateY(${bas}px)` }, { transform: `translateY(${son}px)` }], { duration: sure, easing: egri, fill: "forwards" })
         .finished.then(() => c.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 140, fill: "forwards" }).finished.then(() => c.remove()));
     };
+    const kirp = (f) => (asagi ? `inset(${f}px 0 0 0)` : `inset(0 0 ${f}px 0)`);
     if (katla) {
-      const r = d.getBoundingClientRect(), fark = Math.max(0, r.height - KATLI_H), sure = Math.round(Math.min(560, 260 + fark * .4));
-      // Masaüstünde yukarı, telefonda (alttan açılan kutu) aşağı doğru sarılır
-      const kf = mobil ? [{ clipPath: "inset(0 0 0 0)" }, { clipPath: `inset(${fark}px 0 0 0)` }] : [{ clipPath: "inset(0 0 0 0)" }, { clipPath: `inset(0 0 ${fark}px 0)` }];
-      cubuk(r, mobil ? r.top : r.bottom - 22, mobil ? r.top + fark : r.top + KATLI_H - 22, sure);
-      d.animate(kf, { duration: sure, easing: egri }).finished.then(yaz);
+      const r = el.getBoundingClientRect(), fark = Math.max(0, r.height - katliH), sure = Math.round(Math.min(560, 260 + fark * .35));
+      cubuk(r, asagi ? r.top : r.bottom - 22, asagi ? r.top + fark : r.top + katliH - 22, sure);
+      el.animate([{ clipPath: kirp(0) }, { clipPath: kirp(fark) }], { duration: sure, easing: egri }).finished.then(yaz);
     } else {
-      yaz(); d.scrollTop = 0;
-      const r = d.getBoundingClientRect(), fark = Math.max(0, r.height - KATLI_H), sure = Math.round(Math.min(560, 260 + fark * .4));
-      const kf = mobil ? [{ clipPath: `inset(${fark}px 0 0 0)` }, { clipPath: "inset(0 0 0 0)" }] : [{ clipPath: `inset(0 0 ${fark}px 0)` }, { clipPath: "inset(0 0 0 0)" }];
-      cubuk(r, mobil ? r.top + fark : r.top + KATLI_H - 22, mobil ? r.top : r.bottom - 22, sure);
-      d.animate(kf, { duration: sure, easing: egri });
+      yaz();
+      const r = el.getBoundingClientRect(), fark = Math.max(0, r.height - katliH), sure = Math.round(Math.min(560, 260 + fark * .35));
+      cubuk(r, asagi ? r.top + fark : r.top + katliH - 22, asagi ? r.top : r.bottom - 22, sure);
+      el.animate([{ clipPath: kirp(fark) }, { clipPath: kirp(0) }], { duration: sure, easing: egri });
     }
+  }
+  function cekmeceKatla(katla) {
+    const d = $("#drawer"); if (d.hidden || katla === d.classList.contains("katli")) return;
+    const yaz = () => { d.classList.toggle("katli", katla); d.tabIndex = katla ? 0 : -1; if (katla) d.setAttribute("aria-label", T("cekmece_ac")); else d.removeAttribute("aria-label"); $(".map-wrap").classList.toggle("cekmece-acik", !katla); };
+    if (!katla) d.scrollTop = 0;
+    ruloKatla(d, katla, KATLI_H, !genisEkran(), true, yaz);
   }
   $("#drawer").addEventListener("click", e => {
     if ($("#drawer").classList.contains("katli") && !e.target.closest(".drawer-close")) { e.preventDefault(); cekmeceKatla(false); }
@@ -978,8 +967,8 @@
         if (p.y < ust || p.y > alt) hy = Math.round((ust + alt) / 2);
         if (p.x < 40 || p.x > M.width - 40) hx = Math.round(M.width / 2);
       } else {
-        const sag = D.left - M.left - 70;
-        if (p.x > sag) hx = Math.round((sag + 70) / 2 + 35);
+        const sag = (d.hidden ? M.width : D.left - M.left) - 70, sol = solPay() + 50;
+        if (p.x > sag || p.x < sol) hx = Math.round((sol + sag) / 2);
         if (p.y < 70 || p.y > M.height - 70) hy = Math.round(M.height / 2);
       }
       if (hx !== p.x || hy !== p.y) map.panBy([p.x - hx, p.y - hy], { animate: !AZALT, duration: 0.5 });
@@ -1291,5 +1280,5 @@
     uygula();
     if (acikNo != null) { const y = YAPILAR.find(x => x.no === acikNo); if (y) openDrawer(y); }
   });
-  window.__harita = { map, uygula, state, markers, ilSec, ilceSec, ilceKatmani: () => ilceKatman, panelGoster: () => panelGizli(false, true) };
+  window.__harita = { map, uygula, state, markers, ilSec, ilceSec, ilceKatmani: () => ilceKatman, panelGoster: () => panelSar(false, true) };
 })();

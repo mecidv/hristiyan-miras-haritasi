@@ -151,7 +151,7 @@ html[data-tema="koyu"] #map .altlik-ayrintili { filter: invert(.92) hue-rotate(1
 /* Parşömen dokusu haritaya iliştirilir: harita kaydırılınca doku da kayar. Bütün katmanların dönemi 900 pikselin böleni
    olduğundan öğe yalnızca 900 piksellik adımlarla yer değiştirir; doku yeniden çizilmez (uçuş sırasında titreme olmaz). */
 .harita-doku { position: absolute; pointer-events: none; opacity: .76; contain: strict;
-  background: url("../img/parsomen/eskitme.png") 0 0 / 900px 900px, var(--doku-leke-900) 0 0 / 900px 900px, var(--doku-ince-225) 0 0 / 225px 225px; }
+  background: var(--doku-leke-900) 0 0 / 900px 900px, var(--doku-ince-225) 0 0 / 225px 225px; }
 html[data-tema="koyu"] .harita-doku { background: var(--doku-leke-koyu-900) 0 0 / 900px 900px; opacity: .16; }
 /* Uçuş sırasında imleç altındaki ilçe ve il sınırları vurgu/ipucu üretmesin */
 #map.ucusta .leaflet-interactive { pointer-events: none !important; }

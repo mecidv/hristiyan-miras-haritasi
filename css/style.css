@@ -480,24 +480,29 @@ html.tema-gecis, html.tema-gecis * { transition: background-color .3s ease, colo
 .ara-dugme svg { width: 18px; height: 18px; }
 .ara-ipucu { flex-basis: 100%; margin: 2px 0 0; font-size: 12.5px; line-height: 1.4; color: var(--murekkep-2); }
 
-/* ---------- Panelin tamamını gizleme (geniş ekran) ---------- */
-.panel-gizle, .panel-goster { display: none; }
+/* ---------- Sol panel (geniş ekran): haritanın üstünde duran, yukarı sarılan bir rulo ---------- */
+.panel-gizle { display: none; }
 @media (min-width: 861px) {
-  /* Panel kayarken yalnızca transform değişir (GPU); harita bir kez boyutlanır */
-  .app { position: relative; }
-  .app.panel-yersiz { grid-template-columns: 0px 1fr; }
-  .app > .map-wrap { grid-column: 2; grid-row: 1; }
-  .app.panel-ustte .panel { position: absolute; left: 0; top: 0; bottom: 0; width: var(--panel-w); z-index: 1001; will-change: transform; }
-  .app .panel { transition: transform .36s cubic-bezier(.33, 0, .2, 1), visibility 0s; }
-  .app.panel-kapali .panel { transform: translateX(-100%); visibility: hidden; transition: transform .36s cubic-bezier(.33, 0, .2, 1), visibility 0s .36s; }
-  .app.panel-anlik .panel { transition: none !important; }
+  /* Harita tüm genişliği kaplar; panel üstünde durur. Panel sarılıp açılırken harita yeniden boyutlanmaz. */
+  .app { position: relative; grid-template-columns: 1fr; }
+  .app > .map-wrap { grid-column: 1; grid-row: 1; }
+  .app .panel { position: absolute; left: 0; top: 0; bottom: 0; width: var(--panel-w); z-index: 1001; }
+  .app.panel-sarili .panel { bottom: auto; overflow: hidden; cursor: pointer; }
+  .app.panel-sarili .panel > :not(.panel-head) { display: none; }
+  .app.panel-sarili .panel .panel-head { padding-bottom: 12px; }
   .panel-head { position: relative; padding-right: 58px; }
   .panel-gizle { display: grid; place-items: center; position: absolute; top: 18px; right: 16px; width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--porselen-kenar); background: var(--porselen); color: var(--murekkep-2); cursor: pointer; box-shadow: var(--sir-golge); }
-  .panel-gizle:hover, .panel-goster:hover { color: var(--portakal-metin); border-color: var(--portakal-kenar); }
-  .panel-gizle svg, .panel-goster svg { width: 18px; height: 18px; }
-  .panel-goster:not([hidden]) { display: inline-flex; align-items: center; gap: 7px; position: absolute; top: 14px; left: 58px; z-index: 960; padding: 8px 14px 8px 10px; border-radius: 999px; border: 1px solid var(--porselen-kenar); background: var(--sir); color: var(--murekkep); font-weight: 700; font-size: 14.5px; cursor: pointer; box-shadow: var(--sir-golge); animation: belir .3s ease .25s both; }
+  .panel-gizle:hover { color: var(--portakal-metin); border-color: var(--portakal-kenar); }
+  .panel-gizle svg { width: 18px; height: 18px; transition: transform .3s ease; }
+  .app.panel-sarili .panel-gizle svg { transform: rotate(180deg); }
+  /* Panelin kapladığı alana göre: lejant, yakınlaştırma düğmeleri ve geri düğmeleri görünür alanda kalır */
+  .app .map-wrap .leaflet-left { left: calc(var(--panel-w) + 6px); }
+  .app .map-wrap .legend { transition: left .35s ease; }
+  .app:not(.panel-sarili) .map-wrap .legend { left: calc(var(--panel-w) + 22px); }
+  .app:not(.panel-sarili) .map-wrap .geri-grup { left: calc(50% + var(--panel-w) / 2); max-width: calc(100% - var(--panel-w) - 150px); }
+  .app:not(.panel-sarili) .map-wrap.cekmece-acik .geri-grup { left: calc(var(--panel-w) + (100% - var(--panel-w) - min(var(--drawer-w), 100%)) / 2); }
 }
-@media (prefers-reduced-motion: reduce) { .app .panel, .app.panel-kapali .panel { transition: none; } .p-ok { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .p-ok, .panel-gizle svg { transition: none; } }
 /* Yerleşik İngilizce ad (İngilizce arayüz) */
 .d-en-ad { margin: -2px 0 8px; font-family: var(--serif); font-style: italic; font-size: 19px; line-height: 1.25; color: var(--murekkep-2); }
 .d-en-ad a { font-family: var(--sans, inherit); font-style: normal; font-size: 12.5px; font-weight: 600; margin-left: 6px; color: var(--portakal-metin); white-space: nowrap; }
