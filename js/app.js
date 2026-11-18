@@ -42,6 +42,9 @@
   const toplulukAd = (k) => EN ? (C.TOPLULUK[k] || k) : k;
   const bolgeAd = (k) => EN ? (C.BOLGE[k] || k) : k;
   const hassKey = (h) => "hass_" + (/^Yapı/.test(h) ? "Yapı" : /^Köy/.test(h) ? "Köy" : /^İlçe/.test(h) ? "İlçe" : /^İl /.test(h) ? "İl" : "Ziyaretçi");
+  // "Dikkat çeken yapılar" sayfasında anlatılan yapılar için o sayfaya bağlantı
+  const DIKKAT_NO = new Set((window.DIKKAT || []).map(o => o.no));
+  const hikaye = (y) => DIKKAT_NO.has(y.no) ? `<p class="d-hikaye"><a href="dikkat-ceken-yapilar.html${EN ? "?lang=en" : ""}#yapi-${y.no}">${esc(T("d_hikaye"))}</a></p>` : "";
   const konumMetni = (y) => [y.il, y.ilce, y.yer].filter(Boolean).join(", ");
 
   I.uygula(); I.baglantiDil();
@@ -853,6 +856,7 @@
         <div><dt>${esc(T("bolge"))}</dt><dd>${esc(bolgeAd(y.bolge))}</dd></div>
       </dl>
       ${EN ? `<p class="d-ceviri">${esc(T("d_ceviri_not"))}</p><details class="d-ozgun"><summary>${esc(T("d_ozgun"))}</summary><p>${esc(y.islev)}. ${esc(y.durum)}</p></details>` : ""}
+      ${hikaye(y)}
       <div class="d-approx"><b>${esc(T("d_yaklasik"))}</b> ${esc(T(hassKey(y.hassasiyet)))}${kara.has(y.no) ? " " + esc(T("d_karaya")) : ""} ${esc(T("d_duzelt_cagri"))}</div>
       <div class="d-photos" id="d-photos" hidden></div>
       <div class="d-actions">

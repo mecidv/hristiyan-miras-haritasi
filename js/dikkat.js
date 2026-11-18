@@ -1,4 +1,4 @@
-/* DEMO 3: "Dikkat çeken yapılar" sayfası. Veri: demo3/js/dikkat-veri.js (window.DIKKAT). */
+/* "Dikkat çeken yapılar" sayfası. Veri: js/dikkat-veri.js (window.DIKKAT). */
 (function () {
   "use strict";
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -31,7 +31,7 @@
       ${o.durum ? `<p class="yk-durum"><b>Durum:</b> ${esc(o.durum)}</p>` : ""}
       ${o.alt ? `<p class="yk-alt"><b>Kapsadığı yapılar:</b> ${esc(o.alt.replace(/\s+-\s+/g, " · ").replace(/"/g, ""))}</p>` : ""}
       <div class="yk-dugmeler">
-        <a class="harita-git" href="demo3/harita.html#yapi-${o.no}"><svg width="14" height="14" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 18s6-5.6 6-10.2A6 6 0 0 0 4 7.8C4 12.4 10 18 10 18Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="10" cy="8" r="2.2" fill="currentColor"/></svg>Haritada göster</a>
+        <a class="harita-git" href="harita.html${window.I18N && window.I18N.en ? "?lang=en" : ""}#yapi-${o.no}"><svg width="14" height="14" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 18s6-5.6 6-10.2A6 6 0 0 0 4 7.8C4 12.4 10 18 10 18Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="10" cy="8" r="2.2" fill="currentColor"/></svg>Haritada göster</a>
         ${o.kaynak.length ? `<details><summary>Kaynaklar (${o.kaynak.length})</summary><ul>${o.kaynak.map(k => `<li><a href="${esc(k.u)}" target="_blank" rel="noopener">${esc(k.a)}</a></li>`).join("")}</ul></details>` : ""}
       </div>
     </article>`;
@@ -59,6 +59,12 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
+    // Bu sayfanın İngilizce çevirisi henüz yok: İngilizce arayüzde bunu açıkça belirt
+    if (window.I18N && window.I18N.en) {
+      const h1 = document.querySelector(".rulo h1");
+      if (h1) h1.insertAdjacentHTML("afterend", '<p class="dil-not" lang="en">This page is currently available in Turkish only. An English version will follow.</p>');
+      document.title = "Notable buildings | Religious Tourism of Türkiye: Living Inventory Project";
+    }
     const sek = document.querySelector(".tema-sekmeler");
     sek.innerHTML = TEMALAR.map(t => `<button type="button" role="tab" data-tema="${t.k}" aria-selected="false">${esc(t.ad)} <b>${veri.filter(o => o.tema === t.k).length}</b></button>`).join("");
     sek.addEventListener("click", e => { const b = e.target.closest("button"); if (b) { goster(b.dataset.tema); history.replaceState(null, "", "#" + b.dataset.tema); } });

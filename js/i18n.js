@@ -54,6 +54,7 @@
     d_ozgun: ["Özgün Türkçe kayıt", "Show the original Turkish entry"],
     d_ceviri_not: ["", "The current use and protection details above are English translations of the Turkish inventory entry. Building names are kept in their original Turkish form; where a building has an English Wikipedia article, that English name is shown under the title."],
     d_en_kaynak: ["", "English Wikipedia"],
+    d_hikaye: ["Bu yapının hikâyesini okuyun", "Read this building’s story (in Turkish)"],
     unesco_dunya: ["UNESCO Dünya Mirası", "UNESCO World Heritage"], unesco_gecici: ["UNESCO Geçici Liste", "UNESCO Tentative List"],
     foto_kredi: ["Fotoğraf", "Photo"],
 
@@ -276,7 +277,7 @@
   function baglantiDil() {
     if (dil !== "en") return;
     document.querySelectorAll('a[href$=".html"], a[href*=".html?"], a[href*=".html#"]').forEach(a => {
-      const h = a.getAttribute("href"); if (/^https?:/.test(h)) return;
+      const h = a.getAttribute("href"); if (/^https?:/.test(h) || /[?&]lang=/.test(h)) return;
       const [yol, hash] = h.split("#"); a.setAttribute("href", yol + (yol.includes("?") ? "&" : "?") + "lang=en" + (hash ? "#" + hash : ""));
     });
   }

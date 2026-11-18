@@ -1,4 +1,4 @@
-/* DEMO 3: parşömen rulo sayfalar, açılır menü, harita açılışı.
+/* Parşömen rulo sayfalar, açılır menü, harita açılışı.
    İkonalardaki aziz ve peygamberlerin elindeki yazılı rulolardan (rotulus) esinlenir. */
 
 /* ---------- Açılır menü ---------- */
@@ -24,19 +24,21 @@ html[data-tema="koyu"] .acilir-liste { background: linear-gradient(180deg, #1C2C
 html[data-tema="koyu"] .acilir-liste a small { color: #A9B2D0; }
 html[data-tema="koyu"] .acilir-liste a:hover { background: rgba(240, 210, 122, .1); }
 html[data-tema="koyu"] .acilir-liste a[aria-current="page"] { color: #F0D27A; }
+.menu-panel .mp-yakinda { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; padding: 9px 12px; opacity: .5; }
+.menu-panel .mp-yakinda small { font-size: 12.5px; }
 .menu-panel .mp-baslik { margin: 10px 14px 2px; font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; opacity: .6; }
 
 
 /* ---------- Eskitme ----------
    Yazı alanı temiz kalır; yaş izleri kenarlarda ve rulo uçlarında yoğunlaşır.
-   Lekeler sabit tohumla üretildi (araclar dışında: demo3/img/eskitme.svg): her ziyarette aynı yerde durur. */
+   Lekeler sabit tohumla üretildi (img/parsomen/eskitme.svg): her ziyarette aynı yerde durur. */
 :root {
-  --maske-yan: url("../img/kenar-sol.svg") left top / 16px 512px repeat-y, url("../img/kenar-sag.svg") right top / 16px 512px repeat-y, linear-gradient(#000 0 0) center / calc(100% - 30px) 100% no-repeat;
-  --maske-yan-ince: url("../img/kenar-sol.svg") left top / 10px 320px repeat-y, url("../img/kenar-sag.svg") right top / 10px 320px repeat-y, linear-gradient(#000 0 0) center / calc(100% - 18px) 100% no-repeat;
+  --maske-yan: url("../img/parsomen/kenar-sol.svg") left top / 16px 512px repeat-y, url("../img/parsomen/kenar-sag.svg") right top / 16px 512px repeat-y, linear-gradient(#000 0 0) center / calc(100% - 30px) 100% no-repeat;
+  --maske-yan-ince: url("../img/parsomen/kenar-sol.svg") left top / 10px 320px repeat-y, url("../img/parsomen/kenar-sag.svg") right top / 10px 320px repeat-y, linear-gradient(#000 0 0) center / calc(100% - 18px) 100% no-repeat;
   /* Rulo bantlı maskeler: üst ve alt 22 piksel (çubukların durduğu yer) kesilmez */
-  --maske-sag-bantli: url("../img/kenar-sag.svg") right top / 16px 512px repeat-y, linear-gradient(#000 0 0) left top / calc(100% - 15px) 100% no-repeat, linear-gradient(#000 0 0) top / 100% 22px no-repeat, linear-gradient(#000 0 0) bottom / 100% 22px no-repeat;
-  --maske-sol-bantli: url("../img/kenar-sol.svg") left top / 16px 512px repeat-y, linear-gradient(#000 0 0) right top / calc(100% - 15px) 100% no-repeat, linear-gradient(#000 0 0) top / 100% 22px no-repeat, linear-gradient(#000 0 0) bottom / 100% 22px no-repeat;
-  --maske-yan-bantli: url("../img/kenar-sol.svg") left top / 16px 512px repeat-y, url("../img/kenar-sag.svg") right top / 16px 512px repeat-y, linear-gradient(#000 0 0) center / calc(100% - 30px) 100% no-repeat, linear-gradient(#000 0 0) top / 100% 22px no-repeat, linear-gradient(#000 0 0) bottom / 100% 22px no-repeat;
+  --maske-sag-bantli: url("../img/parsomen/kenar-sag.svg") right top / 16px 512px repeat-y, linear-gradient(#000 0 0) left top / calc(100% - 15px) 100% no-repeat, linear-gradient(#000 0 0) top / 100% 22px no-repeat, linear-gradient(#000 0 0) bottom / 100% 22px no-repeat;
+  --maske-sol-bantli: url("../img/parsomen/kenar-sol.svg") left top / 16px 512px repeat-y, linear-gradient(#000 0 0) right top / calc(100% - 15px) 100% no-repeat, linear-gradient(#000 0 0) top / 100% 22px no-repeat, linear-gradient(#000 0 0) bottom / 100% 22px no-repeat;
+  --maske-yan-bantli: url("../img/parsomen/kenar-sol.svg") left top / 16px 512px repeat-y, url("../img/parsomen/kenar-sag.svg") right top / 16px 512px repeat-y, linear-gradient(#000 0 0) center / calc(100% - 30px) 100% no-repeat, linear-gradient(#000 0 0) top / 100% 22px no-repeat, linear-gradient(#000 0 0) bottom / 100% 22px no-repeat;
   /* Sarılı parşömen çubuğu: uçlarda el kiri, gövdede birkaç leke ve lif */
   --cubuk-uc-gunduz: repeating-radial-gradient(ellipse at 50% 50%, #E9D7AE 0 1.6px, #A9884F 2px 2.6px, #E9D7AE 3px 4px);
   --cubuk-uc: var(--cubuk-uc-gunduz);
@@ -66,7 +68,7 @@ html[data-tema="koyu"] {
    ve aynı lekeler yan yana duran iki rulonun aynı yerinde görünmesin. */
 .rulo-yaprak, .legend details, .app .panel, .drawer, .modal, .kartus .rulo-yaprak {
   --parsomen:
-    url("../img/eskitme.svg") var(--eski-konum, 0 0) / 900px 900px,
+    url("../img/parsomen/eskitme.svg") var(--eski-konum, 0 0) / 900px 900px,
     radial-gradient(ellipse 130% 100% at 50% 50%, rgba(120, 72, 26, 0) 60%, rgba(120, 72, 26, .14) 86%, rgba(92, 54, 16, .30) 100%),
     var(--doku-leke, none) var(--eski-konum, 0 0) / 600px 600px,
     var(--doku-ince, none) 0 0 / 220px 220px,
@@ -178,7 +180,7 @@ html[data-tema="koyu"] .harita-rulo-cubuk::before, html[data-tema="koyu"] .harit
 .map-wrap .leaflet-left { left: 20px; } .map-wrap .leaflet-right { right: 20px; }
 @media (min-width: 861px) { .map-wrap .panel-goster:not([hidden]) { left: 78px; } .app .panel .panel-gizle { top: 30px; } }
 /* Haritanın kendisi de eski bir yaprak: pas lekeleri il dolgularının üstünde, yapıların altında */
-html:not([data-tema="koyu"]) .harita-doku { background: url("../img/eskitme.svg") 0 0 / 900px 900px, var(--doku-leke) 0 0 / 600px 600px, var(--doku-ince) 0 0 / 220px 220px; }
+html:not([data-tema="koyu"]) .harita-doku { background: url("../img/parsomen/eskitme.svg") 0 0 / 900px 900px, var(--doku-leke) 0 0 / 600px 600px, var(--doku-ince) 0 0 / 220px 220px; }
 
 /* 2) Lejant: küçük bir rulo. Kapalıyken iki çubuk birbirine sarılır, açılınca yaprak aralarında açılır */
 .legend { left: 40px; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; filter: drop-shadow(0 8px 12px rgba(60, 38, 14, .3)); }
@@ -235,3 +237,5 @@ html[data-tema="koyu"] .rulo { --cubuk-yatay: var(--cubuk-yatay-gunduz); --cubuk
 html[data-tema="koyu"] .kartus .rulo-yaprak .btn-ghost { background: rgba(255, 250, 236, .65); color: #2E2014; border-color: #B79E70; box-shadow: none; }
 html[data-tema="koyu"] .kartus .rulo-yaprak .link-btn { color: #8E2C18; }
 @media (max-width: 760px) { .kartus.rulo { margin: -10px 16px 30px; } .kartus .rulo-yaprak { padding: 26px 24px 24px; } .kartus .rulo-cubuk { margin: 0 -6px; } }
+
+.rulo .dil-not { text-align: center; margin: 0 auto 18px; max-width: 52ch; font-size: 15px; color: #6B5538; background: rgba(255, 250, 236, .6); border: 1px solid #CDB68A; border-radius: 8px; padding: 8px 12px; }

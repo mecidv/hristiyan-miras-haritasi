@@ -1,5 +1,4 @@
-/* DEMO 3: yeni menü (açılır gruplar), parşömen rulo açılışı ve harita açılışı.
-   Sayfalar <base href="../"> ile kök klasördeki ortak dosyaları kullanır; bu yüzden bağlantılar köke göredir. */
+/* Yeni menü (açılır gruplar), parşömen rulo açılışı ve harita açılışı. */
 (function () {
   "use strict";
   const EN = !!(window.I18N && window.I18N.en);
@@ -19,22 +18,24 @@
       { ad: L("SSS", "FAQ"), href: "sss.html" },
       { ad: L("İletişim", "Contact"), href: "index.html#iletisim" } ] },
     { ad: L("Haritayı keşfet", "Explore the map"), alt: [
-      { ad: L("Harita", "Map"), not: L("622 kayıt, il ve ilçelere göre", "622 records by province and district"), href: "demo3/harita.html" },
-      { ad: L("Dikkat çeken yapılar", "Notable buildings"), not: L("27 yapı, dört tema", "27 buildings, four themes"), href: "demo3/dikkat-ceken-yapilar.html" },
+      { ad: L("Harita", "Map"), not: L("Tüm kayıtlar, il ve ilçelere göre", "All records by province and district"), href: "harita.html" },
+      { ad: L("Dikkat çeken yapılar", "Notable buildings"), not: L("27 yapı, dört tema", "27 buildings, four themes"), href: "dikkat-ceken-yapilar.html" },
       { ad: L("Dönüşen yapılar", "Repurposed buildings"), not: L("Yakında", "Coming soon"), href: "#", yakinda: true },
       { ad: L("Tur programlarındaki yapılar", "Buildings in tour programmes"), not: L("Yakında", "Coming soon"), href: "#", yakinda: true } ] },
     { ad: L("Tarihsel bağlam", "Historical context"), href: "tarihsel-baglam.html" },
     { ad: L("Atıf", "Citation"), href: "index.html#atif" }
   ];
+  // İngilizce arayüzde dil bağlantılarda taşınır
+  const dh = (h) => { if (!EN || !h || h === "#") return h; const [y, hs] = h.split("#"); return y + (y.includes("?") ? "&" : "?") + "lang=en" + (hs ? "#" + hs : ""); };
   const secili = (href) => href && href !== "#" && href.split("#")[0].split("/").pop() === burasi && !href.includes("#");
   (function menuKur() {
     const nav = document.querySelector(".ust nav"); if (!nav) return;
     nav.classList.add("nav-grup");
     nav.innerHTML = MENU.map((g, i) => {
-      if (!g.alt) return `<a href="${g.href}"${secili(g.href) ? ' aria-current="page"' : ""}>${g.ad}</a>`;
+      if (!g.alt) return `<a href="${dh(g.href)}"${secili(g.href) ? ' aria-current="page"' : ""}>${g.ad}</a>`;
       const icinde = g.alt.some(a => secili(a.href));
       return `<div class="acilir${icinde ? " secili" : ""}"><button type="button" aria-expanded="false" aria-controls="acilir-${i}">${g.ad}${ok}</button>
-        <div class="acilir-liste" id="acilir-${i}">${g.alt.map(a => `<a href="${a.href}"${a.yakinda ? ' class="yakinda" aria-disabled="true" tabindex="-1"' : ""}${secili(a.href) ? ' aria-current="page"' : ""}>${a.ad}${a.not ? `<small>${a.not}</small>` : ""}</a>`).join("")}</div></div>`;
+        <div class="acilir-liste" id="acilir-${i}">${g.alt.map(a => `<a href="${dh(a.href)}"${a.yakinda ? ' class="yakinda" aria-disabled="true" tabindex="-1"' : ""}${secili(a.href) ? ' aria-current="page"' : ""}>${a.ad}${a.not ? `<small>${a.not}</small>` : ""}</a>`).join("")}</div></div>`;
     }).join("");
     const kapat = (haric) => nav.querySelectorAll(".acilir.acik").forEach(x => { if (x !== haric) { x.classList.remove("acik"); x.querySelector("button").setAttribute("aria-expanded", "false"); } });
     nav.querySelectorAll(".acilir").forEach(g => {
@@ -52,8 +53,10 @@
   function panelKur() {
     const p = document.getElementById("menu-panel"); if (!p) return false;
     p.innerHTML = MENU.map(g => g.alt
-      ? `<p class="mp-baslik">${g.ad}</p>` + g.alt.filter(a => !a.yakinda).map(a => `<a href="${a.href}"${secili(a.href) ? ' aria-current="page"' : ""}>${a.ad}</a>`).join("")
-      : `<a href="${g.href}"${secili(g.href) ? ' aria-current="page"' : ""}>${g.ad}</a>`).join("");
+      ? `<p class="mp-baslik">${g.ad}</p>` + g.alt.map(a => a.yakinda
+          ? `<span class="mp-yakinda" aria-disabled="true">${a.ad}<small>${a.not}</small></span>`
+          : `<a href="${dh(a.href)}"${secili(a.href) ? ' aria-current="page"' : ""}>${a.ad}</a>`).join("")
+      : `<a href="${dh(g.href)}"${secili(g.href) ? ' aria-current="page"' : ""}>${g.ad}</a>`).join("");
     return true;
   }
   if (!panelKur()) document.addEventListener("DOMContentLoaded", panelKur);
