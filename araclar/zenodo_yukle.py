@@ -30,18 +30,19 @@ def istek(yontem, url, veri=None, tur="application/json", ham=False):
         sys.exit(f"Zenodo {yontem} {url} -> {h.code}: {h.read().decode('utf-8', 'replace')[:800]}")
 
 def son_surum():
-    # InvenioRDM: bir sürümden çatının en son yayımlanmış sürümüne
+    # InvenioRDM: bir sürümden çatının en son yayımlanmış sürümüne; kayıt numarası ve sürüm adı döner
     r = urllib.request.Request(f"{API}/records/{KAYIT}/versions/latest", headers={"Authorization": f"Bearer {TOKEN}"})
     with urllib.request.urlopen(r, timeout=60) as y:
-        return str(json.load(y)["id"])
+        j = json.load(y)
+        return str(j["id"]), str((j.get("metadata") or {}).get("version") or "")
 
 def main():
     if not TOKEN:
         print("ZENODO_TOKEN tanımlı değil; Zenodo yüklemesi atlandı."); return
     tr = timezone(timedelta(hours=3))
     gun = datetime.now(tr).strftime("%Y-%m-%d")
-    son = son_surum()
-    print("En son yayımlanmış sürüm:", son)
+    son, son_ad = son_surum()
+    print("En son yayımlanmış sürüm:", son, son_ad)
     # Yeni sürüm taslağı (önceden kalmış bir taslak varsa onu kullan)
     dep = istek("GET", f"{API}/deposit/depositions/{son}")
     taslak_url = dep.get("links", {}).get("latest_draft")
@@ -61,7 +62,12 @@ def main():
         print("Yüklendi:", ad)
     kunye = json.loads((KOK / ".zenodo.json").read_text(encoding="utf-8"))
     kayit_sayisi = sum(1 for _ in open(KOK / "data/envanter.csv", encoding="utf-8-sig")) - 1
-    kunye.update({"version": f"veri-{gun}", "publication_date": gun})
+    # Sürüm adı tarihtir; aynı gün ikinci kez yüklenirse sonuna sıra eklenir (veri-2026-11-18-2)
+    ad = f"veri-{gun}"
+    if son_ad == ad or son_ad.startswith(ad + "-"):
+        ek = son_ad[len(ad) + 1:] if son_ad != ad else "1"
+        ad = f"{ad}-{int(ek) + 1 if ek.isdigit() else 2}"
+    kunye.update({"version": ad, "publication_date": gun})
     kunye["notes"] = f"Bu sürüm {kayit_sayisi} kayıt içerir. / This version contains {kayit_sayisi} records."
     istek("PUT", f"{API}/deposit/depositions/{tid}", {"metadata": kunye})
     if os.environ.get("YAYIMLA", "true").lower() == "true":
