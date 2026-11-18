@@ -74,16 +74,11 @@
     acik: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
     koyu: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}"
   };
-  // Uzak görünümde yazısız okyanus altlığı (deniz tabanı kabartmasıyla eski haritayı andırır; ülke adları İngilizce yazılı gelmez),
-  // yakın görünümde gri altlık. Ülke ve deniz adlarını site kendisi, sitenin diliyle yazar.
-  const ALTLIK_ATIF = 'Esri, GEBCO, NOAA, HERE, Garmin, &copy; OpenStreetMap | <a href="https://www.geoboundaries.org">geoBoundaries</a> (ODbL)';
-  const altlikUzak = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}", {
-    attribution: ALTLIK_ATIF, maxNativeZoom: 10, maxZoom: 8.75, className: "altlik-sade altlik-uzak"
-  });
   const altlikYakin = L.tileLayer(ALTLIK_URL[document.documentElement.dataset.tema === "koyu" ? "koyu" : "acik"], {
-    attribution: ALTLIK_ATIF, maxNativeZoom: 16, minZoom: 9, maxZoom: 18, className: "altlik-sade"
+    attribution: 'Esri, HERE, Garmin, &copy; OpenStreetMap | <a href="https://www.geoboundaries.org">geoBoundaries</a> (ODbL)',
+    maxNativeZoom: 16, maxZoom: 18, className: "altlik-sade"
   });
-  const altlikSade = L.layerGroup([altlikUzak, altlikYakin]).addTo(map);
+  const altlikSade = altlikYakin.addTo(map);
   const altlikAyrintili = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>', maxZoom: 19, className: "altlik-ayrintili"
   });
@@ -98,9 +93,11 @@
   ];
   const DENIZ_ADLARI = [["Karadeniz", "Black Sea", 34.6, 43.1, "b"], ["Akdeniz", "Mediterranean Sea", 28.9, 34.85, "b"], ["Ege Denizi", "Aegean Sea", 25.9, 36.95, "o"], ["Marmara Denizi", "Sea of Marmara", 28.15, 40.72, "k"]];
   const adEtiketi = (sinif, html, lat, lng) => L.marker([lat, lng], { pane: "ulkeAd", interactive: false, keyboard: false, icon: L.divIcon({ className: "ad-yazi " + sinif, html, iconSize: [0, 0] }) });
+  // Altlık ülke adlarını kendisi taşıdığından şimdilik yalnızca KKTC yazılır (ülke ve deniz adlarının Türkçesi için ayrı bir çözüm deneniyor)
+  const ULKE_ADI_YAZ = false;
   const ulkeKatmani = L.layerGroup([
-    ...ULKE_ADLARI.map(([tr, en, lng, lat]) => adEtiketi("ulke-ad", `<span>${esc(EN ? en : tr)}</span>`, lat, lng)),
-    ...DENIZ_ADLARI.map(([tr, en, lng, lat, b]) => adEtiketi("deniz-ad deniz-" + b, `<span>${esc(EN ? en : tr)}</span>`, lat, lng)),
+    ...(ULKE_ADI_YAZ ? ULKE_ADLARI.map(([tr, en, lng, lat]) => adEtiketi("ulke-ad", `<span>${esc(EN ? en : tr)}</span>`, lat, lng)) : []),
+    ...(ULKE_ADI_YAZ ? DENIZ_ADLARI.map(([tr, en, lng, lat, b]) => adEtiketi("deniz-ad deniz-" + b, `<span>${esc(EN ? en : tr)}</span>`, lat, lng)) : []),
     adEtiketi("kktc-ad", EN ? "<span>Turkish Republic of<br>Northern Cyprus</span>" : "<span>Kuzey Kıbrıs<br>Türk Cumhuriyeti</span>", 35.3, 33.55)
   ]).addTo(map);
   function ulkeAdGoster() { const z = map.getZoom(), k = document.getElementById("map").classList; k.toggle("ad-gizli", z >= 9.5); k.toggle("ad-kucuk", z < 6.75); }

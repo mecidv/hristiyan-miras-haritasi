@@ -476,6 +476,4 @@ html[data-tema="koyu"] .atif-oneri { border-color: rgba(227, 194, 106, .5); back
 html[data-tema="koyu"] .ad-yazi span { text-shadow: 0 0 3px rgba(8, 15, 38, .9), 0 0 8px rgba(8, 15, 38, .6); }
 html[data-tema="koyu"] .ulke-ad span, html[data-tema="koyu"] .kktc-ad span { color: rgba(201, 210, 238, .75); }
 html[data-tema="koyu"] .deniz-ad span { color: #C9D2EE; opacity: .7; }
-/* Okyanus altlığı açık renkli; gece temasında koyulaştırılır */
-html[data-tema="koyu"] #map .altlik-uzak { filter: invert(.88) sepia(1) hue-rotate(190deg) saturate(2.2) brightness(.62) contrast(1.15); }
 .kahraman-harita .kktc-yazi { font-size: 24px; }
