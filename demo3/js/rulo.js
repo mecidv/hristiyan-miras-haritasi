@@ -88,25 +88,74 @@
   }
   window.RuloAc = ruloAc;
 
-  // ---------- Harita açılışı: soldan sağa açılan yatay bir rulo ----------
+  // ---------- Harita: soldan sağa açılan yatay bir rulo; iki dikey çubuk çerçeve olarak kalır ----------
   function haritaAc() {
-    const harita = document.getElementById("map"); if (!harita || AZALT || !harita.animate) return;
-    const kap = harita.parentElement; if (getComputedStyle(kap).position === "static") kap.style.position = "relative";
-    const r = harita.getBoundingClientRect(), k = kap.getBoundingClientRect();
+    const harita = document.getElementById("map"); if (!harita) return;
+    const kap = harita.closest(".map-wrap") || harita.parentElement;
     const sol = document.createElement("div"), sag = document.createElement("div");
-    [sol, sag].forEach(c => { c.className = "harita-rulo-cubuk"; c.style.top = (r.top - k.top) + "px"; c.style.height = r.height + "px"; c.style.bottom = "auto"; kap.appendChild(c); });
-    const x0 = r.left - k.left - 13, gen = r.width;
-    sol.style.left = x0 + "px"; sag.style.left = x0 + "px";
+    sol.className = "harita-rulo-cubuk sol"; sag.className = "harita-rulo-cubuk sag";
+    sol.setAttribute("aria-hidden", "true"); sag.setAttribute("aria-hidden", "true");
+    kap.append(sol, sag);
+    if (AZALT || !harita.animate) return;
+    const gen = kap.clientWidth - sag.offsetWidth;
     const sure = 1300, egri = "cubic-bezier(.33,.0,.2,1)";
     harita.animate([{ clipPath: `inset(0 ${gen}px 0 0)` }, { clipPath: "inset(0 0 0 0)" }], { duration: sure, easing: egri });
-    const a = sag.animate([{ transform: "translateX(0)" }, { transform: `translateX(${gen}px)` }], { duration: sure, easing: egri, fill: "forwards" });
-    a.finished.then(() => {
-      [sol, sag].forEach(c => c.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 350, fill: "forwards" }).finished.then(() => c.remove()));
+    sag.animate([{ transform: `translateX(${-gen}px)` }, { transform: "translateX(0)" }], { duration: sure, easing: egri });
+    const lej = document.getElementById("legend");
+    if (lej) lej.animate([{ opacity: 0 }, { opacity: 0, offset: .7 }, { opacity: 1 }], { duration: sure + 200 });
+  }
+
+  // ---------- Lejant: kapanınca yaprak iki çubuğun arasına sarılır, açılınca yeniden açılır ----------
+  function lejantKatla() {
+    const lej = document.getElementById("legend"); if (!lej) return;
+    lej.addEventListener("click", e => {
+      const ozet = e.target.closest("summary"); if (!ozet || AZALT) return;
+      const d = ozet.parentElement; if (!d.animate) return;
+      e.preventDefault();
+      if (lej.classList.contains("katlaniyor")) return;
+      const h1 = d.offsetHeight, w1 = lej.offsetWidth;
+      d.open = !d.open;                       // app.js "toggle" olayıyla tercihi kaydeder
+      const h2 = d.offsetHeight, w2 = lej.offsetWidth, kapaniyor = !d.open;
+      lej.classList.add("katlaniyor");
+      const egri = "cubic-bezier(.33,.0,.2,1)";
+      const en = (a, b, sure) => (Math.abs(a - b) < 2 ? Promise.resolve() : lej.animate([{ width: a + "px" }, { width: b + "px" }], { duration: sure, easing: egri }).finished);
+      const boy = (a, b, sure) => d.animate([{ height: a + "px" }, { height: b + "px" }], { duration: sure, easing: egri }).finished;
+      if (kapaniyor) {
+        // Önce yaprak çubukların arasına sarılır, sonra rulo daralır
+        d.open = true; lej.style.width = w1 + "px";
+        boy(h1, h2, 420).then(() => { d.open = false; lej.style.width = ""; return en(w1, w2, 220); })
+          .then(() => lej.classList.remove("katlaniyor"));
+      } else {
+        // Önce rulo genişler, sonra yaprak aşağı doğru açılır
+        lej.style.width = w2 + "px"; d.style.height = h1 + "px";
+        en(w1, w2, 220).then(() => { d.style.height = ""; return boy(h1, h2, 520); })
+          .then(() => { lej.style.width = ""; lej.classList.remove("katlaniyor"); });
+      }
     });
+  }
+
+  // ---------- Bilgi kutuları: açılırken bir çubuk yukarıdan aşağı inerek yaprağı açar ----------
+  function kutuAc(el) {
+    if (AZALT || !el.animate) return;
+    const r = el.getBoundingClientRect(); if (!r.height) return;
+    const boy = Math.min(r.height, window.innerHeight - r.top);
+    const sure = Math.round(Math.min(620, 300 + boy * .45)), egri = "cubic-bezier(.33,.0,.2,1)";
+    el.animate([{ clipPath: `inset(0 0 ${Math.max(0, r.height - 22)}px 0)` }, { clipPath: `inset(0 0 ${Math.max(0, r.height - boy)}px 0)` }], { duration: sure, easing: egri });
+    const c = document.createElement("div"); c.className = "gecici-cubuk"; c.setAttribute("aria-hidden", "true");
+    Object.assign(c.style, { left: r.left + "px", width: r.width + "px", top: r.top + "px" });
+    (el.tagName === "DIALOG" ? el : document.body).appendChild(c);
+    if (el.tagName === "DIALOG") Object.assign(c.style, { position: "fixed" });
+    c.animate([{ transform: "translateY(0)" }, { transform: `translateY(${boy - 22}px)` }], { duration: sure, easing: egri, fill: "forwards" })
+      .finished.then(() => c.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 160, fill: "forwards" }).finished.then(() => c.remove()));
+  }
+  function kutulariIzle() {
+    const cek = document.getElementById("drawer"), pen = document.getElementById("modal");
+    if (cek) new MutationObserver(() => { if (!cek.hidden) requestAnimationFrame(() => kutuAc(cek)); }).observe(cek, { attributes: true, attributeFilter: ["hidden"] });
+    if (pen) new MutationObserver(() => { if (pen.open) requestAnimationFrame(() => kutuAc(pen)); }).observe(pen, { attributes: true, attributeFilter: ["open"] });
   }
 
   document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll("[data-rulo]").forEach(r => window.requestAnimationFrame(() => ruloAc(r)));
-    if (document.getElementById("map")) haritaAc();
+    if (document.getElementById("map")) { haritaAc(); lejantKatla(); kutulariIzle(); }
   });
 })();

@@ -26,38 +26,87 @@ html[data-tema="koyu"] .acilir-liste a:hover { background: rgba(240, 210, 122, .
 html[data-tema="koyu"] .acilir-liste a[aria-current="page"] { color: #F0D27A; }
 .menu-panel .mp-baslik { margin: 10px 14px 2px; font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; opacity: .6; }
 
+
+/* ---------- Eskitme ----------
+   Yazı alanı temiz kalır; yaş izleri kenarlarda ve rulo uçlarında yoğunlaşır.
+   Lekeler sabit tohumla üretildi (araclar dışında: demo3/img/eskitme.svg): her ziyarette aynı yerde durur. */
+:root {
+  --maske-yan: url("../img/kenar-sol.svg") left top / 16px 512px repeat-y, url("../img/kenar-sag.svg") right top / 16px 512px repeat-y, linear-gradient(#000 0 0) center / calc(100% - 30px) 100% no-repeat;
+  --maske-yan-ince: url("../img/kenar-sol.svg") left top / 10px 320px repeat-y, url("../img/kenar-sag.svg") right top / 10px 320px repeat-y, linear-gradient(#000 0 0) center / calc(100% - 18px) 100% no-repeat;
+  /* Rulo bantlı maskeler: üst ve alt 22 piksel (çubukların durduğu yer) kesilmez */
+  --maske-sag-bantli: url("../img/kenar-sag.svg") right top / 16px 512px repeat-y, linear-gradient(#000 0 0) left top / calc(100% - 15px) 100% no-repeat, linear-gradient(#000 0 0) top / 100% 22px no-repeat, linear-gradient(#000 0 0) bottom / 100% 22px no-repeat;
+  --maske-sol-bantli: url("../img/kenar-sol.svg") left top / 16px 512px repeat-y, linear-gradient(#000 0 0) right top / calc(100% - 15px) 100% no-repeat, linear-gradient(#000 0 0) top / 100% 22px no-repeat, linear-gradient(#000 0 0) bottom / 100% 22px no-repeat;
+  --maske-yan-bantli: url("../img/kenar-sol.svg") left top / 16px 512px repeat-y, url("../img/kenar-sag.svg") right top / 16px 512px repeat-y, linear-gradient(#000 0 0) center / calc(100% - 30px) 100% no-repeat, linear-gradient(#000 0 0) top / 100% 22px no-repeat, linear-gradient(#000 0 0) bottom / 100% 22px no-repeat;
+  /* Sarılı parşömen çubuğu: uçlarda el kiri, gövdede birkaç leke ve lif */
+  --cubuk-uc-gunduz: repeating-radial-gradient(ellipse at 50% 50%, #E9D7AE 0 1.6px, #A9884F 2px 2.6px, #E9D7AE 3px 4px);
+  --cubuk-uc: var(--cubuk-uc-gunduz);
+  --cubuk-yatay-gunduz:
+    linear-gradient(90deg, rgba(58, 36, 14, .32), rgba(58, 36, 14, 0) 9%, rgba(58, 36, 14, 0) 91%, rgba(58, 36, 14, .32)),
+    radial-gradient(ellipse 46px 8px at 27% 62%, rgba(96, 58, 20, .24), rgba(96, 58, 20, 0)),
+    radial-gradient(ellipse 70px 6px at 69% 36%, rgba(96, 58, 20, .16), rgba(96, 58, 20, 0)),
+    var(--doku-ince, none) 0 0 / 220px 220px,
+    repeating-linear-gradient(90deg, rgba(120, 85, 40, 0) 0 46px, rgba(120, 85, 40, .07) 46px 48px),
+    linear-gradient(180deg, #8C6B3E 0%, #CDB283 18%, #F4E7C7 40%, #E3CFA3 58%, #B8975F 80%, #7A5B32 100%);
+  --cubuk-yatay: var(--cubuk-yatay-gunduz);
+  --cubuk-dikey:
+    linear-gradient(180deg, rgba(58, 36, 14, .32), rgba(58, 36, 14, 0) 9%, rgba(58, 36, 14, 0) 91%, rgba(58, 36, 14, .32)),
+    radial-gradient(ellipse 8px 46px at 62% 31%, rgba(96, 58, 20, .22), rgba(96, 58, 20, 0)),
+    radial-gradient(ellipse 6px 70px at 36% 72%, rgba(96, 58, 20, .15), rgba(96, 58, 20, 0)),
+    var(--doku-ince, none) 0 0 / 220px 220px,
+    repeating-linear-gradient(180deg, rgba(120, 85, 40, 0) 0 46px, rgba(120, 85, 40, .07) 46px 48px),
+    linear-gradient(90deg, #7A5B32 0%, #B8975F 20%, #E3CFA3 42%, #F4E7C7 60%, #CDB283 82%, #8C6B3E 100%);
+}
+/* Gece teması: koyu yüzeyler lacivert boyalı parşömen gibi (altın mürekkepli mor ve lacivert el yazmalarını anar) */
+html[data-tema="koyu"] {
+  --cubuk-uc: repeating-radial-gradient(ellipse at 50% 50%, #2C407D 0 1.6px, #C9A548 2px 2.6px, #2C407D 3px 4px);
+  --cubuk-yatay: linear-gradient(90deg, rgba(0, 0, 10, .4), rgba(0, 0, 10, 0) 9%, rgba(0, 0, 10, 0) 91%, rgba(0, 0, 10, .4)), linear-gradient(180deg, #0A1230 0%, #1D2C5E 22%, #34498C 42%, #22356E 60%, #142152 80%, #08102A 100%);
+  --cubuk-dikey: linear-gradient(180deg, rgba(0, 0, 10, .4), rgba(0, 0, 10, 0) 9%, rgba(0, 0, 10, 0) 91%, rgba(0, 0, 10, .4)), linear-gradient(90deg, #08102A 0%, #142152 20%, #34498C 42%, #22356E 60%, #1D2C5E 80%, #0A1230 100%);
+}
+/* Eskitilmiş parşömen yüzeyi. Değişken her öğede yeniden tanımlanır ki --eski-konum öğeye göre değişsin
+   ve aynı lekeler yan yana duran iki rulonun aynı yerinde görünmesin. */
+.rulo-yaprak, .legend details, .app .panel, .drawer, .modal, .kartus .rulo-yaprak {
+  --parsomen:
+    url("../img/eskitme.svg") var(--eski-konum, 0 0) / 900px 900px,
+    radial-gradient(ellipse 130% 100% at 50% 50%, rgba(120, 72, 26, 0) 60%, rgba(120, 72, 26, .14) 86%, rgba(92, 54, 16, .30) 100%),
+    var(--doku-leke, none) var(--eski-konum, 0 0) / 600px 600px,
+    var(--doku-ince, none) 0 0 / 220px 220px,
+    radial-gradient(ellipse at 50% 0%, rgba(255, 252, 240, .7), rgba(255, 252, 240, 0) 60%),
+    linear-gradient(180deg, #F4E8CB, #EFE0BC 50%, #F2E5C6);
+}
+html[data-tema="koyu"] :is(.legend details, .app .panel, .drawer, .modal) {
+  --parsomen:
+    radial-gradient(ellipse 130% 100% at 50% 50%, rgba(0, 0, 12, 0) 58%, rgba(0, 0, 12, .28) 88%, rgba(0, 0, 12, .5) 100%),
+    var(--doku-leke-koyu, none) var(--eski-konum, 0 0) / 600px 600px,
+    linear-gradient(180deg, #17244F, #111C40);
+}
+.rulo-cubuk::before, .rulo-cubuk::after { background: radial-gradient(ellipse at 50% 50%, rgba(58, 36, 14, 0) 40%, rgba(58, 36, 14, .3) 100%), var(--cubuk-uc), #D9C394; }
+
 /* ---------- Parşömen rulo ---------- */
 .rulo-sahne { padding: 34px 18px 80px; }
 .rulo { --cubuk: 30px; position: relative; width: min(980px, 100%); margin: 0 auto; filter: drop-shadow(0 18px 28px rgba(60, 38, 14, .22)); }
 html[data-tema="koyu"] .rulo { filter: drop-shadow(0 0 40px rgba(240, 200, 110, .16)) drop-shadow(0 18px 30px rgba(0, 0, 0, .5)); }
 /* Sarılı uçlar: parşömenin kendisi, kenarlarda sarmal görünür */
 .rulo-cubuk { position: relative; z-index: 3; height: var(--cubuk); margin: 0 -14px; border-radius: calc(var(--cubuk) / 2);
-  background:
-    repeating-linear-gradient(90deg, rgba(120, 85, 40, 0) 0 46px, rgba(120, 85, 40, .07) 46px 48px),
-    linear-gradient(180deg, #8C6B3E 0%, #CDB283 18%, #F4E7C7 40%, #E3CFA3 58%, #B8975F 80%, #7A5B32 100%); }
+  background: var(--cubuk-yatay); }
 .rulo-cubuk::before, .rulo-cubuk::after { content: ""; position: absolute; top: 0; width: calc(var(--cubuk) * .62); height: var(--cubuk); border-radius: 50%;
-  background: repeating-radial-gradient(ellipse at 50% 50%, #E9D7AE 0 2px, #A9884F 2.4px 3.2px, #E9D7AE 3.6px 5px), #D9C394;
   box-shadow: inset 0 0 0 1.5px rgba(110, 78, 38, .55); }
 .rulo-cubuk::before { left: -4px; } .rulo-cubuk::after { right: -4px; }
 .rulo-yaprak { position: relative; z-index: 1; margin: -6px 0; padding: 54px clamp(20px, 6vw, 72px) 60px; color: #2E2014;
   --murekkep: #2E2014; --murekkep-2: #5C4630; --murekkep-3: #85704F; --portakal: #A8321E;
-  background:
-    var(--doku-leke, none) 0 0 / 600px 600px,
-    var(--doku-ince, none) 0 0 / 220px 220px,
-    radial-gradient(ellipse at 50% 0%, rgba(255, 252, 240, .7), rgba(255, 252, 240, 0) 60%),
-    linear-gradient(180deg, #F4E8CB, #EFE0BC 50%, #F2E5C6);
+  background: var(--parsomen);
+  -webkit-mask: var(--maske-yan); mask: var(--maske-yan);
   box-shadow: inset 0 22px 22px -16px rgba(110, 76, 30, .38), inset 0 -22px 22px -16px rgba(110, 76, 30, .38), inset 14px 0 22px -18px rgba(110, 76, 30, .35), inset -14px 0 22px -18px rgba(110, 76, 30, .35); }
-html[data-tema="koyu"] .rulo-yaprak { background: var(--doku-leke-koyu, none) 0 0 / 600px 600px, linear-gradient(180deg, #EBDDBA, #E2D1AA 50%, #E8D9B4); }
+
 
 /* Açılış: yaprak yukarıdan aşağı açılır, alt rulo onu sararak iner */
 .rulo.aciliyor .rulo-alt { position: absolute; left: 0; right: 0; top: 0; }
 .rulo.aciliyor .rulo-yaprak { will-change: clip-path; }
 
 /* ---------- Sayfa içeriği ---------- */
-.rulo h1 { font-family: var(--baslik); font-weight: 600; font-size: clamp(30px, 4.4vw, 46px); line-height: 1.12; margin: 0 0 6px; text-align: center; letter-spacing: .02em; }
-.rulo .alt-baslik { text-align: center; font-family: var(--serif); font-style: italic; font-size: 20px; color: #5C4630; margin: 0 auto 26px; max-width: 46ch; }
-.rulo .yontem { max-width: 70ch; margin: 0 auto 30px; font-size: 16.5px; line-height: 1.6; color: #4A3826; text-align: center; }
-.rulo .susleme { display: block; width: 180px; height: 18px; margin: 0 auto 26px; color: #A8321E; opacity: .75; }
+.rulo-sahne .rulo h1 { font-family: var(--baslik); font-weight: 600; font-size: clamp(30px, 4.4vw, 46px); line-height: 1.12; margin: 0 0 6px; text-align: center; letter-spacing: .02em; }
+.rulo-sahne .rulo .alt-baslik { text-align: center; font-family: var(--serif); font-style: italic; font-size: 20px; color: #5C4630; margin: 0 auto 26px; max-width: 46ch; }
+.rulo-sahne .rulo .yontem { max-width: 70ch; margin: 0 auto 30px; font-size: 16.5px; line-height: 1.6; color: #4A3826; text-align: center; }
+.rulo-sahne .rulo .susleme { display: block; width: 180px; height: 18px; margin: 0 auto 26px; color: #A8321E; opacity: .75; }
 
 .tema-sekmeler { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 0 auto 26px; }
 .tema-sekmeler button { font: inherit; font-size: 15.5px; font-weight: 600; padding: 9px 16px; border-radius: 999px; border: 1px solid #CDB68A; background: rgba(255, 250, 236, .6); color: #4A3826; cursor: pointer; display: inline-flex; gap: 8px; align-items: center; }
@@ -93,16 +142,9 @@ html[data-tema="koyu"] .rulo-yaprak { background: var(--doku-leke-koyu, none) 0 
 .yk details summary { cursor: pointer; color: #6B5538; }
 .yk details ul { margin: 6px 0 0; padding-left: 18px; }
 .yk details a { color: #8E2C18; word-break: break-word; }
-.rulo .kaynak-not { margin: 30px auto 0; max-width: 70ch; font-size: 14px; color: #6B5538; text-align: center; }
+.rulo-sahne .rulo .kaynak-not { margin: 30px auto 0; max-width: 70ch; font-size: 14px; color: #6B5538; text-align: center; }
 
 @media (max-width: 760px) { .tema-bas { grid-template-columns: 1fr; } .rulo { --cubuk: 24px; } .rulo-sahne { padding: 22px 10px 70px; } .rulo-cubuk { margin: 0 -6px; } }
-
-/* ---------- Harita açılışı: yatay bir rulo gibi soldan sağa açılır ---------- */
-.harita-rulo-cubuk { position: absolute; top: 0; bottom: 0; width: 26px; z-index: 900; pointer-events: none; border-radius: 13px;
-  background: linear-gradient(90deg, #7A5B32 0%, #B8975F 20%, #E3CFA3 42%, #F4E7C7 60%, #CDB283 82%, #8C6B3E 100%);
-  box-shadow: 0 0 18px rgba(60, 38, 14, .35); }
-.harita-rulo-cubuk::before, .harita-rulo-cubuk::after { content: ""; position: absolute; left: 0; width: 26px; height: 16px; border-radius: 50%; background: repeating-radial-gradient(ellipse, #E9D7AE 0 2px, #A9884F 2.4px 3.2px, #E9D7AE 3.6px 5px); }
-.harita-rulo-cubuk::before { top: -4px; } .harita-rulo-cubuk::after { bottom: -4px; }
 
 @media (prefers-reduced-motion: reduce) { .acilir-liste { transition: none; } }
 
@@ -115,3 +157,80 @@ html[data-tema="koyu"] .rulo-yaprak { background: var(--doku-leke-koyu, none) 0 
 @media (max-width: 760px) { .td main.rulo-sahne { padding: 22px 10px 70px; } }
 /* Yeni menü daha kısa: 980 piksele kadar üst çubuğa sığar */
 @media (max-width: 1240px) and (min-width: 981px) { .ust nav.nav-grup:not(.menu-panel) { display: flex; } .ust .menu-dugme { display: none; } }
+
+/* =================== Harita sayfası: her yüzey bir rulo =================== */
+/* Ortak: yatay rulo çubuğu (sözde öğe olarak), uçlarda sarmal */
+.legend::before, .legend::after, .app .panel::before, .app .panel::after, .drawer::before, .drawer::after, .modal::before, .modal::after, .gecici-cubuk {
+  content: ""; display: block; height: 22px; border-radius: 11px; pointer-events: none;
+  background: var(--cubuk-uc) left center / 14px 100% no-repeat, var(--cubuk-uc) right center / 14px 100% no-repeat, var(--cubuk-yatay);
+  box-shadow: 0 3px 6px rgba(60, 38, 14, .28);
+}
+
+/* 1) Türkiye haritasının çerçevesi: soldan sağa açılmış yatay bir rulo; iki dikey çubuk kalıcıdır */
+.harita-rulo-cubuk { position: absolute; top: 0; bottom: 0; width: 22px; z-index: 955; pointer-events: none; border-radius: 11px;
+  background: var(--cubuk-dikey); box-shadow: 0 0 16px rgba(60, 38, 14, .35); }
+.harita-rulo-cubuk.sol { left: 0; } .harita-rulo-cubuk.sag { right: 0; }
+.harita-rulo-cubuk::before, .harita-rulo-cubuk::after { content: ""; position: absolute; left: 0; width: 22px; height: 14px; border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(58, 36, 14, 0) 40%, rgba(58, 36, 14, .3) 100%), var(--cubuk-uc), #D9C394; box-shadow: inset 0 0 0 1.2px rgba(110, 78, 38, .5); }
+.harita-rulo-cubuk::before { top: -3px; } .harita-rulo-cubuk::after { bottom: -3px; }
+html[data-tema="koyu"] .harita-rulo-cubuk { box-shadow: 0 0 18px rgba(240, 200, 110, .14); }
+html[data-tema="koyu"] .harita-rulo-cubuk::before, html[data-tema="koyu"] .harita-rulo-cubuk::after { background: var(--cubuk-uc), #1D2C5E; box-shadow: inset 0 0 0 1.2px rgba(201, 165, 72, .5); }
+.map-wrap .leaflet-left { left: 20px; } .map-wrap .leaflet-right { right: 20px; }
+/* Haritanın kendisi de eski bir yaprak: pas lekeleri il dolgularının üstünde, yapıların altında */
+html:not([data-tema="koyu"]) .harita-doku { background: url("../img/eskitme.svg") 0 0 / 900px 900px, var(--doku-leke) 0 0 / 600px 600px, var(--doku-ince) 0 0 / 220px 220px; }
+
+/* 2) Lejant: küçük bir rulo. Kapalıyken iki çubuk birbirine sarılır, açılınca yaprak aralarında açılır */
+.legend { left: 40px; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; filter: drop-shadow(0 8px 12px rgba(60, 38, 14, .3)); }
+html[data-tema="koyu"] .legend { filter: drop-shadow(0 0 22px rgba(240, 200, 110, .12)) drop-shadow(0 8px 14px rgba(0, 0, 0, .5)); }
+.legend::before, .legend::after { position: absolute; left: -3px; right: -3px; top: auto; z-index: 2; height: 16px; border-radius: 8px;
+  background: var(--cubuk-uc) left center / 11px 100% no-repeat, var(--cubuk-uc) right center / 11px 100% no-repeat, var(--cubuk-yatay); }
+.legend::before { top: 0; } .legend::after { bottom: 0; }
+.legend details { --eski-konum: -310px -520px; margin: 8px 0; padding: 14px 15px 13px; background: var(--parsomen); -webkit-mask: var(--maske-yan-ince); mask: var(--maske-yan-ince); overflow: hidden;
+  --murekkep: #2E2014; --murekkep-2: #5C4630; --murekkep-3: #85704F; --portakal: #A8321E; color: #2E2014; }
+html[data-tema="koyu"] .legend details { --murekkep: #EEE6D0; --murekkep-2: #BFC6DE; --murekkep-3: #8E99BC; --portakal: #D9B04A; color: #EEE6D0; }
+.legend details:not([open]) { padding-top: 9px; padding-bottom: 8px; }
+.legend.katlaniyor details { will-change: height; }
+.legend.katlaniyor { overflow: visible; }
+
+/* 3) Filtre paneli: solda asılı duran bir rulo; çubuklar kaydırırken üstte ve altta sabit kalır, sağ kenar yıpranmış */
+.app .panel { --eski-konum: 140px -60px; background: var(--parsomen); border-right: 0; box-shadow: none; -webkit-mask: var(--maske-sag-bantli); mask: var(--maske-sag-bantli); }
+.app .panel::before, .app .panel::after { position: sticky; z-index: 6; flex: none; border-radius: 0 11px 11px 0;
+  background: var(--cubuk-uc) right center / 14px 100% no-repeat, var(--cubuk-yatay); }
+.app .panel::before { top: 0; order: -10; } .app .panel::after { bottom: 0; order: 10; margin-top: auto; }
+.app .panel .panel-head { padding-top: 16px; }
+.app .panel .panel-foot { bottom: 22px; border-top-color: rgba(133, 112, 79, .35); box-shadow: 0 -10px 18px rgba(92, 54, 16, .1);
+  background: var(--doku-ince, none) 0 0 / 220px 220px, linear-gradient(180deg, rgba(240, 226, 192, .97), rgba(236, 220, 184, .97)); }
+html[data-tema="koyu"] .app .panel .panel-foot { background: linear-gradient(180deg, rgba(21, 33, 72, .97), rgba(17, 28, 64, .97)); box-shadow: 0 -10px 18px rgba(0, 0, 12, .35); }
+
+/* 4) Bilgi kutuları: yapı çekmecesi ve pencereler, açılırken çubuk yukarıdan aşağı iner */
+.drawer { --eski-konum: -200px 180px; background: var(--parsomen); border-left: 0; animation: none; padding-top: 0; padding-bottom: 0; }
+.drawer::before, .drawer::after { position: sticky; z-index: 6; margin: 0 -26px; }
+.drawer::before { top: 0; margin-bottom: 20px; } .drawer::after { bottom: 0; margin-top: 26px; clear: both; }
+.drawer .drawer-close { top: 30px; margin-top: 0; }
+.modal { --eski-konum: 260px 90px; background: var(--parsomen); border: 0; border-radius: 0; padding: 0 28px; overflow: auto; -webkit-mask: var(--maske-yan-bantli); mask: var(--maske-yan-bantli); }
+.modal::before, .modal::after { position: sticky; left: auto; right: auto; height: 22px; z-index: 6; margin: 0 -28px; border-radius: 11px; }
+.modal::before { top: 0; margin-bottom: 26px; } .modal::after { bottom: 0; margin-top: 22px; }
+.modal .drawer-close { top: 30px; }
+html:not([data-tema="koyu"]) .modal::backdrop { background: rgba(46, 32, 20, .5); }
+.gecici-cubuk { position: fixed; z-index: 1004; }
+@media (min-width: 861px) { .drawer { -webkit-mask: var(--maske-sol-bantli); mask: var(--maske-sol-bantli); } }
+@media (max-width: 860px) {
+  .drawer { border-radius: 0; border-top: 0; }
+  .harita-rulo-cubuk { width: 14px; border-radius: 7px; } .harita-rulo-cubuk::before, .harita-rulo-cubuk::after { width: 14px; height: 10px; }
+  .map-wrap .leaflet-left { left: 12px; } .map-wrap .leaflet-right { right: 12px; }
+  .legend { left: 26px; } .panel-toggle { left: 26px; }
+}
+
+/* =================== Giriş: kartuş bir rulo içinde açılır =================== */
+.kartus.rulo { width: auto; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; --cubuk: 26px; }
+.kartus.rulo::before, .kartus.rulo::after { content: none; }
+.kartus.rulo { margin: 24px 0 40px 54px; }
+.kartus .rulo-yaprak { --eski-konum: -90px -330px; padding: 34px 38px 30px; }
+.kartus .rulo-cubuk { margin: 0 -12px; }
+/* Okuma ruloları (sayfalar ve giriş kartuşu) gece de açık renkli parşömendir: gece mavisi üstünde ışıyan bir yazma gibi.
+   Araç ruloları (panel, lejant, çekmece, pencere) ise temaya uyar. */
+html[data-tema="koyu"] .rulo { --cubuk-yatay: var(--cubuk-yatay-gunduz); --cubuk-uc: var(--cubuk-uc-gunduz); }
+.kartus .rulo-yaprak { --portakal-metin: #8E2C18; --porselen-kenar: #CDB68A; }
+html[data-tema="koyu"] .kartus .rulo-yaprak .btn-ghost { background: rgba(255, 250, 236, .65); color: #2E2014; border-color: #B79E70; box-shadow: none; }
+html[data-tema="koyu"] .kartus .rulo-yaprak .link-btn { color: #8E2C18; }
+@media (max-width: 760px) { .kartus.rulo { margin: -10px 16px 30px; } .kartus .rulo-yaprak { padding: 26px 24px 24px; } .kartus .rulo-cubuk { margin: 0 -6px; } }

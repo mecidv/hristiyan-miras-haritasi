@@ -135,7 +135,7 @@
     // Davet boş bir yere yerleşir: ana sayfada kahraman alanının sağ üst köşesindeki boş alana (Karadeniz kıyısının üstü) (dar ekranda künye kutusunun içine),
     // haritada panelin başına (dar ekranda haritanın üst kısmına)
     if (GIRIS) {
-      const kah = document.querySelector(".kahraman"), kar = document.querySelector(".kartus");
+      const kah = document.querySelector(".kahraman"), kar = document.querySelector(".kartus .rulo-yaprak") || document.querySelector(".kartus");
       if (!dar() && kah) { davet.classList.add("tur-davet--kose"); kah.appendChild(davet); }
       else if (kar) { davet.classList.add("tur-davet--akis"); kar.appendChild(davet); }
       else govde.appendChild(davet);
