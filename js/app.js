@@ -342,7 +342,9 @@
     yeni.forEach(no => { if (!gorunen.has(no)) { ekle.push(markers.get(no)); gorunen.add(no); } });
     const grupla = arr => { const m = new Map(); arr.forEach(mk => { const k = mk.options.il; (m.get(k) || m.set(k, []).get(k)).push(mk); }); return m; };
     grupla(cik).forEach((arr, il) => { const g = ilKumesi(il); if (KUME) g.removeLayers(arr); else arr.forEach(m => g.removeLayer(m)); });
-    grupla(ekle).forEach((arr, il) => { const g = ilKumesi(il); if (KUME) g.addLayers(arr); else arr.forEach(m => g.addLayer(m)); });
+    // markercluster'ın toplu ekleme işlevi tek yapılık bir kümeyi haritaya hiç çizmiyor (tek kayıtlı iller, ör. Kastamonu);
+    // tek yapı tek tek eklenir
+    grupla(ekle).forEach((arr, il) => { const g = ilKumesi(il); if (KUME && arr.length > 1) g.addLayers(arr); else arr.forEach(m => g.addLayer(m)); });
     rozetler();
     Ortak.sayac($("#t-toplam"), liste.length, { sure: 800 });
     TURLER.forEach(t => Ortak.sayac($("#t-" + Ortak.IKON_SINIF[t]), liste.filter(y => y.tur === t).length, { sure: 800 }));
