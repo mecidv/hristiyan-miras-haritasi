@@ -47,7 +47,10 @@
   I.uygula(); I.baglantiDil();
   if (EN) { $("#pusula-k").textContent = "N"; document.title = T("harita_title"); }
 
-  const araHazirla = () => YAPILAR.forEach(y => { y._ara = norm([y.ad, y.il, y.ilce, y.yer, y.islev, EN ? islevAd(y) : ""].join(" ")); });
+  // Yerleşik İngilizce ad (yalnızca İngilizce Vikipedi'de maddesi olan yapılar; data/ad-en.js)
+  const AD_EN = window.AD_EN || {};
+  const enAd = (y) => (AD_EN[y.no] ? AD_EN[y.no][0] : "");
+  const araHazirla = () => YAPILAR.forEach(y => { y._ara = norm([y.ad, enAd(y), y.il, y.ilce, y.yer, y.islev, EN ? islevAd(y) : ""].join(" ")); });
   araHazirla();
 
   // ---------------- Harita ----------------
@@ -179,11 +182,12 @@
   }
 
   function iconFor(y, gec) {
-    return L.divIcon({ className: "yapi-ic", html: Ortak.ikon(y.tur).replace("<svg ", `<svg style="--gec:${gec || 0}ms" `), iconSize: [26, 26], iconAnchor: [13, 15] });
+    // Beyaz zemin ikonla birlikte bir kapta durur: açılış animasyonunda ikonla birlikte düşer, önceden belirmez
+    return L.divIcon({ className: "yapi-ic", html: `<span class="ik-zemin" style="--gec:${gec || 0}ms">${Ortak.ikon(y.tur)}</span>`, iconSize: [26, 26], iconAnchor: [13, 15] });
   }
 
   function tipHtml(y) {
-    return `<h3>${esc(trunc(y.ad, 110))}</h3>
+    return `<h3>${esc(trunc(y.ad, 110))}</h3>${EN && enAd(y) ? `<p class="tip-en">${esc(enAd(y))}</p>` : ""}
       <div class="tip-tur">${Ortak.ikon(y.tur)}${esc(turAd(y.tur))}${y.topluluk.length ? " (" + esc(y.topluluk.map(toplulukAd).join(", ")) + ")" : ""}</div>
       <dl>
         <dt>${esc(T("tip_konum"))}</dt><dd>${esc(konumMetni(y))}</dd>
@@ -840,6 +844,7 @@
     $("#drawer-body").innerHTML = `
       <div class="d-tur">${Ortak.ikon(y.tur)}${esc(turAd(y.tur))}${esc(digerTur)}</div>
       <h2>${esc(y.ad)}</h2>
+      ${EN && AD_EN[y.no] ? `<p class="d-en-ad">${esc(AD_EN[y.no][0])} <a href="https://en.wikipedia.org/wiki/${encodeURIComponent(AD_EN[y.no][1].replace(/ /g, "_"))}" target="_blank" rel="noopener">${esc(T("d_en_kaynak"))}</a></p>` : ""}
       <p class="d-place">${esc(konumMetni(y))}</p>
       <dl class="d-list">
         <div><dt>${esc(T("guncel_islevi"))}</dt><dd>${esc(islevAd(y))}</dd></div>

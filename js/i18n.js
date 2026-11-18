@@ -52,7 +52,8 @@
     btn_gmaps: ["Google Haritalar’da ara", "Search on Google Maps"],
     d_kaynak_tez: ["Kaynak: Tez Ek C, Tablo 6", "Source: thesis, Appendix C, Table 6"], d_s: ["s.", "p."], d_kayit_no: ["Kayıt no", "Record no."],
     d_ozgun: ["Özgün Türkçe kayıt", "Show the original Turkish entry"],
-    d_ceviri_not: ["", "The current use and protection details above are English translations of the Turkish inventory entry. Building names are kept in their original Turkish form."],
+    d_ceviri_not: ["", "The current use and protection details above are English translations of the Turkish inventory entry. Building names are kept in their original Turkish form; where a building has an English Wikipedia article, that English name is shown under the title."],
+    d_en_kaynak: ["", "English Wikipedia"],
     unesco_dunya: ["UNESCO Dünya Mirası", "UNESCO World Heritage"], unesco_gecici: ["UNESCO Geçici Liste", "UNESCO Tentative List"],
     foto_kredi: ["Fotoğraf", "Photo"],
 

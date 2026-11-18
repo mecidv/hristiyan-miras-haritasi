@@ -223,7 +223,8 @@ legend { font-size: 14px; color: var(--murekkep-2); margin-bottom: 6px; padding:
 @keyframes ciz { to { stroke-dashoffset: 0; } }
 @keyframes damla { from { opacity: 0; transform: scale(2.2); } to { opacity: 1; transform: scale(1); } }
 @keyframes belir { from { opacity: 0; } }
-#map.ilk .yapi-ic .ik { animation: damla .5s cubic-bezier(.2,1.3,.4,1) both; animation-delay: var(--gec, 0ms); }
+.yapi-ic .ik-zemin { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; }
+#map.ilk .yapi-ic .ik-zemin { animation: damla .5s cubic-bezier(.2,1.3,.4,1) both; animation-delay: var(--gec, 0ms); }
 #map.ilk .il-label { animation: belir .6s ease both; animation-delay: 1.3s; }
 .il-yol { transition: fill-opacity .7s ease, fill .5s ease, stroke-opacity .5s ease; }
 .il-vurgu { pointer-events: none; }
@@ -493,3 +494,7 @@ html.tema-gecis, html.tema-gecis * { transition: background-color .3s ease, colo
   .panel-goster:not([hidden]) { display: inline-flex; align-items: center; gap: 7px; position: absolute; top: 14px; left: 58px; z-index: 960; padding: 8px 14px 8px 10px; border-radius: 999px; border: 1px solid var(--porselen-kenar); background: var(--sir); color: var(--murekkep); font-weight: 700; font-size: 14.5px; cursor: pointer; box-shadow: var(--sir-golge); animation: belir .3s ease .25s both; }
 }
 @media (prefers-reduced-motion: reduce) { .app, .app .panel, .app.panel-kapali .panel { transition: none; } .p-ok { transition: none; } }
+/* Yerleşik İngilizce ad (İngilizce arayüz) */
+.d-en-ad { margin: -2px 0 8px; font-family: var(--serif); font-style: italic; font-size: 19px; line-height: 1.25; color: var(--murekkep-2); }
+.d-en-ad a { font-family: var(--sans, inherit); font-style: normal; font-size: 12.5px; font-weight: 600; margin-left: 6px; color: var(--portakal-metin); white-space: nowrap; }
+.yapi-tip .tip-en { margin: -2px 0 6px; font-style: italic; font-size: 14px; color: var(--murekkep-2); }
