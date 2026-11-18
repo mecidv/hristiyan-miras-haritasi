@@ -489,9 +489,10 @@ html.tema-gecis, html.tema-gecis * { transition: background-color .3s ease, colo
   .app .panel { position: absolute; left: 0; top: 0; bottom: 0; width: var(--panel-w); z-index: 1001; }
   .app.panel-sarili .panel { bottom: auto; overflow: hidden; cursor: pointer; }
   .app.panel-sarili .panel > :not(.panel-head) { display: none; }
-  .app.panel-sarili .panel .panel-head { padding-bottom: 12px; }
-  .panel-head { position: relative; padding-right: 58px; }
-  .panel-gizle { display: grid; place-items: center; position: absolute; top: 18px; right: 16px; width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--porselen-kenar); background: var(--porselen); color: var(--murekkep-2); cursor: pointer; box-shadow: var(--sir-golge); }
+  /* Başlık ve sarma düğmesi aynı satırda, dikeyde ortalı; açık ve sarılı hâlde başlığın boyu aynıdır (sarma hareketi tam oturur) */
+  .app .panel .panel-head { display: flex; align-items: center; gap: 12px; padding: 14px 16px 14px 22px; }
+  .app .panel .panel-head h1 { flex: 1; min-width: 0; margin: 0; }
+  .panel-gizle { display: grid; place-items: center; flex: none; width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--porselen-kenar); background: var(--porselen); color: var(--murekkep-2); cursor: pointer; box-shadow: var(--sir-golge); }
   .panel-gizle:hover { color: var(--portakal-metin); border-color: var(--portakal-kenar); }
   .panel-gizle svg { width: 18px; height: 18px; transition: transform .3s ease; }
   .app.panel-sarili .panel-gizle svg { transform: rotate(180deg); }
