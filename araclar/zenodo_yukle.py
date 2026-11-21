@@ -46,7 +46,8 @@ def main():
     print("En son yayımlanmış sürüm:", son, son_ad)
     # Yeni sürüm taslağı: bu çatıda yayımlanmamış bir taslak varsa onu kullan, yoksa yenisini aç
     taslaklar = istek("GET", f"{API}/deposit/depositions?status=draft&size=50")
-    mevcut = [t for t in taslaklar if str(t.get("conceptrecid")) == CATI]
+    # Zenodo bu listede yayımlanmış kayıtları da döndürebiliyor; yalnızca gönderilmemiş taslaklar alınır
+    mevcut = [t for t in taslaklar if str(t.get("conceptrecid")) == CATI and not t.get("submitted") and str(t.get("id")) != son]
     if mevcut:
         taslak = istek("GET", f"{API}/deposit/depositions/{mevcut[0]['id']}")
     else:
@@ -54,6 +55,8 @@ def main():
         taslak = istek("GET", yeni["links"]["latest_draft"])
     tid = str(taslak["id"])
     print("Taslak:", tid)
+    if taslak.get("submitted") or tid == son:
+        sys.exit(f"{tid} yayımlanmış bir kayıt, taslak değil; hiçbir şey değiştirilmedi")
     # Önceki sürümden devralınan dosyaları kaldır (ilk sürümdeki depo arşivi dahil)
     for f in taslak.get("files", []):
         istek("DELETE", f"{API}/deposit/depositions/{tid}/files/{f['id']}")
