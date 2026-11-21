@@ -24,7 +24,7 @@
   const ISLEV = {
     "Arkeolojik Sit Alanı": "Archaeological site", "Arkeolojik Sit Alanı - Ziyarete açık": "Archaeological site, open to visitors",
     "Arkeolojik kazı alanı": "Excavation site", "Arkeolojik çalışma alanı": "Archaeological research site", "Ayazma": "Holy spring (ayazma)",
-    "Bilinmiyor": "Unknown", "Bina tahribata uğramış ancak ziyaret ediliyor.": "Damaged but still visited",
+    "Bilinmiyor": "Unknown", "Özel Konut -Müze": "Private residence and museum", "Bina tahribata uğramış ancak ziyaret ediliyor.": "Damaged but still visited",
     "Büyük çoğunluğu aktif olarak hizmet vermeye devam etmektedir.": "Most remain in active use",
     "Cami": "Mosque", "Cami ve Müze": "Mosque and museum", "Camii": "Mosque", "Depo": "Storage", "Depo (Samanlık veya ahır)": "Storage (barn or stable)",
     "Depo veya Ahır": "Storage or stable", "Depo veya ahır": "Storage or stable", "Dijital Kütüphane": "Digital library", "Doğa Tarihi Müzesi": "Natural history museum",
@@ -66,6 +66,10 @@
   const KALIP = [
     [/^-?$/, ""],
     [/^Bilinmiyor\.?$/, "Unknown."],
+    [/^Dağın zirvesine yol yapılıyor\.$/, "A road is being built to the summit of the mountain."],
+    [/^Metruk durumdadır\.$/, "It is derelict."],
+    [/^Kaledibi İlköğretim Okulu’na bağlı çok amaçlı salon olarak kull[aı]?nılmaktadır\.$/, "It is used as a multi-purpose hall of Kaledibi Primary School."],
+    [/^Fener Rum Patrikhanesi Avlusunda Aya Yorgi Rum Ortodoks Kilisesi Vakfı’na bağlıdır\.?$/, "It belongs to the Aya Yorgi Greek Orthodox Church Foundation in the courtyard of the Ecumenical Patriarchate in Fener."],
     [/^Bilinmiyor, son onarım (\d{4}) yılında yapılmıştır\.$/, "Unknown; last repaired in $1."],
     [/^Bilinmiyor, tahribata uğramış\.?$/, "Unknown; damaged."],
     [/^Harabe (hal|şekl)inde(dir|dirler)\.?$/, "In ruins."], [/^Harabe halde(dir|dirler)\.$/, "In ruins."],
