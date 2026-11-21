@@ -719,7 +719,7 @@
     let kayitli = null; try { kayitli = localStorage.getItem("lejant"); } catch (e) { /* yoksay */ }
     const isOpen = det ? det.open : kayitli ? kayitli === "acik" : acik;
     legend.innerHTML = `<details ${isOpen ? "open" : ""}><summary><span>${esc(T("lejant"))}</span><span class="lejant-dugme" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 12.5 10 7.5l5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
-      ${TURLER.map(t => `<div class="row">${Ortak.ikon(t)}${esc(turAd(t))}</div>`).join("")}
+      ${TURLER.map(t => `<button type="button" class="row lejant-tur" data-tur="${t}" aria-pressed="${state.turler.has(t)}" title="${esc(T("lejant_tur_ipucu"))}">${Ortak.ikon(t)}${esc(turAd(t))}</button>`).join("")}
       ${$("#l-iller").checked ? `<h4>${esc(T("ildeki_kayit"))}</h4>
       <div class="ramp">${rampa().map(c => `<i style="background:${c}"></i>`).join("")}</div>
       <div class="ramp-lab"><span>${labels[0]}</span><span>${labels[labels.length - 1]}</span></div>
@@ -791,6 +791,13 @@
 
   // ---------------- Filtre olayları ----------------
   $$('input[name="tur"]').forEach(c => c.addEventListener("change", () => { state.turler = new Set($$('input[name="tur"]:checked').map(x => x.value)); uygula(); }));
+  // Lejanttaki tür satırları süzgeç gibi çalışır ve paneldeki tür kutularıyla eşleşir
+  $("#legend").addEventListener("click", e => {
+    const b = e.target.closest(".lejant-tur"); if (!b) return;
+    const c = $$('input[name="tur"]').find(x => x.value === b.dataset.tur); if (!c) return;
+    c.checked = !c.checked; c.dispatchEvent(new Event("change", { bubbles: true }));
+    requestAnimationFrame(() => { const y = $(`#legend .lejant-tur[data-tur="${b.dataset.tur}"]`); if (y) y.focus({ preventScroll: true }); });
+  });
   $("#f-islev").addEventListener("change", e => { state.islev = e.target.value; uygula(); });
   $("#f-topluluk").addEventListener("change", e => { state.topluluk = e.target.value; uygula(); });
   $("#f-bolge").addEventListener("change", e => { state.bolge = e.target.value; uygula(); });
@@ -864,7 +871,18 @@
     else ruloKatla(p, false, katliBoy(), false, animasyon, yaz);
   }
   $("#panel-gizle").addEventListener("click", e => { e.stopPropagation(); panelSar(!appEl.classList.contains("panel-sarili"), true); });
-  $("#panel").addEventListener("click", e => { if (appEl.classList.contains("panel-sarili") && genisEkran()) panelSar(false, true); });
+  // Rulo çubukları sözde öğe olduğundan tıklama kutunun kendisine düşer; üst ve alt bantta mı diye bakılır
+  function cubugaMi(el, e) {
+    if (e.target !== el) return false;
+    const r = el.getBoundingClientRect(); return e.clientY - r.top < 26 || r.bottom - e.clientY < 26;
+  }
+  // Sarılı panelin her yeri açar; açık panelde yalnızca başlık ve çubuklar sarar (filtreler, bağlantılar ve düğmeler etkilenmez)
+  $("#panel").addEventListener("click", e => {
+    if (!genisEkran()) return;
+    const p = $("#panel");
+    if (appEl.classList.contains("panel-sarili")) { panelSar(false, true); return; }
+    if (cubugaMi(p, e) || (e.target.closest(".panel-head") && !e.target.closest("button, a, input, label"))) panelSar(true, true);
+  });
   { const d = $("#panel-gizle"), sar = appEl.classList.contains("panel-sarili"); d.setAttribute("aria-label", T(sar ? "panel_ac" : "panel_gizle")); d.setAttribute("aria-expanded", String(!sar)); }
   $("#panel-close").addEventListener("click", () => togglePanel(false));
   map.on("click", () => {
@@ -907,7 +925,10 @@
     ruloKatla(d, katla, KATLI_H, !genisEkran(), true, yaz);
   }
   $("#drawer").addEventListener("click", e => {
-    if ($("#drawer").classList.contains("katli") && !e.target.closest(".drawer-close")) { e.preventDefault(); cekmeceKatla(false); }
+    const d = $("#drawer");
+    if (d.classList.contains("katli") && !e.target.closest(".drawer-close")) { e.preventDefault(); cekmeceKatla(false); return; }
+    // Açık kutuda başlık ya da çubuklar kutuyu sarar
+    if (!d.classList.contains("katli") && (cubugaMi(d, e) || e.target.closest("#drawer-body > h2"))) cekmeceKatla(true);
   });
   $("#drawer").addEventListener("keydown", e => {
     if ($("#drawer").classList.contains("katli") && (e.key === "Enter" || e.key === " ") && e.target === $("#drawer")) { e.preventDefault(); cekmeceKatla(false); }

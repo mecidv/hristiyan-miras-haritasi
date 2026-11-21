@@ -130,6 +130,9 @@
   function lejantKatla() {
     const lej = document.getElementById("legend"); if (!lej) return;
     lej.addEventListener("click", e => {
+      // Çubuklara (sözde öğeler) ya da sarılı lejantın herhangi bir yerine tıklamak da başlık gibi davranır
+      const det = lej.querySelector("details");
+      if (det && !e.target.closest("summary") && (e.target === lej || !det.open)) { e.preventDefault(); det.querySelector("summary").click(); return; }
       const ozet = e.target.closest("summary"); if (!ozet || AZALT) return;
       const d = ozet.parentElement; if (!d.animate) return;
       e.preventDefault();

@@ -216,6 +216,8 @@ html[data-tema="koyu"] .app .panel .panel-foot { background: linear-gradient(180
 .modal .drawer-close { top: 30px; }
 html:not([data-tema="koyu"]) .modal::backdrop { background: rgba(46, 32, 20, .5); }
 .gecici-cubuk { position: fixed; z-index: 1004; }
+/* Çubuklar tıklanabilir: tıklama kutunun kendisine düşer ve kutuyu sarar ya da açar (app.js, rulo.js) */
+.legend::before, .legend::after, .app .panel::before, .app .panel::after, .drawer::before, .drawer::after { pointer-events: auto; cursor: pointer; }
 @media (min-width: 861px) { .drawer { -webkit-mask: var(--maske-sol-bantli); mask: var(--maske-sol-bantli); } }
 @media (max-width: 860px) {
   .drawer { border-radius: 0; border-top: 0; }

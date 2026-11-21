@@ -164,7 +164,7 @@
     ziyaret_dokum: ["Bu ay {ay}, {yil} {yilS}, yayına girdiğinden beri {top} ziyaret", "{ay} visits this month, {yilS} in {yil}, {top} since launch"],
     ziyaret_not: ["Aynı tarayıcıdan gelen ziyaretler günde bir kez sayılır; kişisel veri tutulmaz.", "Visits from the same browser are counted once a day; no personal data is stored."],
     surum: ["Sürüm", "Version"],
-    tur_bag: ["Site turu", "Site tour"],
+    tur_bag: ["Site turu", "Site tour"], foot_daha: ["Kılavuz, atıf ve site bilgisi", "Guide, citation and site info"], lejant_tur_ipucu: ["Bu türü haritada göster ya da gizle", "Show or hide this type on the map"],
     site_turu_uzun: ["1 dakikada site turu", "One-minute site tour"],
     surum_not: ["İlk sayı büyük yenilemeyi, ikinci sayı o yenilemeden sonraki güncelleme sırasını gösterir.", "The first number marks a major redesign, the second the update count since then."],
     tema_koyu: ["Lapis Lazuli (gece) temasına geç", "Switch to the Lapis Lazuli (night) theme"],
