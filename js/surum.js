@@ -1,3 +1,3 @@
 // Bu dosya her yayında otomatik güncellenir (araclar/surum-guncelle.sh).
 // Sürüm: büyük yenileme . o yenilemeden sonraki güncelleme sırası
-window.SITE_SURUM = { surum: "2.50", tarih: "2026-11-21T18:36:26+03:00" };
+window.SITE_SURUM = { surum: "2.51", tarih: "2026-11-21T18:40:50+03:00" };
