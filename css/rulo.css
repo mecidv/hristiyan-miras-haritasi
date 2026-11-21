@@ -221,7 +221,7 @@ html:not([data-tema="koyu"]) .modal::backdrop { background: rgba(46, 32, 20, .5)
   .drawer { border-radius: 0; border-top: 0; }
   .harita-rulo-cubuk { width: 14px; border-radius: 7px; } .harita-rulo-cubuk::before, .harita-rulo-cubuk::after { width: 14px; height: 10px; }
   .map-wrap .leaflet-left { left: 12px; } .map-wrap .leaflet-right { right: 12px; }
-  .legend { left: 26px; } .panel-toggle { left: 26px; }
+  .legend { left: 26px; bottom: 46px; } .panel-toggle { left: 26px; }   /* telefonda iki satıra inen kaynak yazısı lejantın alt çubuğunu örtmesin */
 }
 
 /* =================== Giriş: kartuş bir rulo içinde açılır =================== */

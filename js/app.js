@@ -59,7 +59,7 @@
   araHazirla();
 
   // ---------------- Harita ----------------
-  const map = L.map("map", { zoomControl: true, minZoom: 5, maxZoom: 18, zoomSnap: 0.25, worldCopyJump: false, maxBoundsViscosity: 1.0 }).fitBounds(TURKIYE);
+  const map = L.map("map", { zoomControl: true, minZoom: 4, maxZoom: 18, zoomSnap: 0.25, worldCopyJump: false, maxBoundsViscosity: 1.0 }).fitBounds(TURKIYE);
   // Yakınlaşma/uçuş sürerken imleç altındaki katmanlar vurgu ve ipucu üretmesin (titremeyi önler)
   let ucusSigorta = 0;
   map.on("zoomstart", () => { map.getContainer().classList.add("ucusta"); clearTimeout(ucusSigorta); ucusSigorta = setTimeout(() => map.getContainer().classList.remove("ucusta"), 2600); });
@@ -70,7 +70,7 @@
   try { if (localStorage.getItem("panel") === "kapali" || localStorage.getItem("panel") === "sarili") appEl.classList.add("panel-sarili"); } catch (e) { /* yoksay */ }
   const solPay = () => (genisEkran() && !appEl.classList.contains("panel-sarili") ? ($("#panel").offsetWidth || 0) : 0);
   const payli = (ek, ust) => ({ paddingTopLeft: [ek + solPay(), ust == null ? ek : ust], paddingBottomRight: [ek, ust == null ? ek : ust] });
-  map.fitBounds(TURKIYE, Object.assign(payli(0, 0), { animate: false }));
+  map.fitBounds(TURKIYE, Object.assign(payli(genisEkran() ? 0 : 14, 0), { animate: false }));
   map.setMaxBounds([[33, 12], [45, 50]]);   // batı payı geniş: sol panel haritanın üstünde durduğundan görünüm batıya kayabilmeli
   // Harita Türkiye'nin dışına fazla uzaklaşmasın: en uzak görünüm, Türkiye'nin sığdığı yakınlıktan yarım kademe geride kalır
   function enUzakAyarla() {
