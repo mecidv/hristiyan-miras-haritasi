@@ -169,6 +169,9 @@ legend { font-size: 14px; color: var(--murekkep-2); margin-bottom: 6px; padding:
 .foot-daha > summary { font-size: 13.5px; font-weight: 600; }
 .foot-daha > summary .p-ok { width: 20px; height: 20px; } .foot-daha > summary .p-ok svg { width: 12px; height: 12px; }
 .foot-daha[open] > summary { margin-bottom: 6px; }
+/* Panelin altındaki bu bölüm yukarı doğru açılır, aşağı doğru kapanır: kapalıyken ok yukarı, açıkken aşağı */
+.panel-foot .foot-daha > summary .p-ok { transform: rotate(180deg); }
+.panel-foot .foot-daha[open] > summary .p-ok { transform: none; }
 .foot-daha .foot-links { font-size: 14px; } .foot-daha .foot-bilgi, .foot-daha .foot-gelistiren { margin-top: 6px; }
 
 /* ---------- Harita ---------- */
