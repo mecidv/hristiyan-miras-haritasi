@@ -370,18 +370,22 @@
     }
   };
   // ---------- Tema (açık / koyu) ----------
+  // Gündüz/gece düğmesi TR/EN gibi kaydırmalı iki parçalıdır; seçili parçanın altında bir kızak kayar
   function temaUygula(t) {
     document.documentElement.dataset.tema = t;
-    document.querySelectorAll("[data-tema-dugme]").forEach(b => {
-      b.setAttribute("aria-pressed", String(t === "koyu"));
-      b.setAttribute("aria-label", I.t(t === "koyu" ? "tema_acik" : "tema_koyu"));
-      b.title = b.getAttribute("aria-label");
+    document.querySelectorAll("[data-tema-dugme]").forEach(g => {
+      g.setAttribute("aria-label", I.t("tema_etiket"));
+      g.querySelectorAll("button[data-tema-deger]").forEach(b => {
+        const d = b.dataset.temaDeger; b.setAttribute("aria-pressed", String(d === t));
+        b.setAttribute("aria-label", I.t(d === "koyu" ? "tema_koyu" : "tema_acik")); b.title = b.getAttribute("aria-label");
+      });
     });
   }
   temaUygula(document.documentElement.dataset.tema === "koyu" ? "koyu" : "acik");
   document.addEventListener("click", e => {
-    const b = e.target.closest("[data-tema-dugme]"); if (!b) return;
-    const yeni = document.documentElement.dataset.tema === "koyu" ? "acik" : "koyu";
+    const b = e.target.closest("[data-tema-dugme] button[data-tema-deger]"); if (!b) return;
+    const yeni = b.dataset.temaDeger;
+    if (yeni === document.documentElement.dataset.tema) return;
     try { localStorage.setItem("tema", yeni); } catch (err) { /* yoksay */ }
     const kok = document.documentElement; kok.classList.add("tema-gecis");
     temaUygula(yeni);

@@ -169,6 +169,7 @@
     surum_not: ["İlk sayı büyük yenilemeyi, ikinci sayı o yenilemeden sonraki güncelleme sırasını gösterir.", "The first number marks a major redesign, the second the update count since then."],
     tema_koyu: ["Lapis Lazuli (gece) temasına geç", "Switch to the Lapis Lazuli (night) theme"],
     tema_acik: ["Piri Reis (gündüz) temasına geç", "Switch to the Piri Reis (day) theme"],
+    tema_etiket: ["Tema: gündüz ya da gece", "Theme: day or night"],
     il_yapilari: ["{il} içindeki yapılar", "Buildings in {il}"],
     ilce_yapilari: ["{ilce} ilçesindeki yapılar", "Buildings in {ilce} district"],
     geri_il: ["{il} haritasına dön", "Back to the {il} map"],

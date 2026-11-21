@@ -263,3 +263,50 @@ html[data-tema="koyu"] .drawer-close:hover { background: radial-gradient(circle 
 
 .harita-ortu { position: absolute; inset: 0; z-index: 954; pointer-events: none; background: var(--doku-ince, none) 0 0 / 220px 220px, var(--zemin); }
 html[data-tema="koyu"] .harita-ortu { background: var(--zemin); }
+
+/* =================== Süslemeli rulo (Deneme 4, C seçeneği) ===================
+   Parşömen kendi üstüne sarılır; uçlarda kısa ahşap kapaklar, rulonun üstünde mürekkeple çizilmiş ince bir sarmaşık,
+   yaprağın köşelerinde süsleme bulunur. Çizimler img/rulo içindedir; gece temasında kapaklar yaldızlı, mürekkep altın renklidir. */
+:root, html[data-tema="koyu"] .rulo {
+  --rulo-kagit: linear-gradient(180deg, #8E7043 0%, #C4A671 16%, #EBDAB0 36%, #F7EDD0 46%, #E3CDA0 62%, #B89560 82%, #7E6038 100%);
+  --rulo-kagit-dikey: linear-gradient(90deg, #8E7043 0%, #C4A671 16%, #EBDAB0 36%, #F7EDD0 46%, #E3CDA0 62%, #B89560 82%, #7E6038 100%);
+  --rulo-kapak-sol: url("../img/rulo/kapak-sol.svg"); --rulo-kapak-sag: url("../img/rulo/kapak-sag.svg");
+  --rulo-kapak-ust: url("../img/rulo/kapak-ust.svg"); --rulo-kapak-alt: url("../img/rulo/kapak-alt.svg");
+  --rulo-sarmasik-yatay: url("../img/rulo/sarmasik-yatay.svg"); --rulo-sarmasik-dikey: url("../img/rulo/sarmasik-dikey.svg");
+  --rulo-kose-ust-sol: url("../img/rulo/kose-ust-sol.svg"); --rulo-kose-ust-sag: url("../img/rulo/kose-ust-sag.svg");
+  --rulo-kose-alt-sol: url("../img/rulo/kose-alt-sol.svg"); --rulo-kose-alt-sag: url("../img/rulo/kose-alt-sag.svg");
+}
+html[data-tema="koyu"] {
+  --rulo-kagit: linear-gradient(180deg, #060B1F 0%, #172452 18%, #2E4384 40%, #4A60A6 48%, #2A3D7A 62%, #162250 82%, #050A1C 100%);
+  --rulo-kagit-dikey: linear-gradient(90deg, #060B1F 0%, #172452 18%, #2E4384 40%, #4A60A6 48%, #2A3D7A 62%, #162250 82%, #050A1C 100%);
+  --rulo-kapak-sol: url("../img/rulo/kapak-sol-gece.svg"); --rulo-kapak-sag: url("../img/rulo/kapak-sag-gece.svg");
+  --rulo-kapak-ust: url("../img/rulo/kapak-ust-gece.svg"); --rulo-kapak-alt: url("../img/rulo/kapak-alt-gece.svg");
+  --rulo-sarmasik-yatay: url("../img/rulo/sarmasik-yatay-gece.svg"); --rulo-sarmasik-dikey: url("../img/rulo/sarmasik-dikey-gece.svg");
+  --rulo-kose-ust-sol: url("../img/rulo/kose-ust-sol-gece.svg"); --rulo-kose-ust-sag: url("../img/rulo/kose-ust-sag-gece.svg");
+  --rulo-kose-alt-sol: url("../img/rulo/kose-alt-sol-gece.svg"); --rulo-kose-alt-sag: url("../img/rulo/kose-alt-sag-gece.svg");
+}
+/* Yatay rulo: iki uçta kapak, gövdede sarmaşık */
+.legend::before, .legend::after, .app .panel::before, .app .panel::after, .drawer::before, .drawer::after, .modal::before, .modal::after, .gecici-cubuk, .rulo-cubuk {
+  background: var(--rulo-kapak-sol) left center / 9px 100% no-repeat, var(--rulo-kapak-sag) right center / 9px 100% no-repeat,
+    var(--rulo-sarmasik-yatay) left 9px center / 110px 72% repeat-x, var(--rulo-kagit) center / calc(100% - 8px) 82% no-repeat;
+  border-radius: 0; box-shadow: none; filter: drop-shadow(0 3px 2px rgba(60, 38, 14, .32));
+}
+html[data-tema="koyu"] :is(.legend::before, .legend::after, .app .panel::before, .app .panel::after, .drawer::before, .drawer::after, .modal::before, .modal::after, .gecici-cubuk) { filter: drop-shadow(0 3px 3px rgba(0, 0, 0, .55)); }
+/* Panel rulosu solda sayfa kenarına dayanır: yalnızca sağ uçta kapak */
+.app .panel::before, .app .panel::after { border-radius: 0;
+  background: var(--rulo-kapak-sag) right center / 9px 100% no-repeat, var(--rulo-sarmasik-yatay) left center / 110px 72% repeat-x, var(--rulo-kagit) left center / calc(100% - 4px) 82% no-repeat; }
+.rulo-cubuk::before, .rulo-cubuk::after { content: none; }
+/* Harita çerçevesinin dikey ruloları */
+.harita-rulo-cubuk { border-radius: 0; box-shadow: none; filter: drop-shadow(0 0 8px rgba(60, 38, 14, .3));
+  background: var(--rulo-kapak-ust) center top / 100% 9px no-repeat, var(--rulo-kapak-alt) center bottom / 100% 9px no-repeat,
+    var(--rulo-sarmasik-dikey) center top 9px / 72% 110px repeat-y, var(--rulo-kagit-dikey) center / 82% calc(100% - 8px) no-repeat; }
+.harita-rulo-cubuk::before, .harita-rulo-cubuk::after { content: none; }
+html[data-tema="koyu"] .harita-rulo-cubuk { filter: drop-shadow(0 0 10px rgba(240, 200, 110, .14)); }
+/* Yaprak köşelerinde mürekkep süsleme */
+.drawer, .modal { background: var(--rulo-kose-ust-sol) left 6px top 26px / 30px 30px no-repeat, var(--rulo-kose-ust-sag) right 6px top 26px / 30px 30px no-repeat,
+  var(--rulo-kose-alt-sol) left 6px bottom 26px / 30px 30px no-repeat, var(--rulo-kose-alt-sag) right 6px bottom 26px / 30px 30px no-repeat, var(--parsomen); background-attachment: local; }
+.drawer.katli { background: var(--parsomen); }
+.rulo-yaprak { background: var(--rulo-kose-ust-sol) left 14px top 16px / 44px 44px no-repeat, var(--rulo-kose-ust-sag) right 14px top 16px / 44px 44px no-repeat,
+  var(--rulo-kose-alt-sol) left 14px bottom 16px / 44px 44px no-repeat, var(--rulo-kose-alt-sag) right 14px bottom 16px / 44px 44px no-repeat, var(--parsomen); }
+.legend details[open] { background: var(--rulo-kose-ust-sol) left 4px top 4px / 22px 22px no-repeat, var(--rulo-kose-ust-sag) right 4px top 4px / 22px 22px no-repeat,
+  var(--rulo-kose-alt-sol) left 4px bottom 4px / 22px 22px no-repeat, var(--rulo-kose-alt-sag) right 4px bottom 4px / 22px 22px no-repeat, var(--parsomen); }
