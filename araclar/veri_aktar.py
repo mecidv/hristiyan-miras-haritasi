@@ -7,7 +7,19 @@ from pathlib import Path
 
 KOK = Path(__file__).resolve().parent.parent
 ALANLAR = ["no", "ad", "tur", "il", "ilce", "yer", "lat", "lng", "hassasiyet", "topluluk",
-           "islev", "islevKat", "durum", "unesco", "kaynak", "sayfa"]
+           "islev", "islevKat", "durum", "unesco", "kaynak", "sayfa", "ad_en", "wikipedia_en", "wikidata"]
+
+def ingilizce_adlar():
+    """data/ad-en.js: İngilizce Vikipedi'de maddesi olan yapıların Wikidata ile eşleştirilmiş İngilizce adları.
+    Biçim: kayıt no: [görünen ad, Vikipedi maddesi, Wikidata kimliği]"""
+    metin = (KOK / "data" / "ad-en.js").read_text(encoding="utf-8")
+    return {int(no): (ad, madde, q) for no, ad, madde, q in
+            re.findall(r'^\s*(\d+):\s*\["((?:[^"\\]|\\.)*)",\s*"((?:[^"\\]|\\.)*)",\s*"(Q\d+)"\]', metin, re.M)}
+
+def en_alanlari(b, adlar):
+    ad, madde, q = adlar.get(int(b["no"]), ("", "", ""))
+    return {"ad_en": ad, "wikipedia_en": ("https://en.wikipedia.org/wiki/" + madde.replace(" ", "_")) if madde else "",
+            "wikidata": ("https://www.wikidata.org/wiki/" + q) if q else ""}
 
 def adres():
     m = re.search(r'FEEDBACK_ENDPOINT:\s*"([^"]+)"', (KOK / "js" / "config.js").read_text(encoding="utf-8"))
@@ -23,8 +35,8 @@ def main():
     yapilar.sort(key=lambda b: b["no"])
     (KOK / "data" / "yapilar.json").write_text(json.dumps(yapilar, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     with open(KOK / "data" / "envanter.csv", "w", newline="", encoding="utf-8-sig") as f:
-        w = csv.writer(f); w.writerow(ALANLAR)
-        for b in yapilar: w.writerow([b.get(k, "") for k in ALANLAR])
+        w = csv.writer(f); w.writerow(ALANLAR); adlar = ingilizce_adlar()
+        for b in yapilar: b2 = dict(b, **en_alanlari(b, adlar)); w.writerow([b2.get(k, "") for k in ALANLAR])
     print(f"{len(yapilar)} kayıt yazıldı")
 
 if __name__ == "__main__":

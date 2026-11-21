@@ -18,6 +18,13 @@
 | `durum` | Koruma ve fiziksel durum, kaynaktaki ifadesiyle | Conservation and physical condition, as worded in the source |
 | `unesco` | UNESCO durumu: Dünya Mirası, Geçici Liste ya da boş | UNESCO status: World Heritage, Tentative List, or blank |
 | `kaynak`, `sayfa` | Kaydın kaynağı ve kaynaktaki sayfa | Source of the record and page in that source |
+| `ad_en` | Yapının İngilizce adı; yalnızca İngilizce Vikipedi'de maddesi bulunan yapılar için doldurulur | English name of the building; filled in only for buildings with an English Wikipedia article |
+| `wikipedia_en` | Bu adın alındığı İngilizce Vikipedi maddesi | English Wikipedia article the name is taken from |
+| `wikidata` | Eşleştirmenin dayandığı Wikidata kaydı | Wikidata item the match is based on |
+
+İngilizce adlar Wikidata kayıtlarıyla eşleştirilmiştir: ad ve konum birlikte denetlenmiş (18 Kasım 2026), belirsiz eşleşmeler ve birden çok yapıyı tek kayıtta toplayan kayıtlar dışarıda bırakılmıştır. Boş bırakılan yapıların adları özel isim olarak Türkçe kullanılır.
+
+English names were matched against Wikidata items, checking both name and location (18 November 2026). Ambiguous matches and records that group several buildings were left out. Buildings without an English name keep their Turkish name as a proper noun.
 
 Konumlar yaklaşıktır; `hassasiyet` alanına göre değerlendirilmelidir. Sitede, kayıtlı koordinatı il sınırının biraz dışında kalan az sayıdaki kayıt en yakın kara noktasında gösterilir; bu dosyadaki koordinatlar kayıtlı değerlerdir.
 
