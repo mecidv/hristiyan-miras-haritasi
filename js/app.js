@@ -10,6 +10,8 @@
   const ILLER = window.ILLER || [];
   const TURLER = ["Kilise", "Manastır", "Şapel"];
   const TUR_COLOR = { "Kilise": "#24497F", "Manastır": "#A33A26", "Şapel": "#A87412" };
+  // Küme halkası renkleri CSS'ten gelir; gece modunda daha açık tonlara döner
+  const TUR_SINIF = { "Kilise": "kilise", "Manastır": "manastir", "Şapel": "sapel" };
   // Piri Reis: parşömen üzerinde sepya mürekkep yıkaması
   const RAMP_ACIK = ["#EFDCAE", "#E0BF7E", "#CFA05A", "#B98041", "#9A602D", "#74431F"];
   // Lapis Lazuli: derin ultramarinden açık maviye; açık renkli yazılar okunaklı kalır
@@ -151,7 +153,7 @@
     const ms = k.getAllChildMarkers(); const n = ms.length;
     const say = {}; ms.forEach(m => { say[m.options.tur] = (say[m.options.tur] || 0) + 1; });
     let a = 0;
-    const dilim = TURLER.filter(t => say[t]).map(t => { const b = a + say[t] / n * 360; const d = `${TUR_COLOR[t]} ${a.toFixed(1)}deg ${b.toFixed(1)}deg`; a = b; return d; }).join(", ");
+    const dilim = TURLER.filter(t => say[t]).map(t => { const b = a + say[t] / n * 360; const d = `var(--kume-${TUR_SINIF[t]}) ${a.toFixed(1)}deg ${b.toFixed(1)}deg`; a = b; return d; }).join(", ");
     const mobil = window.matchMedia("(max-width: 860px)").matches;
     const r = mobil ? (n < 10 ? 26 : n < 40 ? 30 : 34) : (n < 10 ? 32 : n < 40 ? 37 : 42);
     return L.divIcon({ className: "kume", html: `<div style="--dilim:conic-gradient(${dilim})"><i></i><span>${n}</span></div>`, iconSize: [r, r] });
