@@ -310,3 +310,8 @@ html[data-tema="koyu"] .harita-rulo-cubuk { filter: drop-shadow(0 0 10px rgba(24
   var(--rulo-kose-alt-sol) left 14px bottom 16px / 44px 44px no-repeat, var(--rulo-kose-alt-sag) right 14px bottom 16px / 44px 44px no-repeat, var(--parsomen); }
 .legend details[open] { background: var(--rulo-kose-ust-sol) left 4px top 4px / 22px 22px no-repeat, var(--rulo-kose-ust-sag) right 4px top 4px / 22px 22px no-repeat,
   var(--rulo-kose-alt-sol) left 4px bottom 4px / 22px 22px no-repeat, var(--rulo-kose-alt-sag) right 4px bottom 4px / 22px 22px no-repeat, var(--parsomen); }
+
+/* Liste sayfaları (dönüşen yapılar, tur programları) */
+.mini-harita.kalabalik .mh-nokta circle { stroke-width: 2.5; }
+.yk .yk-not { font-size: 14.5px; line-height: 1.45; color: #4A3826; margin: 0 0 10px; }
+.yk .yk-en { margin: -2px 0 4px; font-family: var(--serif); font-style: italic; font-size: 16px; color: #6B5538; }

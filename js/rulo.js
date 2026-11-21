@@ -20,8 +20,8 @@
     { ad: L("Haritayı keşfet", "Explore the map"), alt: [
       { ad: L("Harita", "Map"), not: L("Tüm kayıtlar, il ve ilçelere göre", "All records by province and district"), href: "harita.html" },
       { ad: L("Dikkat çeken yapılar", "Notable buildings"), not: L("27 yapı, dört tema", "27 buildings, four themes"), href: "dikkat-ceken-yapilar.html" },
-      { ad: L("Dönüşen yapılar", "Repurposed buildings"), not: L("Yakında", "Coming soon"), href: "#", yakinda: true },
-      { ad: L("Tur programlarındaki yapılar", "Buildings in tour programmes"), not: L("Yakında", "Coming soon"), href: "#", yakinda: true } ] },
+      { ad: L("Dönüşen yapılar", "Repurposed buildings"), not: L("102 yapı, bugünkü işlevlerine göre", "102 buildings, by present-day use"), href: "donusen-yapilar.html" },
+      { ad: L("Tur programlarındaki yapılar", "Buildings in tour programmes"), not: L("41 yapı ve acentaları", "41 buildings and their agencies"), href: "tur-programlari.html" } ] },
     { ad: L("Tarihsel bağlam", "Historical context"), href: "tarihsel-baglam.html" },
     { ad: L("Atıf", "Citation"), href: "./#atif" }
   ];
