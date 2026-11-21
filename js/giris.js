@@ -48,7 +48,7 @@
     YAPILAR.forEach(y => { const s = ilSay[y.il] || (ilSay[y.il] = { n: 0, "Kilise": 0, "Manastır": 0, "Şapel": 0 }); s.n++; s[y.tur]++; });
     const sira = Object.entries(ilSay).sort((a, b) => b[1].n - a[1].n).slice(0, 8);
     const max = sira.length ? sira[0][1].n : 1;
-    $("#il-sira").innerHTML = sira.map(([il, s]) => `<li><a href="harita.html?il=${encodeURIComponent(il)}${EN ? "&lang=en" : ""}">
+    if ($("#il-sira")) $("#il-sira").innerHTML = sira.map(([il, s]) => `<li><a href="harita.html?il=${encodeURIComponent(il)}${EN ? "&lang=en" : ""}">
       <span class="il-ad">${esc(il)}</span><span class="il-n">${s.n}</span>
       <span class="bar">${TURLER.filter(t => s[t]).map(t => `<i style="width:${(s[t] / max) * 100}%;background:${TUR_RENK[t]}"></i>`).join("")}</span></a></li>`).join("");
     return ilSay;
@@ -67,12 +67,12 @@
         ${link ? `<p><a href="${esc(link)}" target="_blank" rel="noopener">${esc(T("e_profil"))}</a></p>` : ""}</div>
       </article>`;
     };
-    $("#ekip-kartlar").innerHTML = kisi("yazar") + kisi("danisman");
+    if ($("#ekip-kartlar")) $("#ekip-kartlar").innerHTML = kisi("yazar") + kisi("danisman");
     $("#atif-kutu").innerHTML = Ortak.atifHtml(esc);
     // İletişim bölümü
     const ep = Ortak.m("iletisim_eposta"), site = Ortak.m("kisisel_site"), prof = Ortak.m("yazar_baglanti");
     const satir = (etiket, href, yazi) => `<li><span>${esc(T(etiket))}</span><a href="${esc(href)}"${/^mailto:/.test(href) ? "" : ' target="_blank" rel="noopener"'}>${esc(yazi)}</a></li>`;
-    $("#iletisim-liste").innerHTML = [
+    if ($("#iletisim-liste")) $("#iletisim-liste").innerHTML = [
       ep && satir("il_eposta", "mailto:" + ep, ep),
       site && satir("il_site", site, site.replace(/^https?:\/\//, "")),
       prof && satir("il_akademik", prof, prof.replace(/^https?:\/\//, ""))

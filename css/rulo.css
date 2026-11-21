@@ -315,3 +315,16 @@ html[data-tema="koyu"] .harita-rulo-cubuk { filter: drop-shadow(0 0 10px rgba(24
 .mini-harita.kalabalik .mh-nokta circle { stroke-width: 2.5; }
 .yk .yk-not { font-size: 14.5px; line-height: 1.45; color: #4A3826; margin: 0 0 10px; }
 .yk .yk-en { margin: -2px 0 4px; font-family: var(--serif); font-style: italic; font-size: 16px; color: #6B5538; }
+
+/* Hakkında, Ekip ve İletişim: okuma rulosu içindeki kartlar parşömen üstünde sade kalır (gece de) */
+.bilgi-sayfa .rulo-yaprak { --murekkep: #2E2014; --murekkep-2: #5C4630; --murekkep-3: #85704F; --portakal-metin: #8E2C18; --porselen-kenar: #CDB68A; color: #2E2014; }
+.bilgi-govde { max-width: 72ch; margin: 0 auto; font-size: 17px; line-height: 1.6; }
+.bilgi-govde h2 { font-family: var(--serif); font-size: 26px; margin: 30px 0 10px; }
+.bilgi-govde .giris-paragraf { font-size: 20px; }
+.bilgi-sayfa .rulo-yaprak :is(.kisi, .iller-kutu, .iletisim-liste li) { background: rgba(255, 251, 240, .62); border: 1px solid rgba(160, 128, 80, .35); box-shadow: 0 1px 0 rgba(255, 255, 255, .6) inset; color: #2E2014; }
+.bilgi-sayfa .rulo-yaprak :is(.kisi, .iller-kutu, .iletisim-liste li)::before, .bilgi-sayfa .rulo-yaprak :is(.kisi, .iller-kutu, .iletisim-liste li)::after { content: none; }
+.bilgi-sayfa .iller-kutu { margin-top: 26px; } .bilgi-sayfa .iller-kutu h2 { margin-top: 0; font-size: 22px; }
+.bilgi-sayfa .ekip { grid-template-columns: 1fr; max-width: none; }
+.bilgi-sayfa .iletisim-liste { margin-top: 22px; }
+.bilgi-sayfa .bilgi-dugme { margin: 26px 0 0; text-align: center; }
+html[data-tema="koyu"] .bilgi-sayfa .kisi-foto { background: linear-gradient(160deg, #FFF3E6, #FFE0C2); border-color: #CDB68A; }

@@ -12,11 +12,11 @@
   // ---------- Menü ----------
   const MENU = [
     { ad: L("Proje", "Project"), alt: [
-      { ad: L("Hakkında", "About"), href: "./#proje" },
-      { ad: L("Proje ekibi", "Project team"), href: "./#ekip" },
+      { ad: L("Hakkında", "About"), href: "hakkinda.html" },
+      { ad: L("Proje ekibi", "Project team"), href: "ekip.html" },
       { ad: L("Tasarım dili", "Design language"), href: "tasarim-dili.html" },
       { ad: L("SSS", "FAQ"), href: "sss.html" },
-      { ad: L("İletişim", "Contact"), href: "./#iletisim" } ] },
+      { ad: L("İletişim", "Contact"), href: "iletisim.html" } ] },
     { ad: L("Haritayı keşfet", "Explore the map"), alt: [
       { ad: L("Harita", "Map"), not: L("Tüm kayıtlar, il ve ilçelere göre", "All records by province and district"), href: "harita.html" },
       { ad: L("Dikkat çeken yapılar", "Notable buildings"), not: L("27 yapı, dört tema", "27 buildings, four themes"), href: "dikkat-ceken-yapilar.html" },
