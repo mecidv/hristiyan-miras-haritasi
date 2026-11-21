@@ -370,17 +370,21 @@
       if (!ilAcik) { if (map.hasLayer(ilGeo)) map.removeLayer(ilGeo); }
       else {
         if (!map.hasLayer(ilGeo)) ilGeo.addTo(map);
+        // İl dolgusu ve kaba sınır çizgisi yakınlaştıkça söner; sokak ölçeğinde harita perdesiz görünür
+        const dz = solum(z, 9, 11.5), cz = Math.max(0.3, solum(z, 11, 13.5));
+        map.getContainer().classList.toggle("il-soluk", dz === 0);
+        if (vurgu) vurgu.setStyle({ opacity: 0.95 * Math.max(0.35, solum(z, 11, 13.5)) });
         Object.entries(ilGeoFeatures).forEach(([il, layer]) => {
           if (!layer.setStyle) return;
           const s = ilSay[il]; const c = renk(s && s.toplam);
           if (state.il && il !== state.il) {
             // Seçili ilin dışı: beyaz, sönük
-            layer.setStyle({ fillColor: HR().disari, fillOpacity: 0.88, color: HR().disariCizgi, weight: 0.7, opacity: 0.45, dashArray: "4 3" });
+            layer.setStyle({ fillColor: HR().disari, fillOpacity: 0.88 * dz, color: HR().disariCizgi, weight: 0.7, opacity: 0.45 * cz, dashArray: "4 3" });
           } else {
             const secili = state.il === il;
             // Seçili ilin içi sade, açık bir zemine döner; yoğunluk rengi orada bilgi vermez, ikonları gölgeler
             const dolgu = secili ? (koyuMu() ? "#1A2A5C" : "#F6EDD5") : (c || HR().bos);
-            layer.setStyle({ fillColor: dolgu, fillOpacity: (secili ? 0.8 : c ? (gosterNokta ? 0.72 : 0.86) : 0.7) * (koyuMu() ? 0.95 : 1), color: HR().cizgi, weight: 0.9, opacity: 0.85, dashArray: "4 3" });
+            layer.setStyle({ fillColor: dolgu, fillOpacity: (secili ? 0.8 : c ? (gosterNokta ? 0.72 : 0.86) : 0.7) * (koyuMu() ? 0.95 : 1) * dz, color: HR().cizgi, weight: 0.9, opacity: 0.85 * cz, dashArray: "4 3" });
           }
           layer.unbindTooltip(); layer.bindTooltip(ilTip(il, s), { sticky: true, className: "il-tip" });
         });
@@ -415,7 +419,7 @@
       if (kabul.some(k => cakisir(k, kutu))) kap.classList.add("gizli"); else kabul.push(kutu);
     });
   }
-  map.on("zoomend", () => { zoomSinif(); geriDugmeleri(); cizIller(sonIlSay); requestAnimationFrame(() => requestAnimationFrame(ilceEtiketAyikla)); });
+  map.on("zoomend", () => { zoomSinif(); geriDugmeleri(); cizIller(sonIlSay); ilceStilYenile(); requestAnimationFrame(() => requestAnimationFrame(ilceEtiketAyikla)); });
 
   function cizIlListesi(ilSay) {
     const ol = $("#il-listesi");
@@ -522,7 +526,7 @@
         const ad = f.properties.ad;
         layer.bindTooltip(() => ilceTip(ad), { sticky: true, className: "il-tip" });
         // Bir ilçe seçiliyken diğerlerinin perdesi aynı renkte biraz açılır; renk değiştirmek koyu bir çakmaya yol açıyordu
-        layer.on("mouseover", () => { if (state.ilce !== ad) layer.setStyle(state.ilce ? { fillColor: HR().ilcePerde, fillOpacity: 0.3 } : { fillColor: HR().ilce, fillOpacity: 0.1 }); });
+        layer.on("mouseover", () => { if (state.ilce !== ad) { const k = solum(map.getZoom(), 12, 14); layer.setStyle(state.ilce ? { fillColor: HR().ilcePerde, fillOpacity: 0.3 * k } : { fillColor: HR().ilce, fillOpacity: 0.1 * k }); } });
         layer.on("mouseout", () => layer.setStyle(ilceStil(ad)));
         layer.on("click", () => { if (!picking) ilceSec(state.ilce === ad ? "" : ad); });
       }
@@ -623,10 +627,12 @@
       if (ad) ilceAtama.set(y.no, ad);
     });
   }
+  // z, a'dan küçükse 1; b'den büyükse 0; arada doğrusal
+  function solum(z, a, b) { return Math.max(0, Math.min(1, (b - z) / (b - a))); }
   function ilceStil(ad) {
     const secili = state.ilce && ad === state.ilce;
     if (secili) return { color: HR().ilceSecili, weight: 2.8, opacity: 1, fill: true, fillOpacity: 0, className: "ilce-yol" };
-    return { color: HR().ilce, weight: state.ilce ? 0.9 : 1.15, opacity: 0.85, fill: true, fillColor: HR().ilcePerde, fillOpacity: state.ilce ? 0.55 : 0, className: "ilce-yol" };
+    return { color: HR().ilce, weight: state.ilce ? 0.9 : 1.15, opacity: 0.85, fill: true, fillColor: HR().ilcePerde, fillOpacity: state.ilce ? 0.55 * solum(map.getZoom(), 12, 14) : 0, className: "ilce-yol" };
   }
   function ilceStilYenile() {
     if (!ilceKatman) return;
@@ -694,7 +700,7 @@
     if (f) {
       const [mrk, zm] = ilGorunumu(il, f);
       map.flyTo(mrk, zm, sec);
-      vurgu = L.geoJSON(f.feature, { pane: "iller", interactive: false, style: { color: HR().vurgu, weight: 2.6, opacity: 0.95, fill: false, className: "il-vurgu" } }).addTo(map);
+      vurgu = L.geoJSON(f.feature, { pane: "iller", interactive: false, style: { color: HR().vurgu, weight: 2.6, opacity: 0.95 * Math.max(0.35, solum(map.getZoom(), 11, 13.5)), fill: false, className: "il-vurgu" } }).addTo(map);
       const yollar = []; vurgu.eachLayer(l => yollar.push(l));
       setTimeout(() => cizAnimasyon(yollar, 1400, 0, false), AZALT ? 0 : 700);
     } else {

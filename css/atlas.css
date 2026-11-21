@@ -193,6 +193,8 @@ html[data-tema="koyu"] .ilce-label span { color: #F3EBD6; }
 html[data-tema="koyu"] .ilce-label.secili span { color: var(--portakal-acik); }
 #map.yakin .ilce-label span { font-size: 16.5px; }
 #map .ilce-yol { transition: fill-opacity .35s ease, stroke-width .25s ease; }
+/* İl dolgusu tamamen söndüğünde sokak ölçeğinde il çokgenleri tıklama ve ipucu yakalamaz */
+#map.il-soluk .leaflet-iller-pane path { pointer-events: none; }
 .leaflet-tooltip.il-tip { background: var(--sir); color: var(--murekkep); border-color: var(--porselen-kenar); box-shadow: var(--sir-golge); }
 .il-tip small { color: var(--murekkep-3); font-style: italic; }
 
